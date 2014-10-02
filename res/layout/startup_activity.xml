@@ -4,25 +4,24 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <TextView 
+        android:id="@+id/activity_headline"
+        android:text="@string/fhk_routenplaner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content" />
+    
+    <Button
+        android:id="@+id/btn_startup_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick_search"
+        android:text="@string/startup_search" />
 
-        <Button
-            android:id="@+id/btn_startup_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/startup_search"
-            android:onClick="onClick_search" />
-
-        <Button
-            android:id="@+id/btn_startup_history"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/startup_history"
-            android:onClick="onClick_history" />
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/btn_startup_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick_history"
+        android:text="@string/startup_history" />
 
 </LinearLayout>

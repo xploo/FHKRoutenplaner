@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
-import de.damianbuecker.fhkroutenplaner.activity.ImageView;
+import de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -232,7 +232,7 @@ public class NFCController extends Controller {
 				
 
 //				NFCController.this.getContext().startActivity(intent);
-				Intent i = new Intent(mContext, ImageView.class);
+				Intent i = new Intent(mContext, DisplayMapsActivity.class);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				i.putExtra("Start_ID", result);
 				mContext.startActivity(i);
