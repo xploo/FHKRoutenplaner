@@ -1,11 +1,10 @@
 package de.damianbuecker.fhkroutenplaner.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import java.util.ArrayList;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -14,7 +13,7 @@ import de.damianbuecker.fhkroutenplaner.controller.StartupContoller;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.CSVReader;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 
-public class StartUpActivity extends ModifiedActivity {
+public class StartUpActivity extends ModifiedViewActivityImpl {
 
 	private boolean wifistate;
 	private CSVReader obj;
@@ -87,7 +86,13 @@ public class StartUpActivity extends ModifiedActivity {
 
 	public void onClick_history(View v) {
 
+		ArrayList<String> test = new ArrayList<String>();
+		test.add("BoobA");
+		test.add("BoobB");
+		test.add("BoobC");
+		
 		Intent intent = new Intent("android.intents.History");
+		intent.putExtra("history", test);
 		startActivity(intent);
 	}
 
