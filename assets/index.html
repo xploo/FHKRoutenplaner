@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, user-scalable=no">
+		<!--
+		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+		<script src="http://unslider.com/unslider.min.js"></script>
+		-->
+		<script src="file:///android_asset/javascript/jquery-2.1.1.min.js"></script>
+		<script src="file:///android_asset/javascript/jquery.mobile-1.4.4.min.js"></script>
+		<script src="file:///android_asset/javascript/unslider.js"></script>
+		<script src="file:///android_asset/javascript/jquery.panzoom.min.js"></script>
+		<style type="text/css">
+			.banner { position: relative; overflow: auto; height: 500px;}
+    			.banner li { list-style: none; }
+        			.banner ul li { float: left; }
+        	#arrow_prev {
+        		float: left;
+        	}		
+        	
+        	#arrow_next {
+        		float: right;
+        	}
+        	
+
+		</style>
+	</head>
+	<body>
+		<div class="banner">
+    		<ul>
+        		<li><div id="images"><img class="zoomable" src="###Marker1" /></div></li>
+        		<li><div id="images"><img class="zoomable" src="###Marker2" /></div></li>
+    		</ul>
+		</div>
+		<div id="arrow_prev"><a href="#" class="unslider-arrow prev">Previous slide</a></div>
+		<div id="arrow_next"><a href="#" class="unslider-arrow next">Next slide</a></div>
+		<script type="text/javascript">
+			$('.banner').unslider();
+		</script>
+		<script>
+    		var unslider = $('.banner').unslider();
+    
+    			$('.unslider-arrow').click(function() {
+        		var fn = this.className.split(' ')[1];
+        
+        		//  Either do unslider.data('unslider').next() or .prev() depending on the className
+        		unslider.data('unslider')[fn]();
+    		});
+		</script>
+		<script>
+			$(".zoomable").panzoom({
+			
+			});
+		</script>
+	</body>
+</html>

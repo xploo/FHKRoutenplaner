@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="app_name">FHKRoutenplaner</string>
+    <string name ="startup_search">Search</string>
+    <string name ="startup_history">History</string>
+    <string name ="nfc_route">Go!</string>
+    <string name = "nfc_attach">Attach Phone to Tag</string>
+    <string name = "nfc_floor">Etage:</string>
+    <string name = "nfc_description">Beschreibung:</string>
+    <string name = "nfc_pos">Aktuelle Position</string>
+
+</resources>
