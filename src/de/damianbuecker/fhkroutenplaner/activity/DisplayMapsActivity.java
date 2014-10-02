@@ -25,7 +25,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	private Integer endFloor;
 
 	private NFCController mNFCController;
-	private ImageController mImageController;
+	private ImageController mImageController; 
 	private FileController mFileController;
 	private NfcAdapter mNfcAdapter;
 	private NFCController nfccon;
