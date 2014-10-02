@@ -8,5 +8,7 @@
     <string name = "nfc_floor">Etage:</string>
     <string name = "nfc_description">Beschreibung:</string>
     <string name = "nfc_pos">Aktuelle Position</string>
+    <string name="fhk_routenplaner">FH Köln Routenplaner</string>
+    <string name="delete">Delete</string>
 
 </resources>
