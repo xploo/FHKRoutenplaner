@@ -42,15 +42,17 @@
         
         
          <activity android:name="de.damianbuecker.fhkroutenplaner.activity.NFCConnector"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait" >
             <intent-filter >
                 <action android:name="android.intents.NFCConnector" />
                 <category android:name ="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         
-         <activity android:name="de.damianbuecker.fhkroutenplaner.activity.ImageView"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+         <activity 	android:name="de.damianbuecker.fhkroutenplaner.activity.ImageView"
+             		android:screenOrientation="landscape"
+            		android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter >
                 <action android:name="android.intents.NFCGO" />
                 <category android:name ="android.intent.category.DEFAULT" />

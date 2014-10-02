@@ -18,9 +18,4 @@ public class ModifiedActivity extends Activity{
 	public void log(String message) {
 		logger.info(message);
 	}
-	
-	/*
-	 * Hihi
-	 */
-	
 }
