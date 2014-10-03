@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.SQLException;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -19,58 +18,120 @@ import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-
-import com.j256.ormlite.dao.Dao;
-
 import de.damianbuecker.fhkroutenplaner.databaseaccess.JSONParser;
 
-
+/**
+ * The Class StartupContoller.
+ */
 public class StartupContoller extends Controller {
 
+	/** The conn manager. */
 	private ConnectivityManager connManager;
-	private NetworkInfo mWifi;
-	private static final String[] tables = { "edge", "tag", "room", "dozent",
-			"raumart" };
-	private JSONParser jParser = new JSONParser();
-	private JSONArray externalData;
-	private AssetManager mAssetManager;
-	private List<NameValuePair> params;
-	private String version;
-	private SharedPreferences prefs;
 	
+	/** The m wifi. */
+	private NetworkInfo mWifi;
+	
+	/** The Constant tables. */
+	private static final String[] tables = { "edge", "tag", "room", "dozent", "raumart" };
+	
+	/** The j parser. */
+	private JSONParser jParser = new JSONParser();
+	
+	/** The external data. */
+	private JSONArray externalData;
+	
+	/** The params. */
+	private List<NameValuePair> params;
+	
+	/** The version. */
+	private String version;
+	
+	/** The prefs. */
+	private SharedPreferences prefs;
 
+	/** The url_get database. */
 	private String url_getDatabase = "http://fhkrp.in24.de/BA/index.php";
+	
+	/** The url_get version. */
 	private String url_getVersion = "http://fhkrp.in24.de/BA/index2.php";
+	
+	/** The Constant TAG_SUCCESS. */
 	private static final String TAG_SUCCESS = "success";
+	
+	/** The Constant TAG_DOCENTID. */
 	protected static final String TAG_DOCENTID = "docentID";
+	
+	/** The Constant TAG_ROOMID. */
 	protected static final String TAG_ROOMID = "roomID";
+	
+	/** The Constant TAG_FLOOR. */
 	protected static final String TAG_FLOOR = "floor";
+	
+	/** The Constant TAG_ROOMTYPEID. */
 	protected static final String TAG_ROOMTYPEID = "roomtypeID";
+	
+	/** The Constant TAG_DESCRIPTION. */
 	protected static final String TAG_DESCRIPTION = "description";
+	
+	/** The Constant TAG_TAGID. */
 	protected static final String TAG_TAGID = "tagID";
+	
+	/** The Constant TAG_XOS. */
 	protected static final String TAG_XOS = "x_pos";
+	
+	/** The Constant TAG_YPOS. */
 	protected static final String TAG_YPOS = "y_pos";
+	
+	/** The Constant TAG_NAME. */
 	protected static final String TAG_NAME = "name";
+	
+	/** The Constant TAG_LASTNAME. */
 	protected static final String TAG_LASTNAME = "lastname";
+	
+	/** The Constant TAG_EDGESID. */
 	protected static final String TAG_EDGESID = "edgesID";
+	
+	/** The Constant TAG_SOURCE. */
 	protected static final String TAG_SOURCE = "source";
+	
+	/** The Constant TAG_DESTINATION. */
 	protected static final String TAG_DESTINATION = "destination";
+	
+	/** The Constant TAG_COST. */
 	protected static final String TAG_COST = "cost";
+	
+	/** The Constant TAG_VERSION. */
 	protected static final String TAG_VERSION = "version";
 
+	/**
+	 * Instantiates a new startup contoller.
+	 *
+	 * @param context the context
+	 */
 	public StartupContoller(Context context) {
 		super(context);
 	}
 
+	/**
+	 * Checks if is wifi connected.
+	 *
+	 * @return true, if is wifi connected
+	 */
+	@SuppressWarnings("static-access")
 	public boolean isWifiConnected() {
 
-		this.connManager = (ConnectivityManager) this.getContext()
-				.getSystemService(this.getContext().CONNECTIVITY_SERVICE);
+		this.connManager = (ConnectivityManager) this.getContext().getSystemService(
+				this.getContext().CONNECTIVITY_SERVICE);
 		this.mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
 		return (mWifi.isConnected()) ? true : false;
 	}
 
+	/**
+	 * Gets the external database.
+	 *
+	 * @return the external database
+	 */
 	public void getExternalDatabase() {
 
 		new Thread(new Runnable() {
@@ -84,8 +145,7 @@ public class StartupContoller extends Controller {
 					params.add(new BasicNameValuePair("tablename", tblnames));
 					try {
 						// JSON objekte per http-Request holen
-						JSONObject json = jParser.makeHttpRequest(
-								url_getDatabase, "GET", params);
+						JSONObject json = jParser.makeHttpRequest(url_getDatabase, "GET", params);
 
 						// Ausgabe der geholten Daten in der Log cat
 						Log.d("Kompletter Inhalt extern: ", json.toString());
@@ -103,8 +163,7 @@ public class StartupContoller extends Controller {
 
 								// Per Schleife durch alle Klausuren
 								for (int i = 0; i < externalData.length(); i++) {
-									JSONObject c = externalData
-											.getJSONObject(i);
+									JSONObject c = externalData.getJSONObject(i);
 
 									if (tblnames.equals("room")) {
 
@@ -115,27 +174,16 @@ public class StartupContoller extends Controller {
 										// 3. Bei gefundener änderung ->
 
 										try {
-											File myFile = new File(
-													"/sdcard/FMS/room.txt");
+											File myFile = new File("/sdcard/FMS/room.txt");
 											myFile.createNewFile();
-											FileOutputStream fOut = new FileOutputStream(
-													myFile);
+											FileOutputStream fOut = new FileOutputStream(myFile);
 											OutputStreamWriter myOutWriter = new OutputStreamWriter(
 													fOut);
-											myOutWriter.append(c
-													.getString(TAG_ROOMID)
-													+ ";");
-											myOutWriter.append(c
-													.getString(TAG_FLOOR) + ";");
-											myOutWriter.append(c
-													.getString(TAG_ROOMTYPEID)
-													+ ";");
-											myOutWriter.append(c
-													.getString(TAG_DOCENTID)
-													+ ";");
-											myOutWriter.append(c
-													.getString(TAG_DESCRIPTION)
-													+ "\n");
+											myOutWriter.append(c.getString(TAG_ROOMID) + ";");
+											myOutWriter.append(c.getString(TAG_FLOOR) + ";");
+											myOutWriter.append(c.getString(TAG_ROOMTYPEID) + ";");
+											myOutWriter.append(c.getString(TAG_DOCENTID) + ";");
+											myOutWriter.append(c.getString(TAG_DESCRIPTION) + "\n");
 											myOutWriter.close();
 											fOut.close();
 
@@ -146,28 +194,17 @@ public class StartupContoller extends Controller {
 									} else if (tblnames.equals("tag")) {
 
 										try {
-											File myFile = new File(
-													"/sdcard/FMS/tag.txt");
+											File myFile = new File("/sdcard/FMS/tag.txt");
 											myFile.createNewFile();
-											FileOutputStream fOut = new FileOutputStream(
-													myFile);
+											FileOutputStream fOut = new FileOutputStream(myFile);
 											OutputStreamWriter myOutWriter = new OutputStreamWriter(
 													fOut);
-											myOutWriter.append(c
-													.getString(TAG_TAGID) + ";");
-											myOutWriter.append(c
-													.getString(TAG_ROOMID)
-													+ ";");
-											myOutWriter.append(c
-													.getString(TAG_XOS) + ";");
-											myOutWriter.append(c
-													.getString(TAG_YPOS) + ";");
-											myOutWriter.append(c
-													.getString(TAG_DESCRIPTION)
-													+ ";");
-											myOutWriter.append(c
-													.getString(TAG_FLOOR)
-													+ "\n");
+											myOutWriter.append(c.getString(TAG_TAGID) + ";");
+											myOutWriter.append(c.getString(TAG_ROOMID) + ";");
+											myOutWriter.append(c.getString(TAG_XOS) + ";");
+											myOutWriter.append(c.getString(TAG_YPOS) + ";");
+											myOutWriter.append(c.getString(TAG_DESCRIPTION) + ";");
+											myOutWriter.append(c.getString(TAG_FLOOR) + "\n");
 											myOutWriter.close();
 											fOut.close();
 
@@ -178,19 +215,13 @@ public class StartupContoller extends Controller {
 									} else if (tblnames.equals("roomtype")) {
 
 										try {
-											File myFile = new File(
-													"/sdcard/FMS/roomtype.txt");
+											File myFile = new File("/sdcard/FMS/roomtype.txt");
 											myFile.createNewFile();
-											FileOutputStream fOut = new FileOutputStream(
-													myFile);
+											FileOutputStream fOut = new FileOutputStream(myFile);
 											OutputStreamWriter myOutWriter = new OutputStreamWriter(
 													fOut);
-											myOutWriter.append(c
-													.getString(TAG_ROOMTYPEID)
-													+ ";");
-											myOutWriter.append(c
-													.getString(TAG_DESCRIPTION)
-													+ "\n");
+											myOutWriter.append(c.getString(TAG_ROOMTYPEID) + ";");
+											myOutWriter.append(c.getString(TAG_DESCRIPTION) + "\n");
 											myOutWriter.close();
 											fOut.close();
 
@@ -200,21 +231,14 @@ public class StartupContoller extends Controller {
 
 									} else if (tblnames.equals("docent")) {
 										try {
-											File myFile = new File(
-													"/sdcard/FMS/docent.txt");
+											File myFile = new File("/sdcard/FMS/docent.txt");
 											myFile.createNewFile();
-											FileOutputStream fOut = new FileOutputStream(
-													myFile);
+											FileOutputStream fOut = new FileOutputStream(myFile);
 											OutputStreamWriter myOutWriter = new OutputStreamWriter(
 													fOut);
-											myOutWriter.append(c
-													.getString(TAG_DOCENTID)
-													+ ";");
-											myOutWriter.append(c
-													.getString(TAG_NAME) + ";");
-											myOutWriter.append(c
-													.getString(TAG_LASTNAME)
-													+ "\n");
+											myOutWriter.append(c.getString(TAG_DOCENTID) + ";");
+											myOutWriter.append(c.getString(TAG_NAME) + ";");
+											myOutWriter.append(c.getString(TAG_LASTNAME) + "\n");
 											myOutWriter.close();
 											fOut.close();
 
@@ -225,33 +249,22 @@ public class StartupContoller extends Controller {
 									} else if (tblnames.equals("edges")) {
 
 										try {
-											File myFile = new File(
-													"/sdcard/FMS/edges.txt");
+											File myFile = new File("/sdcard/FMS/edges.txt");
 											myFile.createNewFile();
-											FileOutputStream fOut = new FileOutputStream(
-													myFile);
+											FileOutputStream fOut = new FileOutputStream(myFile);
 											OutputStreamWriter myOutWriter = new OutputStreamWriter(
 													fOut);
-											myOutWriter.append(c
-													.getString(TAG_EDGESID)
-													+ ";");
-											myOutWriter.append(c
-													.getString(TAG_SOURCE)
-													+ ";");
-											myOutWriter.append(c
-													.getString(TAG_DESTINATION)
-													+ ";");
-											myOutWriter.append(c
-													.getString(TAG_COST) + "\n");
+											myOutWriter.append(c.getString(TAG_EDGESID) + ";");
+											myOutWriter.append(c.getString(TAG_SOURCE) + ";");
+											myOutWriter.append(c.getString(TAG_DESTINATION) + ";");
+											myOutWriter.append(c.getString(TAG_COST) + "\n");
 											myOutWriter.close();
 											fOut.close();
 
 										} catch (Exception e) {
 											e.printStackTrace();
 										}
-
 									}
-
 								}
 							}
 						} catch (JSONException e) {
@@ -260,12 +273,16 @@ public class StartupContoller extends Controller {
 					} catch (Exception ex) {
 					}
 				}
-
 			}
 		}).start();
 
 	}
 
+	/**
+	 * Gets the database version.
+	 *
+	 * @return the database version
+	 */
 	public String getDatabaseVersion() {
 
 		new Thread(new Runnable() {
@@ -276,8 +293,7 @@ public class StartupContoller extends Controller {
 
 				try {
 					// JSON objekte per http-Request holen
-					JSONObject json = jParser.makeHttpRequest(url_getVersion,
-							"GET", params);
+					JSONObject json = jParser.makeHttpRequest(url_getVersion, "GET", params);
 
 					// Ausgabe der geholten Daten in der Log cat
 					Log.d("Kompletter Inhalt extern: ", json.toString());
@@ -296,8 +312,8 @@ public class StartupContoller extends Controller {
 							JSONObject c = externalData.getJSONObject(i);
 
 							version = c.getString(TAG_VERSION);
-							Log.v("VERSIONSTEST",version);
-							
+							Log.v("VERSIONSTEST", version);
+
 						}
 					}
 				} catch (JSONException e) {
@@ -306,44 +322,47 @@ public class StartupContoller extends Controller {
 			}
 
 		}).start();
-		
+
 		return version;
-		
+
 	}
 
+	/**
+	 * Check for update.
+	 *
+	 * @return the integer
+	 */
+	@SuppressWarnings("static-access")
 	public Integer checkForUpdate() {
-		
-		this.prefs = this.getContext().getSharedPreferences(
-			      "de.damianbuecker.fhkroutenplaner", this.getContext().MODE_PRIVATE);
-		
+
+		this.prefs = this.getContext().getSharedPreferences("de.damianbuecker.fhkroutenplaner",
+				this.getContext().MODE_PRIVATE);
+
 		String externalVersion = "0";
-		Integer internalVersion = 0;	
-		
+		Integer internalVersion = 0;
+
 		externalVersion = getDatabaseVersion();
 		internalVersion = prefs.getInt("databaseVersion", 0);
-		
-		Log.v("SharedPrefCHECK",internalVersion.toString());
-		
-		
-		if(externalVersion != "0" || internalVersion != 0)
-		{
-		if(Integer.parseInt(externalVersion) == internalVersion){
-			
-			//No Update available
-			return 1;
-		}else if(Integer.parseInt(externalVersion) > internalVersion){
-			//Update			
-			return 2;
-		}else{
-			//error
-			return 3;
-		}
-		}else{
-			
-			//error
-			return 3;
-		}
-	}	
 
-	
+		Log.v("SharedPrefCHECK", internalVersion.toString());
+
+		if (externalVersion != "0" || internalVersion != 0) {
+			if (Integer.parseInt(externalVersion) == internalVersion) {
+
+				// No Update available
+				return 1;
+			} else if (Integer.parseInt(externalVersion) > internalVersion) {
+				// Update
+				return 2;
+			} else {
+				// error
+				return 3;
+			}
+		} else {
+
+			// error
+			return 3;
+		}
+	}
+
 }

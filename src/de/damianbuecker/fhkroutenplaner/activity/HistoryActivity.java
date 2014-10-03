@@ -21,7 +21,7 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 
 	/** The m action mode. */
 	protected Object mActionMode;
-	
+
 	/** The selected item. */
 	public int selectedItem = -1;
 
@@ -102,7 +102,8 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 	 * Show.
 	 */
 	private void show() {
-		Toast.makeText(HistoryActivity.this, String.valueOf(selectedItem), Toast.LENGTH_LONG).show();
+		Toast.makeText(HistoryActivity.this, String.valueOf(selectedItem), Toast.LENGTH_LONG)
+				.show();
 	}
 
 	/*

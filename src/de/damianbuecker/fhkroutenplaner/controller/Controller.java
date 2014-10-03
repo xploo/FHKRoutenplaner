@@ -6,12 +6,12 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
-import de.damianbuecker.fhkroutenplaner.model.Model;
 
 /**
  * The Class Controller.
@@ -25,7 +25,7 @@ public class Controller {
 	private Context context;
 
 	/** The Constant logger. */
-	private static final Logger logger = LoggerFactory.getLogger(Model.class);
+	private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
 	/**
 	 * Instantiates a new controller.
@@ -78,6 +78,7 @@ public class Controller {
 	 *            the end time
 	 * @return the runtime
 	 */
+	@SuppressLint("SimpleDateFormat")
 	public String getRuntime(long startTime, long endTime) {
 
 		long runtime = endTime - startTime;

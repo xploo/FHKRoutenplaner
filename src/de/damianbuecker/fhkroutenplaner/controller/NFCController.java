@@ -21,24 +21,55 @@ import android.util.Log;
 import android.widget.TextView;
 import de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity;
 
+/**
+ * The Class NFCController.
+ */
 public class NFCController extends Controller {
 
+	/** The Constant MIME_TEXT_PLAIN. */
 	public static final String MIME_TEXT_PLAIN = "text/plain";
+	
+	/** The result. */
 	public static String RESULT = "result";
+	
+	/** The m text view. */
 	private TextView mTextView;
+	
+	/** The m context. */
 	private Context mContext;
+	
+	/** The prefs. */
 	private SharedPreferences prefs;
+	
+	/** The running. */
 	private Boolean running;
 
+	/**
+	 * Instantiates a new NFC controller.
+	 *
+	 * @param tv the tv
+	 */
 	public NFCController(TextView tv) {
 		this.mTextView = tv;
 		this.mContext = tv.getContext();
 	}
 
+	/**
+	 * Instantiates a new NFC controller.
+	 *
+	 * @param context the context
+	 */
 	public NFCController(Context context) {
 		super(context);
 	}
 
+	/**
+	 * Handle intent.
+	 *
+	 * @param intent the intent
+	 * @param context the context
+	 * @return the boolean
+	 */
 	public Boolean handleIntent(Intent intent, Context context) {
 		// TODO: handle Intent
 
@@ -79,10 +110,14 @@ public class NFCController extends Controller {
 		return true;
 	}
 
-	public static void setupForegroundDispatch(final Activity activity,
-			NfcAdapter adapter) {
-		final Intent intent = new Intent(activity.getApplicationContext(),
-				activity.getClass());
+	/**
+	 * Setup foreground dispatch.
+	 *
+	 * @param activity the activity
+	 * @param adapter the adapter
+	 */
+	public static void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
+		final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
 		final PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -101,44 +136,74 @@ public class NFCController extends Controller {
 			throw new RuntimeException("Check your mime type.");
 		}
 
-		adapter.enableForegroundDispatch(activity, pendingIntent, filters,
-				techList);
+		adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
 	}
 
-	public static void stopForegroundDispatch(final Activity activity,
-			NfcAdapter adapter) {
+	/**
+	 * Stop foreground dispatch.
+	 *
+	 * @param activity the activity
+	 * @param adapter the adapter
+	 */
+	public static void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
 		adapter.disableForegroundDispatch(activity);
 	}
 
+	/* (non-Javadoc)
+	 * @see de.damianbuecker.fhkroutenplaner.controller.Controller#getContext()
+	 */
 	public Context getContext() {
 		return this.mContext;
 	}
 
-//	public void setContext(Context context) {
-//		this.mContext = context;
-//	}
+	// public void setContext(Context context) {
+	// this.mContext = context;
+	// }
 
+	/**
+	 * Receive result.
+	 *
+	 * @param result the result
+	 */
 	public void receiveResult(String result) {
 	}
 
+	/**
+	 * The Class NdefReaderTask.
+	 */
 	private class NdefReaderTask extends AsyncTask<Tag, Void, String> {
 
+		/** The m context. */
 		private Context mContext;
+		
+		/** The text view reference. */
 		private final WeakReference<TextView> textViewReference;
 
+		/**
+		 * Instantiates a new ndef reader task.
+		 *
+		 * @param tv the tv
+		 */
+		@SuppressWarnings("static-access")
 		public NdefReaderTask(TextView tv) {
 
 			this.textViewReference = new WeakReference<TextView>(tv);
 			this.mContext = tv.getContext();
-			prefs = mContext.getSharedPreferences(
-					"de.damianbuecker.fhkroutenplaner", mContext.MODE_PRIVATE);
+			prefs = mContext.getSharedPreferences("de.damianbuecker.fhkroutenplaner",
+					mContext.MODE_PRIVATE);
 			running = prefs.getBoolean("RouteRunning", false);
 		}
 
+		/**
+		 * Instantiates a new ndef reader task.
+		 *
+		 * @param context the context
+		 */
+		@SuppressWarnings("static-access")
 		public NdefReaderTask(Context context) {
 			this.mContext = context;
-			prefs = mContext.getSharedPreferences(
-					"de.damianbuecker.fhkroutenplaner", mContext.MODE_PRIVATE);
+			prefs = mContext.getSharedPreferences("de.damianbuecker.fhkroutenplaner",
+					mContext.MODE_PRIVATE);
 			this.textViewReference = null;
 			if (mContext == null) {
 
@@ -156,6 +221,9 @@ public class NFCController extends Controller {
 
 		}
 
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
 		@Override
 		protected String doInBackground(Tag... params) {
 
@@ -172,8 +240,7 @@ public class NFCController extends Controller {
 			NdefRecord[] records = ndefMessage.getRecords();
 			for (NdefRecord ndefRecord : records) {
 				if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN
-						&& Arrays.equals(ndefRecord.getType(),
-								NdefRecord.RTD_TEXT)) {
+						&& Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
 					try {
 						return readText(ndefRecord);
 					} catch (UnsupportedEncodingException e) {
@@ -185,8 +252,14 @@ public class NFCController extends Controller {
 			return null;
 		}
 
-		private String readText(NdefRecord record)
-				throws UnsupportedEncodingException {
+		/**
+		 * Read text.
+		 *
+		 * @param record the record
+		 * @return the string
+		 * @throws UnsupportedEncodingException the unsupported encoding exception
+		 */
+		private String readText(NdefRecord record) throws UnsupportedEncodingException {
 			/*
 			 * See NFC forum specification for "Text Record Type Definition" at
 			 * 3.2.1
@@ -200,8 +273,7 @@ public class NFCController extends Controller {
 			byte[] payload = record.getPayload();
 
 			// Get the Text Encoding
-			String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8"
-					: "UTF-16";
+			String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
 
 			// Get the Language Code
 			int languageCodeLength = payload[0] & 0063;
@@ -211,28 +283,27 @@ public class NFCController extends Controller {
 			// e.g. "en"
 
 			// Get the Text
-			return new String(payload, languageCodeLength + 1, payload.length
-					- languageCodeLength - 1, textEncoding);
+			return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength
+					- 1, textEncoding);
 		}
 
-		@SuppressWarnings("static-access")
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(String result) {
 
 			NFCController.this.log("RouteRunningreP");
-			if (running == true) {				
+			if (running == true) {
 				NFCController.this.log("RouteRunning");
-				//Intent intent = new Intent("android.intents.NFCGO");
-				//intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				
+				// Intent intent = new Intent("android.intents.NFCGO");
+				// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-//				NFCController.this.getContext().startActivity(intent);
+				// NFCController.this.getContext().startActivity(intent);
 				Intent i = new Intent(mContext, DisplayMapsActivity.class);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				i.putExtra("Start_ID", result);
 				mContext.startActivity(i);
-				
-				
 
 			} else if (this.textViewReference != null && result != null) {
 				final TextView tv = this.textViewReference.get();

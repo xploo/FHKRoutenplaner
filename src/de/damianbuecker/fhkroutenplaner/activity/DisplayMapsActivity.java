@@ -15,23 +15,47 @@ import de.damianbuecker.fhkroutenplaner.controller.ImageController;
 import de.damianbuecker.fhkroutenplaner.controller.NFCController;
 import de.damianbuecker.fhkroutenplaner.service.NFCService;
 
+/**
+ * The Class DisplayMapsActivity.
+ */
 public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
+	/** The start id. */
 	private Integer startID;
+	
+	/** The end id. */
 	private Integer endID;
+	
+	/** The start floor. */
 	private Integer startFloor;
+	
+	/** The extras. */
 	private Bundle extras;
+	
+	/** The prefs. */
 	private SharedPreferences prefs;
+	
+	/** The end floor. */
 	private Integer endFloor;
 
+	/** The m nfc controller. */
 	private NFCController mNFCController;
-	private ImageController mImageController; 
+	
+	/** The m image controller. */
+	private ImageController mImageController;
+	
+	/** The m file controller. */
 	private FileController mFileController;
+	
+	/** The m nfc adapter. */
 	private NfcAdapter mNfcAdapter;
+	
+	/** The nfccon. */
 	private NFCController nfccon;
 
-	private NFCService serv;
-
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,20 +65,18 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
-		prefs = getSharedPreferences("de.damianbuecker.fhkroutenplaner",
-				MODE_PRIVATE);
+		prefs = getSharedPreferences("de.damianbuecker.fhkroutenplaner", MODE_PRIVATE);
 
 		// ABfrage Running??
-		
+
 		this.mNFCController = new NFCController(this);
-//		this.mNFCController.setContext(this);		
-		mNFCController.handleIntent(getIntent(),this);			
-		
-		
+		// this.mNFCController.setContext(this);
+		mNFCController.handleIntent(getIntent(), this);
+
 		extras = getIntent().getExtras();
 		if (prefs.getBoolean("RouteRunning", true)) {
 
-			this.endID = Integer.parseInt(prefs.getString("End_ID", "0"));
+			this.endID = Integer.parseInt(prefs.getString("lastDestination", "0"));
 			ImageController mImgCont = new ImageController(this);
 			this.startID = Integer.parseInt(extras.getString("Start_ID"));
 			this.startFloor = mImgCont.getEndFloor(startID);
@@ -65,12 +87,12 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				if (prefs.getBoolean("firstrun", true)) {
 					this.endID = Integer.parseInt(extras.getString("End_ID"));
 				} else {
-					this.endID = Integer.parseInt(prefs.getString(
-							"lastDestination", "0"));
+					this.endID = Integer.parseInt(prefs.getString("lastDestination", "0"));
 				}
 				this.startID = Integer.parseInt(extras.getString("Start_ID"));
-				this.startFloor = Integer.parseInt(extras
-						.getString("Start_floor"));
+				this.startFloor = Integer.parseInt(extras.getString("Start_floor"));
+
+				this.logInfo("Was steht im ENDID " + endID.toString());
 
 			}
 		}
@@ -96,8 +118,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			this.mNFCController = new NFCController(this);
 		}
 
-		if (!Environment.getExternalStorageState().equals(
-				Environment.MEDIA_MOUNTED)) {
+		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 			Log.d("TAG", "No SDCARD");
 		} else {
 
@@ -108,16 +129,14 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			// 4. Mit WebvView öffnen
 			if (startFloor == endFloor) {
 
-				mWebView.loadUrl("file:///"
-						+ Environment.getExternalStorageDirectory()
+				mWebView.loadUrl("file:///" + Environment.getExternalStorageDirectory()
 						+ "/FMS/TestIMG-" + endFloor + ".png");
 
 			} else {
 
 				// Stelle HTML-Seite dar, die zwei Bilder Lädt
 
-				File file = this.mFileController.createHTMLFile(startFloor,
-						endFloor);
+				File file = this.mFileController.createHTMLFile(startFloor, endFloor);
 
 				mWebView.loadUrl("file://" + file.getAbsolutePath());
 
@@ -128,9 +147,12 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			}
 
 		}
-
+		prefs.edit().putBoolean("RouteRunning", true).commit();
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -144,15 +166,21 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		// }
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onNewIntent(android.content.Intent)
+	 */
 	protected void onNewIntent(Intent intent) {
 
 		nfccon = new NFCController(this);
-		nfccon.handleIntent(intent,this);
+		nfccon.handleIntent(intent, this);
 		// serv = new NFCService(this);
 		// serv.HandleIntent(intent);
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onResume()
+	 */
 	@SuppressWarnings("static-access")
 	@Override
 	protected void onResume() {
@@ -170,6 +198,9 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		// serv.setupForegroundDispatch(this, mNfcAdapter);
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onPause()
+	 */
 	@SuppressWarnings("static-access")
 	@Override
 	protected void onPause() {

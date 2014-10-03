@@ -25,45 +25,62 @@ import de.damianbuecker.fhkroutenplaner.controller.NFCController;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 
+/**
+ * The Class NavigationActivity.
+ */
 public class NavigationActivity extends ModifiedViewActivityImpl implements OnItemSelectedListener {
 
-	private Spinner SpinnerRoomtype, SpinnerRoom;
+	/** The room spinner data. */
+	@SuppressWarnings("rawtypes")
 	private List roomtypeSpinnerData, roomSpinnerData;
+
+	/** The Spinner room. */
+	private Spinner SpinnerRoomtype, SpinnerRoom;
+
+	/** The database helper. */
 	private DatabaseHelper databaseHelper;
+
+	/** The m text view. */
 	private TextView mTextView;
+
+	/** The m text view description. */
 	private TextView mTextViewFloor, mTextViewDescription;
 
+	/** The m nfc adapter. */
 	private NfcAdapter mNfcAdapter;
-	private static final String MIME_TEXT_PLAIN = "text/plain";
-	private static final String TAG = "NfcDemo";
-	private Integer RESULT = 0;
-	private Integer buf = 0;
+
+	/** The tag list. */
 	private List<Tag> tagList = null;
+
+	/** The prefs. */
 	private SharedPreferences prefs;
 
-	private NFCController nfccon;	
+	/** The nfccon. */
+	private NFCController nfccon;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.nfcconnector_activity);		
+		setContentView(R.layout.nfcconnector_activity);
 		mTextView = (TextView) findViewById(R.id.txtV_nfc_hidden);
-		
-		prefs = getSharedPreferences("de.damianbuecker.fhkroutenplaner",
-				MODE_PRIVATE);
-		
+
+		prefs = getSharedPreferences("de.damianbuecker.fhkroutenplaner", MODE_PRIVATE);
+
 		this.mTextView.setText("");
 		this.mTextView.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			}
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 			}
 
 			@Override
@@ -72,7 +89,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 					if (s.length() > 0) {
 						// Start
 						NavigationActivity.this.start(s.toString());
-						
 
 					}
 				} catch (SQLException e) {
@@ -82,48 +98,56 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		});
 
 		if (this.databaseHelper == null) {
-			this.databaseHelper = OpenHelperManager.getHelper(this,
-					DatabaseHelper.class);
+			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 
 			mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 			if (mNfcAdapter == null) {
 				// Stop here, we definitely need NFC
-				Toast.makeText(this, "This device doesn't support NFC.",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
 				finish();
 				return;
 			}
 			if (!mNfcAdapter.isEnabled()) {
-				Toast.makeText(this, "NFC is disabled.", Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(this, "NFC is disabled.", Toast.LENGTH_LONG).show();
 			} else {
-				Toast.makeText(this, "R.string.explanation", Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(this, "R.string.explanation", Toast.LENGTH_LONG).show();
 			}
 			nfccon = new NFCController(this.mTextView);
-			
-			nfccon.handleIntent(getIntent(),this);
+
+			nfccon.handleIntent(getIntent(), this);
 
 		}
 
 		addRoomtypeSpinner();
 	}
 
+	/**
+	 * Start.
+	 * 
+	 * @param s
+	 *            the s
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	private void start(String s) throws SQLException {
 		this.mTextViewFloor = (TextView) findViewById(R.id.txtV_nfc_floor_out);
 		this.mTextViewDescription = (TextView) findViewById(R.id.txtV_nfc_description_out);
-		
-		Log.v("was steht im tag",s);
+
+		Log.v("was steht im tag", s);
 
 		this.tagList = this.databaseHelper.getTagById(s);
-		
-		if((tagList.get(0) != null) && ((tagList.get(0).getFloor() != null))) {
-			Log.v("List_Floor",tagList.get(0).getFloor().toString());
+
+		if ((tagList.get(0) != null) && ((tagList.get(0).getFloor() != null))) {
+			Log.v("List_Floor", tagList.get(0).getFloor().toString());
 			this.mTextViewFloor.setText(tagList.get(0).getFloor().toString());
 			this.mTextViewDescription.setText(tagList.get(0).getDescription());
 		}
 	}
 
+	/**
+	 * Adds the roomtype spinner.
+	 */
+	@SuppressWarnings("unchecked")
 	private void addRoomtypeSpinner() {
 
 		this.SpinnerRoomtype = (Spinner) findViewById(R.id.nfc_spinner_roomtype);
@@ -132,17 +156,14 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 				this.roomtypeSpinnerData = new ArrayList<Integer>();
 				for (int i = 0; i < databaseHelper.getRoomtypeSpinner().size(); i++) {
 
-					roomtypeSpinnerData.add(databaseHelper.getRoomtypeSpinner()
-							.get(i));
+					roomtypeSpinnerData.add(databaseHelper.getRoomtypeSpinner().get(i));
 					Log.v("SpinnerData1Testausgabe", String.valueOf(i));
 				}
 			}
 
-			ArrayAdapter<String> RoomtypeAdapter = new ArrayAdapter<String>(
-					this, android.R.layout.simple_spinner_item,
-					roomtypeSpinnerData);
-			RoomtypeAdapter
-					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			ArrayAdapter<String> RoomtypeAdapter = new ArrayAdapter<String>(this,
+					android.R.layout.simple_spinner_item, roomtypeSpinnerData);
+			RoomtypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			SpinnerRoomtype.setAdapter(RoomtypeAdapter);
 			SpinnerRoomtype.setOnItemSelectedListener(this);
 
@@ -154,6 +175,13 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		}
 	}
 
+	/**
+	 * Adds the room spinner.
+	 * 
+	 * @param roomtypeID
+	 *            the roomtype id
+	 */
+	@SuppressWarnings("unchecked")
 	public void addRoomSpinner(Integer roomtypeID) {
 
 		this.SpinnerRoom = (Spinner) findViewById(R.id.nfc_spinner_room);
@@ -164,15 +192,13 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 			for (int i = 0; i < buffer; i++) {
 				Log.v("RoomSpinnerTest3", "testest");
-				roomSpinnerData.add(databaseHelper.getRoomSpinner(roomtypeID)
-						.get(i));
+				roomSpinnerData.add(databaseHelper.getRoomSpinner(roomtypeID).get(i));
 				Log.v("SpinnerData2Testausgabe", String.valueOf(i));
 			}
 
 			ArrayAdapter<String> RoomAdapter = new ArrayAdapter<String>(this,
 					android.R.layout.simple_spinner_item, roomSpinnerData);
-			RoomAdapter
-					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			RoomAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			SpinnerRoom.setAdapter(RoomAdapter);
 			SpinnerRoom.setOnItemSelectedListener(this);
 			roomSpinnerData = null;
@@ -183,16 +209,25 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		}
 	}
 
-	public void onItemSelected(AdapterView<?> parent, View view, int position,
-			long id) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.widget.AdapterView.OnItemSelectedListener#onItemSelected(android
+	 * .widget.AdapterView, android.view.View, int, long)
+	 */
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
 		Spinner spinner = (Spinner) parent;
 		if (spinner.getId() == R.id.nfc_spinner_roomtype) {
 			// do this
 			SpinnerRoomtype.setSelection(position);
 			String selState = (String) SpinnerRoomtype.getSelectedItem();
+
+			String[] splitResult = selState.split(" ");
+
 			Log.v("ITEMSELECTED", selState);
-			addRoomSpinner(Integer.parseInt(selState));
+			addRoomSpinner(Integer.parseInt(splitResult[0]));
 
 		} else if (spinner.getId() == R.id.nfc_spinner_room) {
 			// do this
@@ -200,12 +235,24 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.widget.AdapterView.OnItemSelectedListener#onNothingSelected(android
+	 * .widget.AdapterView)
+	 */
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onDestroy()
+	 */
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -219,6 +266,12 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onResume()
+	 */
+	@SuppressWarnings("static-access")
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -230,6 +283,12 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		nfccon.setupForegroundDispatch(this, mNfcAdapter);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onPause()
+	 */
+	@SuppressWarnings("static-access")
 	@Override
 	protected void onPause() {
 		/**
@@ -242,6 +301,11 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		super.onPause();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onNewIntent(android.content.Intent)
+	 */
 	@Override
 	protected void onNewIntent(Intent intent) {
 		/**
@@ -254,24 +318,35 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		 * the device.
 		 */
 		nfccon = new NFCController(this.mTextView);
-		nfccon.handleIntent(intent,this);
+		nfccon.handleIntent(intent, this);
 	}
 
+	/**
+	 * On click_ go.
+	 * 
+	 * @param v
+	 *            the v
+	 */
 	public void onClick_GO(View v) {
 		this.SpinnerRoom = (Spinner) findViewById(R.id.nfc_spinner_room);
-		
+
 		// SpinnerData in SharedPref schreiben.
 
 		Intent intent = new Intent("android.intents.NFCGO");
-		
+		String selectedItem = String.valueOf(this.SpinnerRoom.getSelectedItem());
+		String[] splitResult = selectedItem.split(" ");
+
 		if (prefs.getBoolean("firstrun", true)) {
-		intent.putExtra("End_ID",String.valueOf(this.SpinnerRoom.getSelectedItem()));
+			intent.putExtra("End_ID", splitResult[0]);
 		}
-		
-		intent.putExtra("Start_ID",String.valueOf(this.mTextView.getText().toString()));
+
+		Log.v("ROOMSPINNER AUSGABE", String.valueOf(this.SpinnerRoom.getSelectedItem()));
+		Log.v("ROOMSPINNER NACH SPLIT", splitResult[0]);
+
+		intent.putExtra("Start_ID", String.valueOf(this.mTextView.getText().toString()));
 		intent.putExtra("Start_floor", String.valueOf(this.mTextViewFloor.getText().toString()));
-		prefs.edit().putBoolean("RouteRunning",true).commit();
-		prefs.edit().putString("lastDestination",String.valueOf(this.SpinnerRoom.getSelectedItem())).commit();
+
+		prefs.edit().putString("lastDestination", splitResult[0]).commit();
 		startActivity(intent);
 	}
 }
