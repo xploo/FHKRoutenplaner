@@ -191,8 +191,11 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			// do this
 			SpinnerRoomtype.setSelection(position);
 			String selState = (String) SpinnerRoomtype.getSelectedItem();
+			
+			String[] splitResult = selState.split(" ");
+			
 			Log.v("ITEMSELECTED", selState);
-			addRoomSpinner(Integer.parseInt(selState));
+			addRoomSpinner(Integer.parseInt(splitResult[0]));
 
 		} else if (spinner.getId() == R.id.nfc_spinner_room) {
 			// do this
@@ -263,15 +266,21 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		// SpinnerData in SharedPref schreiben.
 
 		Intent intent = new Intent("android.intents.NFCGO");
+		String selectedItem = String.valueOf(this.SpinnerRoom.getSelectedItem());
+		String[] splitResult = selectedItem.split(" ");
 		
 		if (prefs.getBoolean("firstrun", true)) {
-		intent.putExtra("End_ID",String.valueOf(this.SpinnerRoom.getSelectedItem()));
+		intent.putExtra("End_ID",splitResult[0]);
 		}
+		
+		Log.v("ROOMSPINNER AUSGABE",String.valueOf(this.SpinnerRoom.getSelectedItem()));
+		Log.v("ROOMSPINNER NACH SPLIT",splitResult[0]);
+		
 		
 		intent.putExtra("Start_ID",String.valueOf(this.mTextView.getText().toString()));
 		intent.putExtra("Start_floor", String.valueOf(this.mTextViewFloor.getText().toString()));
-		prefs.edit().putBoolean("RouteRunning",true).commit();
-		prefs.edit().putString("lastDestination",String.valueOf(this.SpinnerRoom.getSelectedItem())).commit();
+		
+		prefs.edit().putString("lastDestination",splitResult[0]).commit();
 		startActivity(intent);
 	}
 }

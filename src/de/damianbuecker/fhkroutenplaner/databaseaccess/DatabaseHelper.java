@@ -145,7 +145,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			this.roomtypeSpinner = getRoomtypeDataDao();
 
 			for (Roomtype v : roomtypeSpinner) {
-				spinnerRoomtypeList.add(String.valueOf(v.getRoomtype_id()));
+				spinnerRoomtypeList.add(String.valueOf(v.getRoomtype_id())+"  " +String.valueOf(v.getDescription()));
 			}
 
 		}
@@ -166,7 +166,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		List<Room> RoomList = roomSpinner.query(preparedQuery);
 		for (Room v : RoomList) {
 
-			spinnerRoomList.add(String.valueOf(v.getRoom_id()));
+			spinnerRoomList.add(String.valueOf(v.getRoom_id())+" "+ String.valueOf(v.getDescription()));
 			Log.v("LOL", String.valueOf(v.getRoom_id()));
 		}
 		RoomList = null;
