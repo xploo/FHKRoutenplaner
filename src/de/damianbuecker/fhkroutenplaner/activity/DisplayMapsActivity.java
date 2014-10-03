@@ -54,7 +54,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		extras = getIntent().getExtras();
 		if (prefs.getBoolean("RouteRunning", true)) {
 
-			this.endID = Integer.parseInt(prefs.getString("End_ID", "0"));
+			this.endID = Integer.parseInt(prefs.getString("lastDestination", "0"));
 			ImageController mImgCont = new ImageController(this);
 			this.startID = Integer.parseInt(extras.getString("Start_ID"));
 			this.startFloor = mImgCont.getEndFloor(startID);
@@ -71,6 +71,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				this.startID = Integer.parseInt(extras.getString("Start_ID"));
 				this.startFloor = Integer.parseInt(extras
 						.getString("Start_floor"));
+				
+				this.logInfo("Was steht im ENDID "+endID.toString());
 
 			}
 		}
@@ -128,7 +130,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			}
 
 		}
-
+		prefs.edit().putBoolean("RouteRunning",true).commit();
 	}
 
 	@Override
