@@ -40,8 +40,13 @@ public class FileController extends Controller{
 		    while ((line = br.readLine()) != null) {
 		        if(line.contains("###Marker1")) {
 		        	line = line.replace("###Marker1", "file:///"+ Environment.getExternalStorageDirectory()	+ "/FMS/TestIMG-"+startFloor+".png");
-		        } else if(line.contains("###Marker2")) {
+		        }else if(line.contains("###Etage1marker")){
+		        	line = line.replace("###Etage1marker", "Etage "+startFloor+"" );
+		        	
+		        }else if(line.contains("###Marker2")) {
 		        	line = line.replace("###Marker2", "file:///"+ Environment.getExternalStorageDirectory()	+ "/FMS/TestIMG-"+endFloor+".png");
+		        }else if(line.contains("###Etage2marker")){
+		        	line = line.replace("###Etage2marker", "Etage "+endFloor+"");
 		        }
 		    	buf.append(line);
 		        buf.append('\n');
