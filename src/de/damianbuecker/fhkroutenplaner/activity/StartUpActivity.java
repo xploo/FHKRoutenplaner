@@ -86,6 +86,9 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 
 	public void onClick_history(View v) {
 
+		/*
+		 * Aus DB holen		
+		 */
 		ArrayList<String> test = new ArrayList<String>();
 		test.add("BoobA");
 		test.add("BoobB");
