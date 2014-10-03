@@ -46,8 +46,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		// ABfrage Running??
 		
-		this.mNFCController = new NFCController();
-		this.mNFCController.setContext(this);		
+		this.mNFCController = new NFCController(this);
+//		this.mNFCController.setContext(this);		
 		mNFCController.handleIntent(getIntent(),this);			
 		
 		
@@ -93,7 +93,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		}
 		if (this.mNFCController == null) {
 
-			this.mNFCController = new NFCController();
+			this.mNFCController = new NFCController(this);
 		}
 
 		if (!Environment.getExternalStorageState().equals(
@@ -146,7 +146,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 	protected void onNewIntent(Intent intent) {
 
-		nfccon = new NFCController();
+		nfccon = new NFCController(this);
 		nfccon.handleIntent(intent,this);
 		// serv = new NFCService(this);
 		// serv.HandleIntent(intent);
@@ -164,7 +164,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		// Setzten von Running auf false
 
-		nfccon = new NFCController();
+		nfccon = new NFCController(this);
 		nfccon.setupForegroundDispatch(this, mNfcAdapter);
 		// serv = new NFCService(this);
 		// serv.setupForegroundDispatch(this, mNfcAdapter);
@@ -178,7 +178,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		 * thrown as well.
 		 */
 
-		nfccon = new NFCController();
+		nfccon = new NFCController(this);
 		nfccon.stopForegroundDispatch(this, mNfcAdapter);
 		// serv = new NFCService(this);
 		// serv.stopForegroundDispatch(this, mNfcAdapter);

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,34 +16,67 @@ import com.j256.ormlite.dao.Dao;
 
 import de.damianbuecker.fhkroutenplaner.controller.Controller;
 
+/**
+ * The Class CSVReader.
+ */
 public class CSVReader extends Controller {
 
-	// CsvReader obj = new CsvReader();
+	/** The Constant tables. */
 	private static final String[] tables = { "edge.csv", "tag.csv", "room.csv",
 			"dozent.csv", "raumart.csv" };
+	
+	/** The m asset manager. */
 	private AssetManager mAssetManager;
+	
+	/** The Constant CSVSPLITBY. */
 	private static final String CSVSPLITBY = ",";
+	
+	/** The edges dao. */
 	private Dao<Edges, Integer> edgesDao;
+	
+	/** The tag dao. */
 	private Dao<Tag, Integer> tagDao;
+	
+	/** The docent dao. */
 	private Dao<Docent, Integer> docentDao;
+	
+	/** The room dao. */
 	private Dao<Room, Integer> roomDao;
+	
+	/** The roomtype dao. */
 	private Dao<Roomtype, Integer> roomtypeDao;
+	
+	/** The prefs. */
 	private SharedPreferences prefs;
+	
+	/** The end time. */
 	private long startTime, endTime;
 
-	public void readCSV(DatabaseHelper databaseHelper, Context context) {
-		
+	/**
+	 * Instantiates a new CSV reader.
+	 *
+	 * @param context the context
+	 */
+	public CSVReader(Context context) {
+		super(context);
+	}
+	
+	/**
+	 * Read csv.
+	 *
+	 * @param databaseHelper the database helper
+	 */
+	public void readCSV(DatabaseHelper databaseHelper) {
 		
 		this.startTime = this.getTime();
 		for (String tableName : tables) {
 			BufferedReader br = null;
 			String line = "";
-			
 
 			try {
 
 				if (this.mAssetManager == null) {
-					mAssetManager = context.getAssets();
+					mAssetManager = this.getContext().getAssets();
 				}
 				InputStream ims = mAssetManager.open(tableName);
 

@@ -71,8 +71,8 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		}
 		// if(!FirstStart)
 		if (prefs.getBoolean("firstrun", true)) {
-			this.obj = new CSVReader();
-			this.obj.readCSV(databaseHelper, this);
+			this.obj = new CSVReader(this);
+			this.obj.readCSV(databaseHelper);
 
 			prefs.edit().putInt("databaseVersion", 1).commit();
 		}

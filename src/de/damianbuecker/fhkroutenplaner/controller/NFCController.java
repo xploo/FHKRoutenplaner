@@ -4,24 +4,22 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
-import de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity;
-
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.IntentFilter.MalformedMimeTypeException;
+import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.TextView;
+import de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity;
 
 public class NFCController extends Controller {
 
@@ -39,9 +37,6 @@ public class NFCController extends Controller {
 
 	public NFCController(Context context) {
 		super(context);
-	}
-
-	public NFCController() {
 	}
 
 	public Boolean handleIntent(Intent intent, Context context) {
@@ -119,9 +114,9 @@ public class NFCController extends Controller {
 		return this.mContext;
 	}
 
-	public void setContext(Context context) {
-		this.mContext = context;
-	}
+//	public void setContext(Context context) {
+//		this.mContext = context;
+//	}
 
 	public void receiveResult(String result) {
 	}

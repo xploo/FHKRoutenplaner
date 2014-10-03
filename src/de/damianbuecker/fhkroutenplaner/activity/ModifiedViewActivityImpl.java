@@ -9,12 +9,18 @@ public class ModifiedViewActivityImpl extends Activity implements ModifiedViewIn
 	
 	private static final Logger logger = LoggerFactory.getLogger(ModifiedViewActivityImpl.class);
 	
-	/**
-	 * Log.
-	 *
-	 * @param message the message
-	 */
-	public void log(String message) {
-		logger.info(message);
+	@Override
+	public void logWarning(String message) {
+		logger.warn("WARNING", message);
+	}
+
+	@Override
+	public void logError(String message) {
+		logger.error("ERROR", message);
+	}
+
+	@Override
+	public void logInfo(String message) {
+		logger.info("INFO", message);
 	}
 }
