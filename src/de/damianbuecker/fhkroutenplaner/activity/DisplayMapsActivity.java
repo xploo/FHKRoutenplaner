@@ -13,7 +13,6 @@ import android.webkit.WebView;
 import de.damianbuecker.fhkroutenplaner.controller.FileController;
 import de.damianbuecker.fhkroutenplaner.controller.ImageController;
 import de.damianbuecker.fhkroutenplaner.controller.NFCController;
-import de.damianbuecker.fhkroutenplaner.service.NFCService;
 
 /**
  * The Class DisplayMapsActivity.

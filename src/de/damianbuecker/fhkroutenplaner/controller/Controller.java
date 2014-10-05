@@ -12,6 +12,7 @@ import android.content.Context;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
+import de.damianbuecker.fhkroutenplaner.service.Service;
 
 /**
  * The Class Controller.
@@ -98,12 +99,29 @@ public class Controller {
 	}
 
 	/**
-	 * Log.
-	 * 
-	 * @param message
-	 *            the message
+	 * Log warning.
+	 *
+	 * @param message the message
 	 */
-	public void log(String message) {
-		logger.info(message);
+	public void logWarning(String message) {
+		logger.warn("WARNING", "@" + Controller.class.getSimpleName() + " " + message);
+	}
+
+	/**
+	 * Log error.
+	 *
+	 * @param message the message
+	 */
+	public void logError(String message) {
+		logger.error("ERROR", "@" + Controller.class.getSimpleName() + " " + message);
+	}
+
+	/**
+	 * Log info.
+	 *
+	 * @param message the message
+	 */
+	public void logInfo(String message) {
+		logger.info("INFO", "@" + Controller.class.getSimpleName() + " " + message);
 	}
 }

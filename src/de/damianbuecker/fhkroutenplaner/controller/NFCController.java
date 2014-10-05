@@ -207,16 +207,16 @@ public class NFCController extends Controller {
 			this.textViewReference = null;
 			if (mContext == null) {
 
-				NFCController.this.log("Constructor Context - null");
+				NFCController.this.logError("Constructor Context - null");
 			} else
-				NFCController.this.log("Constructor Context nicht null");
+				NFCController.this.logInfo("Constructor Context nicht null");
 
 			running = prefs.getBoolean("RouteRunning", false);
 
 			if (running == true) {
-				NFCController.this.log("Constructor - yes");
+				NFCController.this.logInfo("Constructor - yes");
 			} else {
-				NFCController.this.log("Constructor - no");
+				NFCController.this.logInfo("Constructor - no");
 			}
 
 		}
@@ -293,9 +293,9 @@ public class NFCController extends Controller {
 		@Override
 		protected void onPostExecute(String result) {
 
-			NFCController.this.log("RouteRunningreP");
+			NFCController.this.logInfo("RouteRunningreP");
 			if (running == true) {
-				NFCController.this.log("RouteRunning");
+				NFCController.this.logInfo("RouteRunning");
 				// Intent intent = new Intent("android.intents.NFCGO");
 				// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -314,7 +314,7 @@ public class NFCController extends Controller {
 				}
 
 			}
-			NFCController.this.log(result);
+			NFCController.this.logInfo(result);
 		}
 
 	}

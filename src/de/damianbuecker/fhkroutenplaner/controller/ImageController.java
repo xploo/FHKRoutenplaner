@@ -152,8 +152,8 @@ public class ImageController extends Controller {
 			options.inJustDecodeBounds = true;
 			Bitmap b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId,
 					options);
-			this.log("Width Options: " + options.outWidth);
-			this.log("Height Options: " + options.outHeight);
+			this.logInfo("Width Options: " + options.outWidth);
+			this.logInfo("Height Options: " + options.outHeight);
 			Bitmap.Config config = Config.ARGB_8888;
 			options.inScaled = false;
 			options.inJustDecodeBounds = false;
@@ -161,8 +161,8 @@ public class ImageController extends Controller {
 			b = BitmapFactory
 					.decodeResource(this.getContext().getResources(), ressourceId, options);
 			bitmapOut.setDensity(b.getDensity());
-			this.log("Width Bitmap: " + b.getWidth());
-			this.log("Height Bitmap: " + b.getHeight());
+			this.logInfo("Width Bitmap: " + b.getWidth());
+			this.logInfo("Height Bitmap: " + b.getHeight());
 			for (int x = 0; x < options.outWidth; x++) {
 				for (int y = 0; y < options.outHeight; y++) {
 					int pixel = b.getPixel(x, y);

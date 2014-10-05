@@ -199,7 +199,7 @@ public class CsvController extends Controller {
 		}
 
 		this.endTime = this.getTime();
-		this.log(this.getRuntime(startTime, endTime));
+		this.logInfo(this.getRuntime(startTime, endTime));
 
 	}
 
