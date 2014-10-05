@@ -9,7 +9,6 @@ import java.sql.SQLException;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
 
@@ -34,7 +33,22 @@ public class CsvController extends Controller {
 
 	/** The Constant CSVSPLITBY. */
 	private static final String CSVSPLITBY = ",";
+	
+	/** The Constant EDGE_CSV. */
+	private static final String EDGE_CSV = "edge.csv";
 
+	/** The Constant TAG_CSV. */
+	private static final String TAG_CSV = "tag.csv";
+	
+	/** The Constant ROOM_CSV. */
+	private static final String ROOM_CSV = "room.csv";
+	
+	/** The Constant DOZENT_CSV. */
+	private static final String DOZENT_CSV = "dozent.csv";
+	
+	/** The Constant RAUMART_CSV. */
+	private static final String RAUMART_CSV = "raumart.csv";
+	
 	/** The edges dao. */
 	private Dao<Edges, Integer> edgesDao;
 
@@ -91,13 +105,12 @@ public class CsvController extends Controller {
 					String[] row = line.split(CSVSPLITBY);
 
 					for (String s : row) {
-						Log.d("INFO", "Element: " + s + " ");
+						this.logInfo("Row elements: " + s + " \n");
 					}
 
-					if (tableName.equals("edge.csv")) {
+					if (tableName.equals(EDGE_CSV)) {
 						if (this.edgesDao == null) {
 							this.edgesDao = databaseHelper.getEdgesDataDao();
-
 						}
 
 						if (row.length != 0) {
@@ -109,7 +122,7 @@ public class CsvController extends Controller {
 
 							this.edgesDao.create(v);
 						}
-					} else if (tableName.equals("tag.csv")) {
+					} else if (tableName.equals(TAG_CSV)) {
 
 						if (this.tagDao == null) {
 							this.tagDao = databaseHelper.getTagDataDao();
@@ -130,7 +143,7 @@ public class CsvController extends Controller {
 
 							this.tagDao.create(v);
 						}
-					} else if (tableName.equals("room.csv")) {
+					} else if (tableName.equals(ROOM_CSV)) {
 
 						if (this.roomDao == null) {
 							this.roomDao = databaseHelper.getRoomDataDao();
@@ -151,7 +164,7 @@ public class CsvController extends Controller {
 							this.roomDao.create(v);
 						}
 
-					} else if (tableName.equals("dozent.csv")) {
+					} else if (tableName.equals(DOZENT_CSV)) {
 
 						if (this.docentDao == null) {
 							this.docentDao = databaseHelper.getDocentDataDao();
@@ -166,7 +179,7 @@ public class CsvController extends Controller {
 							this.docentDao.create(v);
 						}
 
-					} else if (tableName.equals("raumart.csv")) {
+					} else if (tableName.equals(RAUMART_CSV)) {
 
 						if (this.roomtypeDao == null) {
 							this.roomtypeDao = databaseHelper.getRoomtypeDataDao();
@@ -185,7 +198,6 @@ public class CsvController extends Controller {
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -204,7 +216,5 @@ public class CsvController extends Controller {
 
 		this.endTime = this.getTime();
 		this.logInfo(this.getRuntime(startTime, endTime));
-
 	}
-
 }
