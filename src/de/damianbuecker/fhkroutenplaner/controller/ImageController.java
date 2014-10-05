@@ -291,11 +291,11 @@ public class ImageController extends Controller {
 		} else if (etage == 5) {
 			return R.drawable.cn_tower_grundriss5;
 		} else if (etage == 6) {
-			return R.drawable.cn_tower_grundriss6;
+			return R.drawable.ebene6klein;
 		} else if (etage == 7) {
-			return R.drawable.cn_tower_grundriss7;
+			return R.drawable.ebene7klein;
 		} else if (etage == 8) {
-			return R.drawable.cn_tower_grundriss8;
+			return R.drawable.ebene8klein;
 		}
 
 		return null;
