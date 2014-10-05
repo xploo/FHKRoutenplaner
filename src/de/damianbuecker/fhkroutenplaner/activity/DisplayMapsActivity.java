@@ -90,9 +90,11 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 					this.endID = Integer.parseInt(prefs.getString("lastDestination", "0"));
 				}
 				this.startID = Integer.parseInt(extras.getString("Start_ID"));
-				this.startFloor = Integer.parseInt(extras.getString("Start_floor"));
 
-				this.logInfo("Was steht im ENDID " + endID.toString());
+				this.startFloor = Integer.parseInt(extras
+						.getString("Start_floor"));
+				
+				this.logInfo("Was steht im ENDID "+endID.toString());
 
 			}
 		}
