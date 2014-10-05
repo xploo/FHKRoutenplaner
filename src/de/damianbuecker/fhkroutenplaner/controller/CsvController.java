@@ -118,7 +118,11 @@ public class CsvController extends Controller {
 						if (row.length != 0) {
 							Tag v = new Tag();
 							v.setTag_id(Integer.parseInt(row[0]));
-							v.setRoom_ID(Integer.parseInt(row[1]));
+							if (row[1].equals("")) {
+								v.setRoom_ID(null);
+							} else {
+								v.setRoom_ID(Integer.parseInt(row[1]));
+							}
 							v.setX_pos(Double.parseDouble(row[2]));
 							v.setY_pos(Double.parseDouble(row[3]));
 							v.setDescription(row[4]);

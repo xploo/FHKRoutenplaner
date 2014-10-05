@@ -33,7 +33,7 @@ public class Tag {
 
 	/** The room_ id. */
 	@DatabaseField(canBeNull = true, useGetSet = true, columnName = ROOM_ID)
-	private int room_ID;
+	private Integer room_ID;
 
 	/** The x_pos. */
 	@DatabaseField(useGetSet = true, canBeNull = false, columnName = X_POS)
@@ -82,7 +82,7 @@ public class Tag {
 	 * 
 	 * @return the room_ id
 	 */
-	public int getRoom_ID() {
+	public Integer getRoom_ID() {
 		return room_ID;
 	}
 
@@ -92,7 +92,7 @@ public class Tag {
 	 * @param room_ID
 	 *            the new room_ id
 	 */
-	public void setRoom_ID(int room_ID) {
+	public void setRoom_ID(Integer room_ID) {
 		this.room_ID = room_ID;
 	}
 
