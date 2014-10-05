@@ -36,6 +36,17 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.startup_activity);
 
+		HistoryItem h1 = new HistoryItem();
+		h1.setName("H1");h1.setDate(System.currentTimeMillis());h1.setDestination("H1");h1.setStart("H1");h1.setTimestamp(System.currentTimeMillis());
+		HistoryItem h2 = new HistoryItem();
+		h2.setName("H2");h2.setDate(System.currentTimeMillis());h2.setDestination("H2");h2.setStart("H2");h2.setTimestamp(System.currentTimeMillis());
+		HistoryItem h3 = new HistoryItem();
+		h3.setName("H3");h3.setDate(System.currentTimeMillis());h3.setDestination("H3");h3.setStart("H3");h3.setTimestamp(System.currentTimeMillis());
+		
+		h1.create(this);
+		h2.create(this);
+		h3.create(this);
+		
 		if(this.mSharedPreferencesController == null) {
 			this.mSharedPreferencesController = new SharedPreferencesController(this);
 		}
@@ -65,6 +76,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}
 
+		this.mSharedPreferencesController.putInSharedPreference("firstrun", true);
 		if(this.mSharedPreferencesController.getBoolean("firstrun")) {
 			this.mCsvController = new CsvController(this);
 			this.mCsvController.readCSV(databaseHelper);
@@ -96,15 +108,15 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		/*
 		 * Aus DB holen
 		 */
-		if(this.databaseHelper == null) {
-			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
-		}
-		ArrayList<HistoryItem> listHistoryItems = new ArrayList<HistoryItem>();
-		listHistoryItems = (ArrayList<HistoryItem>)this.databaseHelper.getHistoryItems();
-		
-		Intent intent = new Intent("android.intents.History");
-		intent.putExtra("history", listHistoryItems);
-		startActivity(intent);
+//		if(this.databaseHelper == null) {
+//			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+//		}
+//		ArrayList<HistoryItem> listHistoryItems = new ArrayList<HistoryItem>();
+//		listHistoryItems = (ArrayList<HistoryItem>)this.databaseHelper.getHistoryItems();
+//		
+//		Intent intent = new Intent("android.intents.History");
+//		intent.putExtra("history", listHistoryItems);
+//		startActivity(intent);
 	}
 
 	/*
