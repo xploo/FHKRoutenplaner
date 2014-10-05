@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SharedPreferencesController.
  */
@@ -84,11 +83,11 @@ public class SharedPreferencesController extends Controller {
 	 *            the key
 	 * @return the boolean
 	 */
-	public Boolean getBoolean(String key) {
+	public boolean getBoolean(String key) {
 		if (this.mSharedPreferences != null && this.hasSharedPreference(key)) {
 			return this.mSharedPreferences.getBoolean(key, false);
 		} else {
-			return null;
+			return false;
 		}
 	}
 

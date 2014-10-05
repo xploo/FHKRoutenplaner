@@ -28,7 +28,7 @@ public class HistoryItem extends Model {
 	public static final String NAME = "name";
 
 	/** The id. */
-	@DatabaseField(canBeNull = false, useGetSet = true, generatedId = true, columnName = ID)
+	@DatabaseField(canBeNull = false, generatedId = true, columnName = ID)
 	private int id;
 
 	/** The destination. */
@@ -67,13 +67,12 @@ public class HistoryItem extends Model {
 	}
 
 	/**
-	 * Sets the id.
+	 * Sets the id. Not needed.
 	 * 
 	 * @param id
 	 *            the new id
 	 */
 	public void setId(int id) {
-		this.id = id;
 	}
 
 	/**
@@ -170,5 +169,4 @@ public class HistoryItem extends Model {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 }

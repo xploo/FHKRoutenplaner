@@ -121,4 +121,5 @@ public class Edge extends Model {
 	public String toString() {
 		return source + " " + destination;
 	}
+
 }

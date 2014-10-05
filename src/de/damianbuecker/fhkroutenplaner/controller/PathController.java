@@ -72,8 +72,7 @@ public class PathController extends Controller {
 				Vertex location = new Vertex(String.valueOf(t.getTag_id()), t.getDescription(),
 						t.getFloor());
 
-				this.nodes.add(location);
-				// Log.v("Valueof", String.valueOf(t.getTag_id()));
+				this.nodes.add(location);				
 
 			}
 
@@ -91,6 +90,7 @@ public class PathController extends Controller {
 				sb.append(s.getKante_id());
 				addLane(sb.toString(), s.getSource(), s.getDestination(), s.getCost());
 				this.logInfo("Edge Start: " + sb.toString() + " " + s.getSource() + " " + s.getDestination() + " " + s.getCost());
+				
 			}
 
 			this.edgesRemaining = this.getDatabaseHelper(this.getContext()).getRemainingEdges(
@@ -100,6 +100,7 @@ public class PathController extends Controller {
 				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(),
 						v.getCost());
 				this.logInfo("Edge Remaining: " + v.getKante_id() + " " + v.getSource() + " " + v.getDestination() + " " + v.getCost());
+				
 			}
 
 			this.edgesEnd = this.getDatabaseHelper(this.getContext()).getEdgesByDestination(
@@ -108,6 +109,7 @@ public class PathController extends Controller {
 				addLane(String.valueOf(w.getKante_id()), w.getSource(), w.getDestination(),
 						w.getCost());
 				this.logInfo("Edge End: " + w.getKante_id() + " " + w.getSource() + " " + w.getDestination() + " " + w.getCost());
+				
 			}
 
 		} catch (SQLException e) {
@@ -127,9 +129,10 @@ public class PathController extends Controller {
 				arsch = nodes.indexOf(v);
 			}
 		}
-		dijkstra.execute(nodes.get(arsch));
+		
+		dijkstra.execute(nodes.get(arsch));		
 		LinkedList<Vertex> path = dijkstra.getPath(nodes.get(nase));
-
+		
 		for (Vertex vertex : path) {
 			Log.v("ENDPATH", vertex.toString());
 		}

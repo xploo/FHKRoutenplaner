@@ -89,6 +89,7 @@ public class CsvController extends Controller {
 		for (String tableName : tables) {
 			BufferedReader br = null;
 			String line = "";
+			int i = 1000;
 
 			try {
 
@@ -155,13 +156,14 @@ public class CsvController extends Controller {
 							v.setFloor(Integer.parseInt(row[1]));
 							v.setRoomtype_ID(Integer.parseInt(row[2]));
 							if (row[3].equals("")) {
-								v.setDocent_ID(null);
+								v.setDocent_ID(i);
 							} else {
 								v.setDocent_ID(Integer.parseInt(row[3]));
 							}
 							v.setDescription(row[4]);
 
 							this.roomDao.create(v);
+							i++;
 						}
 
 					} else if (tableName.equals(DOZENT_CSV)) {

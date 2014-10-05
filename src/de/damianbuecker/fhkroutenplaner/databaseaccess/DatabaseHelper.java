@@ -49,7 +49,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private List<Edges> edgesResult = null;
 	private List<Edges> edgeResultRemain = null;
 	private List<Edges> edgesResultDestination = null;
-	
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -69,8 +68,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Roomtype.class, true);
 			TableUtils.dropTable(connectionSource, Edges.class, true);
 			TableUtils.dropTable(connectionSource, HistoryItem.class, true);
-			
-			
 
 			/**
 			 * Creates the table.
@@ -81,7 +78,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, Roomtype.class);
 			TableUtils.createTable(connectionSource, Edges.class);
 			TableUtils.createTable(connectionSource, HistoryItem.class);
-			
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -101,7 +97,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Roomtype.class, true);
 			TableUtils.dropTable(connectionSource, Edges.class, true);
 			TableUtils.dropTable(connectionSource, HistoryItem.class, true);
-			
+
 			this.onCreate(database, connectionSource);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -147,21 +143,22 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 		return this.edgesDataDao;
 	}
-	
-	private Dao<HistoryItem , Integer> getHistoryItemDataDao() throws SQLException{
-		if(this.historyItemDataDao == null){
+
+	public Dao<HistoryItem, Integer> getHistoryItemDataDao()
+			throws SQLException {
+		if (this.historyItemDataDao == null) {
 			historyItemDataDao = getDao(HistoryItem.class);
 		}
 		return this.historyItemDataDao;
 	}
-	
 
 	public List getRoomtypeSpinner() throws SQLException {
 		if (this.roomtypeSpinner == null) {
 			this.roomtypeSpinner = getRoomtypeDataDao();
 
 			for (Roomtype v : roomtypeSpinner) {
-				spinnerRoomtypeList.add(String.valueOf(v.getRoomtype_id())+"  " +String.valueOf(v.getDescription()));
+				spinnerRoomtypeList.add(String.valueOf(v.getRoomtype_id())
+						+ "  " + String.valueOf(v.getDescription()));
 			}
 
 		}
@@ -182,7 +179,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		List<Room> RoomList = roomSpinner.query(preparedQuery);
 		for (Room v : RoomList) {
 
-			spinnerRoomList.add(String.valueOf(v.getRoom_id())+" "+ String.valueOf(v.getDescription()));
+			spinnerRoomList.add(String.valueOf(v.getRoom_id()) + " "
+					+ String.valueOf(v.getDescription()));
 			Log.v("LOL", String.valueOf(v.getRoom_id()));
 		}
 		RoomList = null;
@@ -194,7 +192,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public List<Tag> getTagById(String ID) throws SQLException {
 
-		
 		if (this.tagLocationAll == null) {
 			this.tagLocationAll = this.getTagDataDao();
 		}
@@ -203,96 +200,72 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		this.queryBuilderTag.where().eq(Tag.TAG_ID, ID);
 		PreparedQuery<Tag> preparedQueryTag = queryBuilderTag.prepare();
 		Tagresult = tagLocationAll.query(preparedQueryTag);
-		
+
 		return Tagresult;
-		
+
 	}
-	
-	public List<Edges> getEdgesBySource(String sourceId) throws SQLException{
-		
-		if(this.edgesAll == null){
+
+	public List<Edges> getEdgesBySource(String sourceId) throws SQLException {
+
+		if (this.edgesAll == null) {
 			this.edgesAll = this.getEdgesDataDao();
 		}
 		this.queryBuilderEdges = edgesAll.queryBuilder();
 		this.queryBuilderEdges.where().eq(Edges.SOURCE, sourceId);
 		PreparedQuery<Edges> preparedQueryEdges = queryBuilderEdges.prepare();
 		edgesResult = edgesAll.query(preparedQueryEdges);
-		
+
 		return edgesResult;
 	}
-	
-	public List<Edges> getEdgesByDestination(String destinationId) throws SQLException{
-		
+
+	public List<Edges> getEdgesByDestination(String destinationId)
+			throws SQLException {
+
 		this.edgesAll = null;
 		this.queryBuilderEdges = null;
-		
-		if(this.edgesAll == null){
+
+		if (this.edgesAll == null) {
 			this.edgesAll = this.getEdgesDataDao();
 		}
 		this.queryBuilderEdges = edgesAll.queryBuilder();
 		this.queryBuilderEdges.where().eq(Edges.SOURCE, destinationId);
 		PreparedQuery<Edges> preparedQueryEdges = queryBuilderEdges.prepare();
 		edgesResultDestination = edgesAll.query(preparedQueryEdges);
-		
+
 		return edgesResultDestination;
 	}
-	
-	public List<Edges> getRemainingEdges(String startSource, String endDestination) throws SQLException{
+
+	public List<Edges> getRemainingEdges(String startSource,
+			String endDestination) throws SQLException {
 		this.edgesAll = null;
 		this.queryBuilderEdges = null;
-		
-		if(this.edgesAll == null){
+
+		if (this.edgesAll == null) {
 			this.edgesAll = this.getEdgesDataDao();
 		}
 		this.queryBuilderEdges = edgesAll.queryBuilder();
-		 Where where = queryBuilderEdges.where();
-		where.not().like(Edges.SOURCE, startSource).and().not().like(Edges.DESTINATION, endDestination);
+		Where where = queryBuilderEdges.where();
+		where.not().like(Edges.SOURCE, startSource).and().not()
+				.like(Edges.DESTINATION, endDestination);
 		PreparedQuery<Edges> preparedEdgesRemain = queryBuilderEdges.prepare();
 		edgeResultRemain = edgesAll.query(preparedEdgesRemain);
-		
+
 		return edgeResultRemain;
-		
+
 	}
 
-	public List<HistoryItem> getHistoryItems(){	
+	public List<HistoryItem> getHistoryItems() {
 
 		List<HistoryItem> result = null;
-		try{
+		try {
+			PreparedQuery<HistoryItem> preparedQuery = this.getHistoryItemDataDao().queryBuilder().where().eq(HistoryItem.ID, 1).prepare();
+			result = this.getHistoryItemDataDao().query(preparedQuery);
 
-
-
-			QueryBuilder<HistoryItem, Integer> queryBuilder = historyDao.queryBuilder();
-			queryBuilder.orderBy(HistoryItem.DATE, true);
-			PreparedQuery<HistoryItem> preparedQuery = queryBuilder.prepare();
-			
-			result = this.getHistoryItemDataDao().query(preparedQuery);			
-
-
-			
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			
-		}
-		
-		return result;
-	}
-	
-	
 
-	/**
-	 * Edge edge = new Edge(); getAbstractModel(id, edge);
-	 * 
-	 * @param id
-	 * @param model
-	 * @return
-	 */
-	public <T extends Model> T getAbstractModel(int id, Model model) {
-		if (model instanceof Edge) {
-			/**
-			 * ... Werte setzen
-			 */
-			Edge edge = (Edge) model;
 		}
-		return null;
+
+		return result;
 	}
 }
