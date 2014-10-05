@@ -281,6 +281,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		intent.putExtra("Start_floor", String.valueOf(this.mTextViewFloor.getText().toString()));
 		
 		prefs.edit().putString("lastDestination",splitResult[0]).commit();
+		
+		//TODO: DatumsController
 		startActivity(intent);
 	}
 }

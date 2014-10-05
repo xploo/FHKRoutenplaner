@@ -17,6 +17,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import de.damianbuecker.fhkroutenplaner.model.Edge;
+import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 import de.damianbuecker.fhkroutenplaner.model.Model;
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
@@ -25,6 +26,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 
 	private Dao<Tag, Integer> tagDataDao = null;
+	private Dao<HistoryItem, Integer> historyDao;
+	private Dao<HistoryItem, Integer> historyItemDataDao = null;
 	private Dao<Room, Integer> roomDataDao = null;
 	private Dao<Docent, Integer> docentDataDao = null;
 	private Dao<Roomtype, Integer> roomtypeDataDao = null;
@@ -63,6 +66,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Docent.class, true);
 			TableUtils.dropTable(connectionSource, Roomtype.class, true);
 			TableUtils.dropTable(connectionSource, Edges.class, true);
+			TableUtils.dropTable(connectionSource, HistoryItem.class, true);
+			
 			
 
 			/**
@@ -73,6 +78,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, Docent.class);
 			TableUtils.createTable(connectionSource, Roomtype.class);
 			TableUtils.createTable(connectionSource, Edges.class);
+			TableUtils.createTable(connectionSource, HistoryItem.class);
 			
 
 		} catch (SQLException e) {
@@ -92,6 +98,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Docent.class, true);
 			TableUtils.dropTable(connectionSource, Roomtype.class, true);
 			TableUtils.dropTable(connectionSource, Edges.class, true);
+			TableUtils.dropTable(connectionSource, HistoryItem.class, true);
 			
 			this.onCreate(database, connectionSource);
 		} catch (SQLException e) {
@@ -137,6 +144,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 
 		return this.edgesDataDao;
+	}
+	
+	private Dao<HistoryItem , Integer> getHistoryItemDataDao() throws SQLException{
+		if(this.historyItemDataDao == null){
+			historyItemDataDao = getDao(HistoryItem.class);
+		}
+		return this.historyItemDataDao;
 	}
 	
 
@@ -236,6 +250,29 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		
 		return edgeResultRemain;
 		
+	}
+
+	public List<HistoryItem> getHistoryItems(){	
+
+		List<HistoryItem> result = null;
+		try{
+
+
+
+			QueryBuilder<HistoryItem, Integer> queryBuilder = historyDao.queryBuilder();
+			queryBuilder.orderBy(HistoryItem.DATE, true);
+			PreparedQuery<HistoryItem> preparedQuery = queryBuilder.prepare();
+			
+			result = this.getHistoryItemDataDao().query(preparedQuery);			
+
+
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			
+		}
+		
+		return result;
 	}
 	
 	

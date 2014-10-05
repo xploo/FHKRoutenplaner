@@ -12,6 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
@@ -19,6 +23,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.JSONParser;
+import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
 /**
  * The Class StartupContoller.
@@ -35,7 +40,8 @@ public class StartupContoller extends Controller {
 	private static final String[] tables = { "edge", "tag", "room", "dozent", "raumart" };
 	
 	/** The j parser. */
-	private JSONParser jParser = new JSONParser();
+	private JSONParser jParser = new JSONParser();	
+	
 	
 	/** The external data. */
 	private JSONArray externalData;
@@ -277,6 +283,8 @@ public class StartupContoller extends Controller {
 		}).start();
 
 	}
+	
+	
 
 	/**
 	 * Gets the database version.

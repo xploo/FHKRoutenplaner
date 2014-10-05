@@ -1,6 +1,7 @@
 package de.damianbuecker.fhkroutenplaner.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import de.damianbuecker.fhkroutenplaner.controller.CsvController;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
+import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
 /**
  * The Class StartUpActivity.
@@ -93,13 +95,14 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		/*
 		 * Aus DB holen
 		 */
-		ArrayList<String> test = new ArrayList<String>();
-		test.add("BoobA");
-		test.add("BoobB");
-		test.add("BoobC");
-
+		if(this.databaseHelper == null) {
+			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+		}
+		ArrayList<HistoryItem> listHistoryItems = new ArrayList<HistoryItem>();
+		listHistoryItems = (ArrayList<HistoryItem>)this.databaseHelper.getHistoryItems();
+		
 		Intent intent = new Intent("android.intents.History");
-		intent.putExtra("history", test);
+		intent.putExtra("history", listHistoryItems);
 		startActivity(intent);
 	}
 
