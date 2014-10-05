@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class SharedPreferencesController.
  */
@@ -50,15 +51,15 @@ public class SharedPreferencesController extends Controller {
 			}
 
 			if (value instanceof Boolean) {
-				this.mEditor.putBoolean(key, (Boolean) value);
+				this.mEditor.putBoolean(key, (Boolean) value).commit();
 			} else if (value instanceof Float) {
-				this.mEditor.putFloat(key, (Float) value);
+				this.mEditor.putFloat(key, (Float) value).commit();
 			} else if (value instanceof Integer) {
-				this.mEditor.putInt(key, (Integer) value);
+				this.mEditor.putInt(key, (Integer) value).commit();
 			} else if (value instanceof Long) {
-				this.mEditor.putLong(key, (Long) value);
+				this.mEditor.putLong(key, (Long) value).commit();
 			} else if (value instanceof String) {
-				this.mEditor.putString(key, (String) value);
+				this.mEditor.putString(key, (String) value).commit();
 			} else {
 				this.logError("Unsupported data type.");
 			}
@@ -148,6 +149,15 @@ public class SharedPreferencesController extends Controller {
 			return this.mSharedPreferences.getString(key, "ERROR");
 		} else {
 			return null;
+		}
+	}
+	
+	/**
+	 * Removes the all shared preferences.
+	 */
+	public void removeAllSharedPreferences() {
+		if(this.mEditor != null) {
+			this.mEditor.clear().commit();
 		}
 	}
 }

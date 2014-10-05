@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import de.damianbuecker.fhkroutenplaner.controller.CsvController;
+import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
@@ -19,15 +19,13 @@ import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
  */
 public class StartUpActivity extends ModifiedViewActivityImpl {
 
-	/** The obj. */
-	private CsvController obj;
+	private CsvController mCsvController;
 
 	/** The database helper. */
 	private DatabaseHelper databaseHelper;
 
-	/** The prefs. */
-	private SharedPreferences prefs;
-
+	private SharedPreferencesController mSharedPreferencesController;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -38,8 +36,11 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.startup_activity);
 
-		prefs = getSharedPreferences("de.damianbuecker.fhkroutenplaner", MODE_PRIVATE);
-		prefs.edit().putBoolean("RouteRunning", false).commit();
+		if(this.mSharedPreferencesController == null) {
+			this.mSharedPreferencesController = new SharedPreferencesController(this);
+		}
+		this.mSharedPreferencesController.putInSharedPreference("RouteRunning", false);
+		
 		// Dateien kopieren(assets -> Intern)
 		/*
 		 * this.srtcon = new StartupContoller(this); if (this.wifistate =
@@ -63,12 +64,12 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		if (this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}
-		// if(!FirstStart)
-		if (prefs.getBoolean("firstrun", true)) {
-			this.obj = new CsvController(this);
-			this.obj.readCSV(databaseHelper);
 
-			prefs.edit().putInt("databaseVersion", 1).commit();
+		if(this.mSharedPreferencesController.getBoolean("firstrun")) {
+			this.mCsvController = new CsvController(this);
+			this.mCsvController.readCSV(databaseHelper);
+			
+			this.mSharedPreferencesController.putInSharedPreference("databaseVersion", 1);
 		}
 	}
 
@@ -115,10 +116,12 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if (prefs.getBoolean("firstrun", true)) {
-			// Do first run stuff here then set 'firstrun' as false
-			// using the following line to edit/commit prefs
-			prefs.edit().putBoolean("firstrun", false).commit();
+		
+		if(this.mSharedPreferencesController == null) {
+			this.mSharedPreferencesController = new SharedPreferencesController(this);
+		}
+		if(this.mSharedPreferencesController.getBoolean("firstrun")) {
+			this.mSharedPreferencesController.putInSharedPreference("firstrun", false);
 		}
 	}
 

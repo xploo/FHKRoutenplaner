@@ -44,26 +44,6 @@ public class PathController extends Controller {
 	@SuppressWarnings("unused")
 	private static Integer TAGSIZE = 0;
 
-	/*
-	 * @Override protected void onCreate(Bundle savedInstanceState) { // TODO
-	 * Auto-generated method stub super.onCreate(savedInstanceState);
-	 * setContentView(R.layout.activity_path);
-	 * 
-	 * this.databaseInteraction("onCreate");
-	 * 
-	 * testExcute();
-	 * 
-	 * }
-	 * 
-	 * 
-	 * @Override protected void onDestroy() { super.onDestroy();
-	 * 
-	 * /** Disposes the DatabaseHelper.
-	 * 
-	 * if (this.databaseHelper != null) { OpenHelperManager.releaseHelper();
-	 * this.databaseHelper = null; } }
-	 */
-
 	/** The nodes. */
 	private List<Vertex> nodes;
 	
@@ -78,8 +58,8 @@ public class PathController extends Controller {
 	 * @return the linked list
 	 */
 	public LinkedList<Vertex> testExcute(Integer startID, Integer endID) {
-		nodes = new ArrayList<Vertex>();
-		edges = new ArrayList<Edge>();
+		this.nodes = new ArrayList<Vertex>();
+		this.edges = new ArrayList<Edge>();
 
 		// Datenbank auslesen for schleife solange wie Punkte sind
 		try {
@@ -92,27 +72,25 @@ public class PathController extends Controller {
 				Vertex location = new Vertex(String.valueOf(t.getTag_id()), t.getDescription(),
 						t.getFloor());
 
-				nodes.add(location);
+				this.nodes.add(location);
 				// Log.v("Valueof", String.valueOf(t.getTag_id()));
 
 			}
 
-			TAGSIZE = nodes.size() - 1;
+			TAGSIZE = this.nodes.size() - 1;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			this.logError(e.toString());
 		}
 
 		try {
 
 			this.edgesStart = this.getDatabaseHelper(this.getContext()).getEdgesBySource(
 					startID.toString());
-			System.out.println(edgesStart);
 			StringBuilder sb = new StringBuilder();
 			for (Edges s : edgesStart) {
 				sb.append(s.getKante_id());
 				addLane(sb.toString(), s.getSource(), s.getDestination(), s.getCost());
-				Log.v("SCHNUBBI", sb.toString() + " " + s.getSource() + " " + s.getDestination()
-						+ " " + s.getCost());
+				this.logInfo("Edge Start: " + sb.toString() + " " + s.getSource() + " " + s.getDestination() + " " + s.getCost());
 			}
 
 			this.edgesRemaining = this.getDatabaseHelper(this.getContext()).getRemainingEdges(
@@ -121,8 +99,7 @@ public class PathController extends Controller {
 			for (Edges v : edgesRemaining) {
 				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(),
 						v.getCost());
-				Log.v("SCHNUBBI", v.getKante_id() + " " + v.getSource() + " " + v.getDestination()
-						+ " " + v.getCost());
+				this.logInfo("Edge Remaining: " + v.getKante_id() + " " + v.getSource() + " " + v.getDestination() + " " + v.getCost());
 			}
 
 			this.edgesEnd = this.getDatabaseHelper(this.getContext()).getEdgesByDestination(
@@ -130,15 +107,11 @@ public class PathController extends Controller {
 			for (Edges w : edgesEnd) {
 				addLane(String.valueOf(w.getKante_id()), w.getSource(), w.getDestination(),
 						w.getCost());
-
-				Log.v("SCHNUBBI",
-						String.valueOf(w.getKante_id()) + " " + w.getSource() + " "
-								+ w.getDestination() + " " + w.getCost());
+				this.logInfo("Edge End: " + w.getKante_id() + " " + w.getSource() + " " + w.getDestination() + " " + w.getCost());
 			}
 
 		} catch (SQLException e) {
-			// tv.setText(e.toString());
-			e.printStackTrace();
+			this.logError(e.toString());
 		}
 
 		// Lets check from location Loc_1 to Loc_10
@@ -158,9 +131,9 @@ public class PathController extends Controller {
 		LinkedList<Vertex> path = dijkstra.getPath(nodes.get(nase));
 
 		for (Vertex vertex : path) {
-			// System.out.println(vertex);
 			Log.v("ENDPATH", vertex.toString());
 		}
+		
 		return path;
 	}
 
@@ -173,18 +146,17 @@ public class PathController extends Controller {
 	 * @param duration the duration
 	 */
 	private void addLane(String laneId, int sourceLocNo, int destLocNo, int duration) {
-		Integer sourceLocNoIndex = 0;
-		Integer destLocNoIndex = 0;
+		Integer sourceLocNoIndex, destLocNoIndex;
+		sourceLocNoIndex = destLocNoIndex = 0;
+		
 		for (Vertex v : nodes) {
 			if (Integer.parseInt(v.getId()) == sourceLocNo) {
-				sourceLocNoIndex = nodes.indexOf(v);
+				sourceLocNoIndex = this.nodes.indexOf(v);
 			} else if (Integer.parseInt(v.getId()) == destLocNo) {
-				destLocNoIndex = nodes.indexOf(v);
+				destLocNoIndex = this.nodes.indexOf(v);
 			}
 		}
-		Edge lane = new Edge(laneId, nodes.get(sourceLocNoIndex), nodes.get(destLocNoIndex),
-				duration);
-		edges.add(lane);
-		// System.out.println(edges);
+		Edge lane = new Edge(laneId, this.nodes.get(sourceLocNoIndex), this.nodes.get(destLocNoIndex), duration);
+		this.edges.add(lane);
 	}
 }

@@ -28,6 +28,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<Tag, Integer> tagDataDao = null;
 	private Dao<HistoryItem, Integer> historyDao;
 	private Dao<HistoryItem, Integer> historyItemDataDao = null;
+
+	/** The room data dao. */
 	private Dao<Room, Integer> roomDataDao = null;
 	private Dao<Docent, Integer> docentDataDao = null;
 	private Dao<Roomtype, Integer> roomtypeDataDao = null;

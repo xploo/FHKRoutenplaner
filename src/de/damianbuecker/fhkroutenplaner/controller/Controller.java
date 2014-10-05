@@ -12,7 +12,6 @@ import android.content.Context;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
-import de.damianbuecker.fhkroutenplaner.service.Service;
 
 /**
  * The Class Controller.
@@ -85,7 +84,6 @@ public class Controller {
 		long runtime = endTime - startTime;
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SSS");
-		// System.out.println(sdf.format(runtime));
 		return sdf.format(runtime).toString();
 	}
 

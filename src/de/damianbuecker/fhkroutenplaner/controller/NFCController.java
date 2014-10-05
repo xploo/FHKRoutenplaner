@@ -50,8 +50,8 @@ public class NFCController extends Controller {
 	 * @param tv the tv
 	 */
 	public NFCController(TextView tv) {
+		super(tv.getContext());
 		this.mTextView = tv;
-		this.mContext = tv.getContext();
 	}
 
 	/**

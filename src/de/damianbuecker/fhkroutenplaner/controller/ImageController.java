@@ -37,6 +37,16 @@ import de.damianbuecker.fhkroutenplaner.model.Vertex;
  */
 public class ImageController extends Controller {
 
+	private static final String WIDTH_OPTIONS = "Width Options: ";
+	
+	private static final String HEIGHT_OPTIONS = "Height Options: ";
+	
+	private static final String ROOT_DIR = "/FMS/";
+	
+	private static final String PNG = ".png";
+	
+	private static final String PREFIXFILENAME = "TestIMG-";
+	
 	/** The tag dao. */
 	private Dao<Tag, Integer> tagDao;
 
@@ -50,7 +60,7 @@ public class ImageController extends Controller {
 	private HashMap<Integer, LinkedList<Vertex>> vertexHashmap;
 
 	/** The context. */
-	private Context context;
+	private Context mContext;
 
 	/** The m path controller. */
 	private PathController mPathController;
@@ -81,20 +91,16 @@ public class ImageController extends Controller {
 	public Integer getEndFloor(Integer endID) {
 
 		try {
-
 			this.endTagList = this.getDatabaseHelper(this.getContext())
 					.getTagById(endID.toString());
-			if (endTagList.size() != 0) {
-				this.endFloor = endTagList.get(0).getFloor();
+			if (this.endTagList.size() != 0) {
+				this.endFloor = this.endTagList.get(0).getFloor();
 			}
-
 		} catch (SQLException e) {
-			e.printStackTrace();
-
+			this.logError(e.getMessage());
 		}
 
 		return endFloor;
-
 	}
 
 	/**
@@ -109,10 +115,7 @@ public class ImageController extends Controller {
 	 */
 	public void testAlgorithm(Integer etage, Integer startID, Integer endID) {
 
-		Log.d("OnDraw", "ONDRAW CHECK");
-
-		// Bitmap bitmapIn = this.getResourceForEtage(etage);
-		// this.canvas = new Canvas(bitmapIn);
+		this.logInfo("OnDraw Check");
 
 		this.myPaint = new Paint();
 		this.myPaint.setAntiAlias(true);
@@ -120,11 +123,7 @@ public class ImageController extends Controller {
 		this.myPaint.setColor(Color.GREEN);
 		this.myPaint.setStrokeWidth(5.0f);
 
-		// if (!bitmapIn.isMutable()) {
-		// Abfangen lol
-		// }
-
-		this.mPathController = new PathController(context);
+		this.mPathController = new PathController(mContext);
 		LinkedList<Vertex> list = this.mPathController.testExcute(startID, endID);
 		this.splitVertexList(list);
 
@@ -152,8 +151,8 @@ public class ImageController extends Controller {
 			options.inJustDecodeBounds = true;
 			Bitmap b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId,
 					options);
-			this.logInfo("Width Options: " + options.outWidth);
-			this.logInfo("Height Options: " + options.outHeight);
+			this.logInfo(WIDTH_OPTIONS + options.outWidth);
+			this.logInfo(HEIGHT_OPTIONS + options.outHeight);
 			Bitmap.Config config = Config.ARGB_8888;
 			options.inScaled = false;
 			options.inJustDecodeBounds = false;
@@ -161,8 +160,8 @@ public class ImageController extends Controller {
 			b = BitmapFactory
 					.decodeResource(this.getContext().getResources(), ressourceId, options);
 			bitmapOut.setDensity(b.getDensity());
-			this.logInfo("Width Bitmap: " + b.getWidth());
-			this.logInfo("Height Bitmap: " + b.getHeight());
+			this.logInfo(WIDTH_OPTIONS + b.getWidth());
+			this.logInfo(HEIGHT_OPTIONS + b.getHeight());
 			for (int x = 0; x < options.outWidth; x++) {
 				for (int y = 0; y < options.outHeight; y++) {
 					int pixel = b.getPixel(x, y);
@@ -179,46 +178,46 @@ public class ImageController extends Controller {
 			float bufferX = 0;
 			float bufferY = 0;
 			try {
-				if (tagDao == null) {
+				if (this.tagDao == null) {
 
-					tagDao = this.getDatabaseHelper(this.getContext()).getTagDataDao();
+					this.tagDao = this.getDatabaseHelper(this.getContext()).getTagDataDao();
 				}
-				QueryBuilder<Tag, Integer> queryBuilder = tagDao.queryBuilder();
+				QueryBuilder<Tag, Integer> queryBuilder = this.tagDao.queryBuilder();
 
 				for (Vertex vertex : list) {
 
 					queryBuilder.where().eq(Tag.DESCRIPTION, vertex);
 					PreparedQuery<Tag> preparedQuery = queryBuilder.prepare();
-					List<Tag> TagList = tagDao.query(preparedQuery);
+					List<Tag> tagList = this.tagDao.query(preparedQuery);
 
 					// Auf null prüfen
-					canvas.drawCircle(Float.parseFloat(String.valueOf(TagList.get(0).getX_pos())),
-							Float.parseFloat(String.valueOf(TagList.get(0).getY_pos())), 5.0f,
-							myPaint);
+					canvas.drawCircle(Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
+							Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), 5.0f,
+							this.myPaint);
 
 					if (bufferX != 0 && bufferY != 0) {
 
 						canvas.drawLine(bufferX, bufferY,
-								Float.parseFloat(String.valueOf(TagList.get(0).getX_pos())),
-								Float.parseFloat(String.valueOf(TagList.get(0).getY_pos())),
-								myPaint);
+								Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
+								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())),
+								this.myPaint);
 
 					}
-					bufferX = (float) TagList.get(0).getX_pos();
-					bufferY = (float) TagList.get(0).getY_pos();
+					bufferX = (float) tagList.get(0).getX_pos();
+					bufferY = (float) tagList.get(0).getY_pos();
 
-					Log.v("ViewImageVertex", vertex.toString());
+					this.logInfo("ViewImageVertex: " + vertex.toString());
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				this.logError(e.getMessage());
 			}
-			File folder = new File(Environment.getExternalStorageDirectory() + "/FMS/");
+			File folder = new File(Environment.getExternalStorageDirectory() + ROOT_DIR);
 			if (!folder.exists())
 				folder.mkdirs();
 
 			try {
 				File outputFile = new File(Environment.getExternalStorageDirectory()
-						+ "/FMS/TestIMG-" + etage.hashCode() + ".png");
+						+ ROOT_DIR + PREFIXFILENAME + etage.hashCode() + PNG);
 				FileOutputStream fos = new FileOutputStream(outputFile);
 				bitmapOut.compress(CompressFormat.PNG, 100, fos);
 				fos.flush();
@@ -230,13 +229,12 @@ public class ImageController extends Controller {
 								new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri
 										.fromFile(outputFile)));
 
-				Log.d("WRITE IMAGE", "CHECK");
+				this.logInfo("WRITE IMAGE CHECK");
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				this.logError(e.getMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				this.logError(e.getMessage());
 			}
-
 		}
 	}
 
@@ -296,9 +294,8 @@ public class ImageController extends Controller {
 			return R.drawable.ebene7klein;
 		} else if (etage == 8) {
 			return R.drawable.ebene8klein;
+		} else {
+			return null;
 		}
-
-		return null;
 	}
-
 }
