@@ -8,18 +8,19 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.IntentFilter.MalformedMimeTypeException;
+import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.util.Log;
 
-public class NFCService {
+/**
+ * The Class NFCService.
+ */
+public class NFCService extends Service{
 	// Tag auslesen
 	// - StartEtage - Start ID
 	// SharedPrefs -> Letztes Ziel
@@ -28,36 +29,53 @@ public class NFCService {
 	// Starten der Imageberechnung anhand der Daten
 
 	// Service muss in Imageview laufen
-	private Integer endID;
+	
+	/** The prefs. */
+	@SuppressWarnings("unused")
 	private SharedPreferences prefs;
+	
+	/** The context. */
 	private Context context;
 
+	/**
+	 * Instantiates a new NFC service.
+	 *
+	 * @param context the context
+	 */
 	public NFCService(Context context) {
 		this.context = context;
 	}
 
+	/** The Constant MIME_TEXT_PLAIN. */
 	public static final String MIME_TEXT_PLAIN = "text/plain";
 
 	// protected!
+	/**
+	 * Handle intent.
+	 *
+	 * @param intent the intent
+	 */
+	@SuppressWarnings("static-access")
 	public void HandleIntent(Intent intent) {
 		
-		Log.v("NFCSERV","HandleIntent");
+		this.logInfo("NFCSERV - HandleIntent");
 
 		this.prefs = context.getSharedPreferences(
-				"de.damianbuecker.fhkroutenplaner", context.MODE_PRIVATE);
+"de.damianbuecker.fhkroutenplaner",
+				context.MODE_PRIVATE);
 
-		String action = intent.getAction();
+		StringBuffer action = new StringBuffer(intent.getAction());
 
 		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
 
-			String type = intent.getType();
+			StringBuffer type = new StringBuffer(intent.getType());
 			if (MIME_TEXT_PLAIN.equals(type)) {
 
 				Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 				new NdefReaderTask().execute(tag);
 
 			} else {
-				Log.d("TAG", "Wrong mime type: " + type);
+				this.logError("TAG - Wrong mime type: " + type);
 			}
 		} else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
 
@@ -76,9 +94,15 @@ public class NFCService {
 		}
 	}
 	
-	public static void setupForegroundDispatch(final Activity activity,
-			NfcAdapter adapter) {
-		Log.v("NFCSERV","FOREground");
+	/**
+	 * Setup foreground dispatch.
+	 *
+	 * @param activity the activity
+	 * @param adapter the adapter
+	 */
+//	public static void setupForegroundDispatch(final Activity activity,	NfcAdapter adapter) {
+	public void setupForegroundDispatch(final Activity activity,	NfcAdapter adapter) {
+		this.logInfo("NFCSERV - Foreground");
 		final Intent intent = new Intent(activity.getApplicationContext(),
 				activity.getClass());
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -103,15 +127,29 @@ public class NFCService {
 				techList);
 	}
 
-	public static void stopForegroundDispatch(final Activity activity,
+	/**
+	 * Stop foreground dispatch.
+	 *
+	 * @param activity the activity
+	 * @param adapter the adapter
+	 */
+//	public static void stopForegroundDispatch(final Activity activity,
+	public void stopForegroundDispatch(final Activity activity,
 			NfcAdapter adapter) {
 		adapter.disableForegroundDispatch(activity);
 	}
 
+	/**
+	 * The Class NdefReaderTask.
+	 */
 	private class NdefReaderTask extends AsyncTask<Tag, Void, String> {
+		
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
 		@Override
 		protected String doInBackground(Tag... params) {
-			Log.v("NFCServ","async");
+			NFCService.this.logInfo("NFCSERV - async");
 			Tag tag = params[0];
 
 			Ndef ndef = Ndef.get(tag);
@@ -129,16 +167,24 @@ public class NFCService {
 					try {
 						return readText(ndefRecord);
 					} catch (UnsupportedEncodingException e) {
-						Log.e("TAG", "Unsupported Encoding", e);
+						NFCService.this.logError("TAG - Unsupported Encoding: " + e);
 					}
 				}
 			}
 
 			return null;
 		}
+		
+		/**
+		 * Read text.
+		 *
+		 * @param record the record
+		 * @return the string
+		 * @throws UnsupportedEncodingException the unsupported encoding exception
+		 */
 		private String readText(NdefRecord record)
 				throws UnsupportedEncodingException {
-			Log.v("NFCSERRV","readText");
+			NFCService.this.logInfo("NFCSERV - readTest");
 			/*
 			 * See NFC forum specification for "Text Record Type Definition" at
 			 * 3.2.1
@@ -165,19 +211,17 @@ public class NFCService {
 			return new String(payload, languageCodeLength + 1, payload.length
 					- languageCodeLength - 1, textEncoding);
 		}
+		
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override 
 		protected void onPostExecute(String result) {
 
-			Log.v("NFCSERV","Postexecute");
+			NFCService.this.logInfo("NFCSERV - Postexecute");
 			//this.endID = Integer.parseInt(prefs.getString("lastDestination", "0"));
 
-			System.out.println(result);
-			Log.v("tagServ", result);
-
+			NFCService.this.logInfo("tagServ: " + result);
 		}
 	}
-
-	
-
-	
 }

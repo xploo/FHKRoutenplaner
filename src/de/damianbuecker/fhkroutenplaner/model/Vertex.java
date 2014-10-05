@@ -1,45 +1,64 @@
 package de.damianbuecker.fhkroutenplaner.model;
 
+/**
+ * The Class Vertex.
+ */
 public class Vertex extends Model{
-	  final private String id;
-	  final private String name;
-	  final private Integer floor;
-	  //private Tag tag;
+	  
+  	/** The id. */
+  	final private String id;
+	  
+  	/** The name. */
+  	final private String name;
+	  
+  	/** The floor. */
+  	final private Integer floor;
 	  
 	  
-	  public Vertex(String id, String name, Integer floor) {
+	  /**
+  	 * Instantiates a new vertex.
+  	 *
+  	 * @param id the id
+  	 * @param name the name
+  	 * @param floor the floor
+  	 */
+  	public Vertex(String id, String name, Integer floor) {
 	    this.id = id;
 	    this.name = name;
 	    this.floor = floor;
 	  }
 	  
-//	  public Vertex(String id, String name, Tag tag) {
-//		  this.id = id;
-//		  this.name = name;
-//		  this.tag = tag;
-//	  }
-	  
-//	  public Tag getTag()  {
-//		  return this.tag;
-//	  }
-//	  
-//	  public void setTag(Tag tag) {
-//		  this.tag = tag;
-//	  }
-	  
-	  public String getId() {
+	  /**
+  	 * Gets the id.
+  	 *
+  	 * @return the id
+  	 */
+  	public String getId() {
 	    return id;
 	  }
 
-	  public String getName() {
+	  /**
+  	 * Gets the name.
+  	 *
+  	 * @return the name
+  	 */
+  	public String getName() {
 	    return name;
 	  }
 	  
-	  public Integer getFloor(){
+	  /**
+  	 * Gets the floor.
+  	 *
+  	 * @return the floor
+  	 */
+  	public Integer getFloor(){
 		  return floor;
 	  }
 	  
-	  @Override
+	  /* (non-Javadoc)
+  	 * @see java.lang.Object#hashCode()
+  	 */
+  	@Override
 	  public int hashCode() {
 	    final int prime = 31;
 	    int result = 1;
@@ -47,7 +66,10 @@ public class Vertex extends Model{
 	    return result;
 	  }
 	  
-	  @Override
+	  /* (non-Javadoc)
+  	 * @see java.lang.Object#equals(java.lang.Object)
+  	 */
+  	@Override
 	  public boolean equals(Object obj) {
 	    if (this == obj)
 	      return true;
@@ -64,7 +86,10 @@ public class Vertex extends Model{
 	    return true;
 	  }
 
-	  @Override
+	  /* (non-Javadoc)
+  	 * @see java.lang.Object#toString()
+  	 */
+  	@Override
 	  public String toString() {
 	    return name;
 	  }

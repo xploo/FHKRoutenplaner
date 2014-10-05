@@ -1,4 +1,4 @@
-package de.damianbuecker.fhkroutenplaner.databaseaccess;
+package de.damianbuecker.fhkroutenplaner.controller;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,66 +8,69 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
 
-import de.damianbuecker.fhkroutenplaner.controller.Controller;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Docent;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Edges;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Room;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Roomtype;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 
 /**
  * The Class CSVReader.
  */
-public class CSVReader extends Controller {
+public class CsvController extends Controller {
 
 	/** The Constant tables. */
-	private static final String[] tables = { "edge.csv", "tag.csv", "room.csv",
-			"dozent.csv", "raumart.csv" };
-	
+	private static final String[] tables = { "edge.csv", "tag.csv", "room.csv", "dozent.csv",
+			"raumart.csv" };
+
 	/** The m asset manager. */
 	private AssetManager mAssetManager;
-	
+
 	/** The Constant CSVSPLITBY. */
 	private static final String CSVSPLITBY = ",";
-	
+
 	/** The edges dao. */
 	private Dao<Edges, Integer> edgesDao;
-	
+
 	/** The tag dao. */
 	private Dao<Tag, Integer> tagDao;
-	
+
 	/** The docent dao. */
 	private Dao<Docent, Integer> docentDao;
-	
+
 	/** The room dao. */
 	private Dao<Room, Integer> roomDao;
-	
+
 	/** The roomtype dao. */
 	private Dao<Roomtype, Integer> roomtypeDao;
-	
-	/** The prefs. */
-	private SharedPreferences prefs;
-	
+
 	/** The end time. */
 	private long startTime, endTime;
 
 	/**
 	 * Instantiates a new CSV reader.
-	 *
-	 * @param context the context
+	 * 
+	 * @param context
+	 *            the context
 	 */
-	public CSVReader(Context context) {
+	public CsvController(Context context) {
 		super(context);
 	}
-	
+
 	/**
 	 * Read csv.
-	 *
-	 * @param databaseHelper the database helper
+	 * 
+	 * @param databaseHelper
+	 *            the database helper
 	 */
 	public void readCSV(DatabaseHelper databaseHelper) {
-		
+
 		this.startTime = this.getTime();
 		for (String tableName : tables) {
 			BufferedReader br = null;
@@ -162,8 +165,7 @@ public class CSVReader extends Controller {
 					} else if (tableName.equals("raumart.csv")) {
 
 						if (this.roomtypeDao == null) {
-							this.roomtypeDao = databaseHelper
-									.getRoomtypeDataDao();
+							this.roomtypeDao = databaseHelper.getRoomtypeDataDao();
 						}
 
 						if (row.length != 0) {
@@ -195,9 +197,9 @@ public class CSVReader extends Controller {
 			}
 
 		}
-		
+
 		this.endTime = this.getTime();
-		this.log(this.getRuntime(startTime, endTime));
+		this.logInfo(this.getRuntime(startTime, endTime));
 
 	}
 

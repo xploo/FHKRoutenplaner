@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
@@ -29,8 +29,6 @@ import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import de.damianbuecker.fhkroutenplaner.activity.R;
-import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
-import de.damianbuecker.fhkroutenplaner.databaseaccess.Edges;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 import de.damianbuecker.fhkroutenplaner.model.Vertex;
 
@@ -41,50 +39,33 @@ public class ImageController extends Controller {
 
 	/** The tag dao. */
 	private Dao<Tag, Integer> tagDao;
-	
-	/** The vertexes dao. */
-	private Dao<Edges, Integer> vertexesDao;
-	
-	/** The database helper. */
-	private DatabaseHelper databaseHelper;
-	
-	/** The bitmap in. */
-	private Bitmap bitmapIn;
-	
+
 	/** The canvas. */
 	private Canvas canvas;
-	
+
 	/** The my paint. */
 	private Paint myPaint;
-	
-	/** The etage start. */
-	private LinkedList<Vertex> etageStart;
-	
-	/** The etage ziel. */
-	private LinkedList<Vertex> etageZiel;
-	
+
 	/** The vertex hashmap. */
 	private HashMap<Integer, LinkedList<Vertex>> vertexHashmap;
-	
+
 	/** The context. */
 	private Context context;
-	
+
 	/** The m path controller. */
 	private PathController mPathController;
-	
+
 	/** The end tag list. */
 	private List<Tag> endTagList;
-	
+
 	/** The end floor. */
 	private Integer endFloor;
-	
-	/** The m asset manager. */
-	private AssetManager mAssetManager;
 
 	/**
 	 * Instantiates a new image controller.
-	 *
-	 * @param context the context
+	 * 
+	 * @param context
+	 *            the context
 	 */
 	public ImageController(Context context) {
 		super(context);
@@ -92,8 +73,9 @@ public class ImageController extends Controller {
 
 	/**
 	 * Gets the end floor.
-	 *
-	 * @param endID the end id
+	 * 
+	 * @param endID
+	 *            the end id
 	 * @return the end floor
 	 */
 	public Integer getEndFloor(Integer endID) {
@@ -117,10 +99,13 @@ public class ImageController extends Controller {
 
 	/**
 	 * Test algorithm.
-	 *
-	 * @param etage the etage
-	 * @param startID the start id
-	 * @param endID the end id
+	 * 
+	 * @param etage
+	 *            the etage
+	 * @param startID
+	 *            the start id
+	 * @param endID
+	 *            the end id
 	 */
 	public void testAlgorithm(Integer etage, Integer startID, Integer endID) {
 
@@ -140,14 +125,12 @@ public class ImageController extends Controller {
 		// }
 
 		this.mPathController = new PathController(context);
-		LinkedList<Vertex> list = this.mPathController.testExcute(startID,
-				endID);
-		this.vertexListeAufteilen(list);
+		LinkedList<Vertex> list = this.mPathController.testExcute(startID, endID);
+		this.splitVertexList(list);
 
 		if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 2) {
 			this.saveFinalImage(this.vertexHashmap.get(0));
-		} else if (this.vertexHashmap.size() > 0
-				&& this.vertexHashmap.size() < 3) {
+		} else if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 3) {
 			this.saveFinalImage(this.vertexHashmap.get(0));
 			this.saveFinalImage(this.vertexHashmap.get(1));
 		}
@@ -156,8 +139,9 @@ public class ImageController extends Controller {
 
 	/**
 	 * Save final image.
-	 *
-	 * @param list the list
+	 * 
+	 * @param list
+	 *            the list
 	 */
 	private void saveFinalImage(LinkedList<Vertex> list) {
 
@@ -166,25 +150,24 @@ public class ImageController extends Controller {
 			int ressourceId = this.getResourceForEtage(etage);
 			Options options = new Options();
 			options.inJustDecodeBounds = true;
-			Bitmap b = BitmapFactory.decodeResource(this.getContext()
-					.getResources(), ressourceId, options);
-			this.log("Width Options: " + options.outWidth);
-			this.log("Height Options: " + options.outHeight);
+			Bitmap b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId,
+					options);
+			this.logInfo("Width Options: " + options.outWidth);
+			this.logInfo("Height Options: " + options.outHeight);
 			Bitmap.Config config = Config.ARGB_8888;
 			options.inScaled = false;
 			options.inJustDecodeBounds = false;
-			Bitmap bitmapOut = Bitmap.createBitmap(options.outWidth,
-					options.outHeight, config);
-			b = BitmapFactory.decodeResource(this.getContext().getResources(),
-					ressourceId, options);
+			Bitmap bitmapOut = Bitmap.createBitmap(options.outWidth, options.outHeight, config);
+			b = BitmapFactory
+					.decodeResource(this.getContext().getResources(), ressourceId, options);
 			bitmapOut.setDensity(b.getDensity());
-			this.log("Width Bitmap: " + b.getWidth());
-			this.log("Height Bitmap: " + b.getHeight());
+			this.logInfo("Width Bitmap: " + b.getWidth());
+			this.logInfo("Height Bitmap: " + b.getHeight());
 			for (int x = 0; x < options.outWidth; x++) {
 				for (int y = 0; y < options.outHeight; y++) {
 					int pixel = b.getPixel(x, y);
-					bitmapOut.setPixel(x, y, Color.rgb(Color.red(pixel),
-							Color.green(pixel), Color.blue(pixel)));
+					bitmapOut.setPixel(x, y,
+							Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
 				}
 			}
 
@@ -198,8 +181,7 @@ public class ImageController extends Controller {
 			try {
 				if (tagDao == null) {
 
-					tagDao = this.getDatabaseHelper(this.getContext())
-							.getTagDataDao();
+					tagDao = this.getDatabaseHelper(this.getContext()).getTagDataDao();
 				}
 				QueryBuilder<Tag, Integer> queryBuilder = tagDao.queryBuilder();
 
@@ -210,16 +192,16 @@ public class ImageController extends Controller {
 					List<Tag> TagList = tagDao.query(preparedQuery);
 
 					// Auf null prüfen
-					canvas.drawCircle(Float.parseFloat(String.valueOf(TagList
-							.get(0).getX_pos())), Float.parseFloat(String
-							.valueOf(TagList.get(0).getY_pos())), 5.0f, myPaint);
+					canvas.drawCircle(Float.parseFloat(String.valueOf(TagList.get(0).getX_pos())),
+							Float.parseFloat(String.valueOf(TagList.get(0).getY_pos())), 5.0f,
+							myPaint);
 
 					if (bufferX != 0 && bufferY != 0) {
 
-						canvas.drawLine(bufferX, bufferY, Float
-								.parseFloat(String.valueOf(TagList.get(0)
-										.getX_pos())), Float.parseFloat(String
-								.valueOf(TagList.get(0).getY_pos())), myPaint);
+						canvas.drawLine(bufferX, bufferY,
+								Float.parseFloat(String.valueOf(TagList.get(0).getX_pos())),
+								Float.parseFloat(String.valueOf(TagList.get(0).getY_pos())),
+								myPaint);
 
 					}
 					bufferX = (float) TagList.get(0).getX_pos();
@@ -230,24 +212,23 @@ public class ImageController extends Controller {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			File folder = new File(Environment.getExternalStorageDirectory()
-					+ "/FMS/");
+			File folder = new File(Environment.getExternalStorageDirectory() + "/FMS/");
 			if (!folder.exists())
 				folder.mkdirs();
 
 			try {
-				File outputFile = new File(
-						Environment.getExternalStorageDirectory()
-								+ "/FMS/TestIMG-" + etage.hashCode() + ".png");
+				File outputFile = new File(Environment.getExternalStorageDirectory()
+						+ "/FMS/TestIMG-" + etage.hashCode() + ".png");
 				FileOutputStream fos = new FileOutputStream(outputFile);
 				bitmapOut.compress(CompressFormat.PNG, 100, fos);
 				fos.flush();
 				fos.close();
 				bitmapOut.recycle();
 				bitmapOut = null;
-				this.getContext().sendBroadcast(
-						new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri
-								.fromFile(outputFile)));
+				this.getContext()
+						.sendBroadcast(
+								new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri
+										.fromFile(outputFile)));
 
 				Log.d("WRITE IMAGE", "CHECK");
 			} catch (FileNotFoundException e) {
@@ -261,10 +242,12 @@ public class ImageController extends Controller {
 
 	/**
 	 * Vertex liste aufteilen.
-	 *
-	 * @param list the list
+	 * 
+	 * @param list
+	 *            the list
 	 */
-	private void vertexListeAufteilen(LinkedList<Vertex> list) {
+	@SuppressLint("UseSparseArrays")
+	private void splitVertexList(LinkedList<Vertex> list) {
 		Integer startEtage = list.get(0).getFloor();
 		Integer zielEtage = list.get(list.size() - 1).getFloor();
 		LinkedList<Vertex> listeVertexStartEtage = new LinkedList<Vertex>();
@@ -291,8 +274,9 @@ public class ImageController extends Controller {
 
 	/**
 	 * Gets the resource for etage.
-	 *
-	 * @param etage the etage
+	 * 
+	 * @param etage
+	 *            the etage
 	 * @return the resource for etage
 	 */
 	private Integer getResourceForEtage(Integer etage) {
@@ -317,5 +301,4 @@ public class ImageController extends Controller {
 		return null;
 	}
 
-	
 }

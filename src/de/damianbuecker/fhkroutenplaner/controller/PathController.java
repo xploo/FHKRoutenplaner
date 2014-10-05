@@ -11,25 +11,37 @@ import android.util.Log;
 import com.j256.ormlite.dao.Dao;
 
 import de.damianbuecker.fhkroutenplaner.algorithm.Dijkstra;
-import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Edges;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 import de.damianbuecker.fhkroutenplaner.model.Edge;
 import de.damianbuecker.fhkroutenplaner.model.Graph;
 import de.damianbuecker.fhkroutenplaner.model.Vertex;
 
+/**
+ * The Class PathController.
+ */
 public class PathController extends Controller {
 
-	private DatabaseHelper databaseHelper;
-	private Context context;
+	/** The edges start. */
 	private List<Edges> edgesStart;
-	private List<Edges> edgesEnd;
-	private List<Edges> edgesRemaining;
 	
+	/** The edges end. */
+	private List<Edges> edgesEnd;
+	
+	/** The edges remaining. */
+	private List<Edges> edgesRemaining;
+
+	/**
+	 * Instantiates a new path controller.
+	 *
+	 * @param context the context
+	 */
 	public PathController(Context context) {
 		super(context);
 	}
 
+	/** The tagsize. */
+	@SuppressWarnings("unused")
 	private static Integer TAGSIZE = 0;
 
 	/*
@@ -52,46 +64,36 @@ public class PathController extends Controller {
 	 * this.databaseHelper = null; } }
 	 */
 
+	/** The nodes. */
 	private List<Vertex> nodes;
+	
+	/** The edges. */
 	private List<Edge> edges;
 
-	// Reinschreiben
-	private void databaseInteraction(String action) {
-		try {
-			Dao<Tag, Integer> tagDataDao = this.getDatabaseHelper(this.getContext()).getTagDataDao();
-
-			List<Tag> list = tagDataDao.queryForAll();
-			StringBuilder sb = new StringBuilder();
-			for (Tag s : list) {
-				sb.append(s.getTag_id()).append(" ").append(s.getRoom_ID())
-						.append(" ").append(s.getX_pos()).append(" ")
-						.append(s.getY_pos()).append(" ")
-						.append(s.getDescription()).append("\n");
-			}
-
-			// Log.v("Test String", sb.toString());
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * Test excute.
+	 *
+	 * @param startID the start id
+	 * @param endID the end id
+	 * @return the linked list
+	 */
 	public LinkedList<Vertex> testExcute(Integer startID, Integer endID) {
 		nodes = new ArrayList<Vertex>();
 		edges = new ArrayList<Edge>();
 
 		// Datenbank auslesen for schleife solange wie Punkte sind
 		try {
-			Dao<Tag, Integer> TagListlooper = this.getDatabaseHelper(this.getContext()).getTagDataDao();
+			Dao<Tag, Integer> TagListlooper = this.getDatabaseHelper(this.getContext())
+					.getTagDataDao();
 
 			for (Tag t : TagListlooper) {
 
 				// in die location die Punkte schreiben
-				Vertex location = new Vertex(String.valueOf(t.getTag_id()),
-						t.getDescription(), t.getFloor());
+				Vertex location = new Vertex(String.valueOf(t.getTag_id()), t.getDescription(),
+						t.getFloor());
 
 				nodes.add(location);
-				//Log.v("Valueof", String.valueOf(t.getTag_id()));
+				// Log.v("Valueof", String.valueOf(t.getTag_id()));
 
 			}
 
@@ -101,34 +103,39 @@ public class PathController extends Controller {
 		}
 
 		try {
-			
-			this.edgesStart = this.getDatabaseHelper(this.getContext()).getEdgesBySource(startID.toString());			
+
+			this.edgesStart = this.getDatabaseHelper(this.getContext()).getEdgesBySource(
+					startID.toString());
 			System.out.println(edgesStart);
 			StringBuilder sb = new StringBuilder();
 			for (Edges s : edgesStart) {
 				sb.append(s.getKante_id());
-				addLane(sb.toString(), s.getSource(), s.getDestination(),
-						s.getCost());
-				Log.v("SCHNUBBI",sb.toString()+ " " + s.getSource() + " " + s.getDestination()+ " " +
-						s.getCost());
+				addLane(sb.toString(), s.getSource(), s.getDestination(), s.getCost());
+				Log.v("SCHNUBBI", sb.toString() + " " + s.getSource() + " " + s.getDestination()
+						+ " " + s.getCost());
 			}
-			
-			this.edgesRemaining = this.getDatabaseHelper(this.getContext()).getRemainingEdges(startID.toString(), endID.toString());
-			
-			for(Edges v : edgesRemaining){
-				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(), v.getCost());
-				Log.v("SCHNUBBI",v.getKante_id() + " " + v.getSource() + " " + v.getDestination()+ " " +
+
+			this.edgesRemaining = this.getDatabaseHelper(this.getContext()).getRemainingEdges(
+					startID.toString(), endID.toString());
+
+			for (Edges v : edgesRemaining) {
+				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(),
 						v.getCost());
+				Log.v("SCHNUBBI", v.getKante_id() + " " + v.getSource() + " " + v.getDestination()
+						+ " " + v.getCost());
 			}
-			
-			this.edgesEnd = this.getDatabaseHelper(this.getContext()).getEdgesByDestination(endID.toString());
-			for(Edges w : edgesEnd){
-				addLane(String.valueOf(w.getKante_id()),w.getSource(),w.getDestination(),w.getCost());
-				
-				Log.v("SCHNUBBI", String.valueOf(w.getKante_id()) + " " + w.getSource() + " " + w.getDestination()+ " " +
+
+			this.edgesEnd = this.getDatabaseHelper(this.getContext()).getEdgesByDestination(
+					endID.toString());
+			for (Edges w : edgesEnd) {
+				addLane(String.valueOf(w.getKante_id()), w.getSource(), w.getDestination(),
 						w.getCost());
+
+				Log.v("SCHNUBBI",
+						String.valueOf(w.getKante_id()) + " " + w.getSource() + " "
+								+ w.getDestination() + " " + w.getCost());
 			}
-			
+
 		} catch (SQLException e) {
 			// tv.setText(e.toString());
 			e.printStackTrace();
@@ -137,13 +144,13 @@ public class PathController extends Controller {
 		// Lets check from location Loc_1 to Loc_10
 		Graph graph = new Graph(nodes, edges);
 		Dijkstra dijkstra = new Dijkstra(graph);
-		
+
 		int nase = 0;
 		int arsch = 0;
-		for(Vertex v : nodes) {
-			if(Integer.parseInt(v.getId()) == startID) {
+		for (Vertex v : nodes) {
+			if (Integer.parseInt(v.getId()) == startID) {
 				nase = nodes.indexOf(v);
-			} else if(Integer.parseInt(v.getId()) == endID) {
+			} else if (Integer.parseInt(v.getId()) == endID) {
 				arsch = nodes.indexOf(v);
 			}
 		}
@@ -151,27 +158,33 @@ public class PathController extends Controller {
 		LinkedList<Vertex> path = dijkstra.getPath(nodes.get(nase));
 
 		for (Vertex vertex : path) {
-			//System.out.println(vertex);
+			// System.out.println(vertex);
 			Log.v("ENDPATH", vertex.toString());
 		}
 		return path;
 	}
 
-	private void addLane(String laneId, int sourceLocNo, int destLocNo,
-			int duration) {
+	/**
+	 * Adds the lane.
+	 *
+	 * @param laneId the lane id
+	 * @param sourceLocNo the source loc no
+	 * @param destLocNo the dest loc no
+	 * @param duration the duration
+	 */
+	private void addLane(String laneId, int sourceLocNo, int destLocNo, int duration) {
 		Integer sourceLocNoIndex = 0;
 		Integer destLocNoIndex = 0;
-		for(Vertex v : nodes) {
-			if(Integer.parseInt(v.getId()) == sourceLocNo) {
+		for (Vertex v : nodes) {
+			if (Integer.parseInt(v.getId()) == sourceLocNo) {
 				sourceLocNoIndex = nodes.indexOf(v);
-			}
-			else if(Integer.parseInt(v.getId()) == destLocNo) {
+			} else if (Integer.parseInt(v.getId()) == destLocNo) {
 				destLocNoIndex = nodes.indexOf(v);
 			}
 		}
-		Edge lane = new Edge(laneId, nodes.get(sourceLocNoIndex),
-				nodes.get(destLocNoIndex), duration);
+		Edge lane = new Edge(laneId, nodes.get(sourceLocNoIndex), nodes.get(destLocNoIndex),
+				duration);
 		edges.add(lane);
-		//System.out.println(edges);
+		// System.out.println(edges);
 	}
 }
