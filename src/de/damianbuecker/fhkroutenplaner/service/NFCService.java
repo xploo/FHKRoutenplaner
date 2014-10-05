@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentFilter.MalformedMimeTypeException;
-import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -30,12 +29,6 @@ public class NFCService extends Service{
 
 	// Service muss in Imageview laufen
 	
-	/** The prefs. */
-	@SuppressWarnings("unused")
-	private SharedPreferences prefs;
-	
-	/** The context. */
-	private Context context;
 
 	/**
 	 * Instantiates a new NFC service.
@@ -43,7 +36,7 @@ public class NFCService extends Service{
 	 * @param context the context
 	 */
 	public NFCService(Context context) {
-		this.context = context;
+		super(context);
 	}
 
 	/** The Constant MIME_TEXT_PLAIN. */
@@ -55,14 +48,9 @@ public class NFCService extends Service{
 	 *
 	 * @param intent the intent
 	 */
-	@SuppressWarnings("static-access")
 	public void HandleIntent(Intent intent) {
 		
 		this.logInfo("NFCSERV - HandleIntent");
-
-		this.prefs = context.getSharedPreferences(
-"de.damianbuecker.fhkroutenplaner",
-				context.MODE_PRIVATE);
 
 		StringBuffer action = new StringBuffer(intent.getAction());
 

@@ -13,8 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -46,8 +44,8 @@ public class StartupContoller extends Controller {
 	/** The version. */
 	private String version;
 	
-	/** The prefs. */
-	private SharedPreferences prefs;
+	/** The m shared preferences controller. */
+	private SharedPreferencesController mSharedPreferencesController;
 
 	/** The url_get database. */
 	private String url_getDatabase = "http://fhkrp.in24.de/BA/index.php";
@@ -332,17 +330,11 @@ public class StartupContoller extends Controller {
 	 *
 	 * @return the integer
 	 */
-	@SuppressWarnings("static-access")
 	public Integer checkForUpdate() {
 
-		this.prefs = this.getContext().getSharedPreferences("de.damianbuecker.fhkroutenplaner",
-				this.getContext().MODE_PRIVATE);
-
-		String externalVersion = "0";
-		Integer internalVersion = 0;
-
-		externalVersion = getDatabaseVersion();
-		internalVersion = prefs.getInt("databaseVersion", 0);
+		this.mSharedPreferencesController = new SharedPreferencesController(this.getContext());
+		String externalVersion = getDatabaseVersion();
+		Integer internalVersion = this.mSharedPreferencesController.getInteger("databaseVersion");
 
 		Log.v("SharedPrefCHECK", internalVersion.toString());
 
