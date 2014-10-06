@@ -14,46 +14,6 @@
         android:gravity="center"
         android:text="@string/nfc_attach"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <Button
-        android:id="@+id/btn_nfc_route"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:onClick="onClick_GO"
-        android:text="@string/nfc_route" />
-
-    <Spinner
-        android:id="@+id/nfc_spinner_room"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_nfc_route"
-        android:layout_alignParentLeft="true" />
-
-    <Spinner
-        android:id="@+id/nfc_spinner_roomtype"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/nfc_spinner_room"
-        android:layout_alignParentLeft="true" />
-
-    <ProgressBar
-        android:id="@+id/nfc_progbar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="246dp"
-        android:layout_height="219dp"
-        android:layout_below="@+id/txt_nfc_attach"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:id="@+id/txtV_nfc_floor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/nfc_spinner_roomtype"
-        android:layout_alignParentLeft="true"
-        android:text="@string/nfc_floor"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <TextView
         android:id="@+id/txtV_nfc_hidden"
@@ -61,15 +21,6 @@
         android:layout_height="wrap_content"              
         android:text="1"
         android:visibility="invisible"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/txtV_nfc_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/txtV_nfc_floor"
-        android:layout_alignParentLeft="true"
-        android:text="@string/nfc_description"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -82,23 +33,93 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
+        android:id="@+id/txtV_nfc_pos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_nfc_attach"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+        android:text="@string/nfc_pos"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/txtV_nfc_floor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/txtV_nfc_description_out"
+        android:layout_alignBottom="@+id/txtV_nfc_description_out"
+        android:layout_toRightOf="@+id/txtV_nfc_hidden"
+        android:text="@string/nfc_floor"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/txtV_nfc_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtV_nfc_floor"
+        android:layout_alignLeft="@+id/txtV_nfc_floor"
+        android:text="@string/nfc_description"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
         android:id="@+id/txtV_nfc_floor_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/txtV_nfc_description"
-        android:layout_alignBottom="@+id/txtV_nfc_description"
-        android:layout_alignRight="@+id/nfc_progbar"
-        android:layout_marginRight="26dp"
+        android:layout_below="@+id/txtV_nfc_pos"
+        android:layout_marginLeft="42dp"
+        android:layout_marginTop="36dp"
+        android:layout_toRightOf="@+id/txtV_nfc_description"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/txtV_nfc_pos"
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/txtV_nfc_description"
-        android:layout_centerHorizontal="true"
-        android:text="@string/nfc_pos"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="1. Raumkategorie auswählen."
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Spinner
+        android:id="@+id/nfc_spinner_roomtype"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/nfc_spinner_roomtype"
+        android:text="2. Genaues Routenziel anwählen."
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Spinner
+        android:id="@+id/nfc_spinner_room"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/nfc_spinner_room"
+        android:text="3. Routenanfrage abschicken"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/btn_nfc_route"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView3"
+        android:onClick="onClick_GO"
+        android:text="@string/nfc_route" />
 
 </RelativeLayout>

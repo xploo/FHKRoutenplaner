@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
@@ -25,7 +26,8 @@ import de.damianbuecker.fhkroutenplaner.controller.NFCController;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 
-public class NavigationActivity extends ModifiedViewActivityImpl implements OnItemSelectedListener {
+public class NavigationActivity extends ModifiedViewActivityImpl implements
+		OnItemSelectedListener {
 
 	private Spinner SpinnerRoomtype, SpinnerRoom;
 	private List roomtypeSpinnerData, roomSpinnerData;
@@ -39,6 +41,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	private Integer buf = 0;
 	private List<Tag> tagList = null;
 	private SharedPreferences prefs;
+	private AlertDialog alertDialog;
 
 	private NFCController nfccon;
 
@@ -46,18 +49,30 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.nfcconnector_activity);		
+		setContentView(R.layout.nfcconnector_activity);
 		mTextView = (TextView) findViewById(R.id.txtV_nfc_hidden);
-		
+
 		prefs = getSharedPreferences("de.damianbuecker.fhkroutenplaner",
 				MODE_PRIVATE);
-		
+
 		this.mTextView.setText("");
+		if (this.mTextView.getText().equals("")) {
+			
+			Log.v("CHECK ALERTDIAG","woop");
+
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);		
+			alertDialogBuilder.setTitle("Position");		
+			alertDialogBuilder.setMessage("Please attach your Phone to RFID-Tag").setCancelable(false);
+			this.alertDialog = alertDialogBuilder.create();
+			this.alertDialog.show();	
+		
+		}
 		this.mTextView.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
+						
 			}
 
 			@Override
@@ -71,15 +86,16 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 					if (s.length() > 0) {
 						// Start
 						NavigationActivity.this.start(s.toString());
-						
-
+						alertDialog.dismiss();
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 		});
-
+		
+		
+		
 		if (this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this,
 					DatabaseHelper.class);
@@ -100,8 +116,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 						.show();
 			}
 			nfccon = new NFCController(this.mTextView);
-			
-			nfccon.handleIntent(getIntent(),this);
+
+			nfccon.handleIntent(getIntent(), this);
 
 		}
 
@@ -111,13 +127,13 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	private void start(String s) throws SQLException {
 		this.mTextViewFloor = (TextView) findViewById(R.id.txtV_nfc_floor_out);
 		this.mTextViewDescription = (TextView) findViewById(R.id.txtV_nfc_description_out);
-		
-		Log.v("was steht im tag",s);
+
+		Log.v("was steht im tag", s);
 
 		this.tagList = this.databaseHelper.getTagById(s);
-		
-		if((tagList.get(0) != null) && ((tagList.get(0).getFloor() != null))) {
-			Log.v("List_Floor",tagList.get(0).getFloor().toString());
+
+		if ((tagList.get(0) != null) && ((tagList.get(0).getFloor() != null))) {
+			Log.v("List_Floor", tagList.get(0).getFloor().toString());
 			this.mTextViewFloor.setText(tagList.get(0).getFloor().toString());
 			this.mTextViewDescription.setText(tagList.get(0).getDescription());
 		}
@@ -190,9 +206,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			// do this
 			SpinnerRoomtype.setSelection(position);
 			String selState = (String) SpinnerRoomtype.getSelectedItem();
-			
+
 			String[] splitResult = selState.split(" ");
-			
+
 			Log.v("ITEMSELECTED", selState);
 			addRoomSpinner(Integer.parseInt(splitResult[0]));
 
@@ -221,6 +237,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -232,8 +249,10 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		nfccon.setupForegroundDispatch(this, mNfcAdapter);
 	}
 
+	@SuppressWarnings("static-access")
 	@Override
 	protected void onPause() {
+		super.onPause();
 		/**
 		 * Call this before onPause, otherwise an IllegalArgumentException is
 		 * thrown as well.
@@ -241,7 +260,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		nfccon = new NFCController(this.mTextView);
 		nfccon.stopForegroundDispatch(this, mNfcAdapter);
 
-		super.onPause();
+		
 	}
 
 	@Override
@@ -256,32 +275,35 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		 * the device.
 		 */
 		nfccon = new NFCController(this.mTextView);
-		nfccon.handleIntent(intent,this);
+		nfccon.handleIntent(intent, this);
 	}
 
 	public void onClick_GO(View v) {
 		this.SpinnerRoom = (Spinner) findViewById(R.id.nfc_spinner_room);
-		
+
 		// SpinnerData in SharedPref schreiben.
 
 		Intent intent = new Intent("android.intents.NFCGO");
-		String selectedItem = String.valueOf(this.SpinnerRoom.getSelectedItem());
+		String selectedItem = String
+				.valueOf(this.SpinnerRoom.getSelectedItem());
 		String[] splitResult = selectedItem.split(" ");
-		
+
 		if (prefs.getBoolean("firstrun", true)) {
-		intent.putExtra("End_ID",splitResult[0]);
+			intent.putExtra("End_ID", splitResult[0]);
 		}
-		
-		Log.v("ROOMSPINNER AUSGABE",String.valueOf(this.SpinnerRoom.getSelectedItem()));
-		Log.v("ROOMSPINNER NACH SPLIT",splitResult[0]);
-		
-		
-		intent.putExtra("Start_ID",String.valueOf(this.mTextView.getText().toString()));
-		intent.putExtra("Start_floor", String.valueOf(this.mTextViewFloor.getText().toString()));
-		
-		prefs.edit().putString("lastDestination",splitResult[0]).commit();
-		
-		//TODO: DatumsController
+
+		Log.v("ROOMSPINNER AUSGABE",
+				String.valueOf(this.SpinnerRoom.getSelectedItem()));
+		Log.v("ROOMSPINNER NACH SPLIT", splitResult[0]);
+
+		intent.putExtra("Start_ID",
+				String.valueOf(this.mTextView.getText().toString()));
+		intent.putExtra("Start_floor",
+				String.valueOf(this.mTextViewFloor.getText().toString()));
+
+		prefs.edit().putString("lastDestination", splitResult[0]).commit();
+
+		// TODO: DatumsController
 		startActivity(intent);
 	}
 }
