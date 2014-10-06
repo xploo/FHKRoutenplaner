@@ -120,7 +120,7 @@ public class ImageController extends Controller {
 		this.myPaint = new Paint();
 		this.myPaint.setAntiAlias(true);
 		this.myPaint.setStyle(Paint.Style.FILL);
-		this.myPaint.setColor(Color.GREEN);
+		this.myPaint.setColor(Color.RED);
 		this.myPaint.setStrokeWidth(5.0f);
 
 		this.mPathController = new PathController(mContext);
