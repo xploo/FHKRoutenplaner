@@ -10,5 +10,16 @@
     <string name = "nfc_pos">Aktuelle Position</string>
     <string name="fhk_routenplaner">FH Köln Routenplaner</string>
     <string name="delete">Delete</string>
+    <string name="name">Name</string>
+    <string name="enterName">Namen eingeben...</string>
+    <string name="date">Datum</string>
+    <string name="enterDate">Datum eingeben...</string>
+    <string name="time">Uhrzeit</string>
+    <string name="enterTime">Uhrzeit eingeben...</string>
+    <string name="start">Start</string>
+    <string name="enterStart">Startpunkt auswählen...</string>
+    <string name="destination">Ziel</string>
+    <string name="enterDestination">Ziel auswählen...</string>
+    <string name="startNavigation">Navigation starten</string>
 
 </resources>

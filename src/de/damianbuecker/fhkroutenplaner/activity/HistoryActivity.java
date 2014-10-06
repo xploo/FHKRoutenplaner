@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -126,8 +127,11 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 	 */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		String item = (String) getListAdapter().getItem(position);
-		Toast.makeText(this, item + " selected", Toast.LENGTH_LONG).show();
+		HistoryItem item = (HistoryItem) getListAdapter().getItem(position);
+		
+		Intent intent = new Intent(this, HistoryItemDetailActivity.class);
+		intent.putExtra("selectedItem", item.toJson(item));
+		startActivity(intent);
 	}
 
 	public class HistoryItemArrayAdapter extends ArrayAdapter<HistoryItem> {

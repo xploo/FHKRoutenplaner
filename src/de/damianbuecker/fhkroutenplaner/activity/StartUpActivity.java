@@ -43,26 +43,6 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		}
 		this.mSharedPreferencesController.putInSharedPreference("RouteRunning", false);
 		
-		// Dateien kopieren(assets -> Intern)
-		/*
-		 * this.srtcon = new StartupContoller(this); if (this.wifistate =
-		 * srtcon.isWifiConnected() && srtcon.checkForUpdate() == 2) {
-		 * Log.v("WIFI CONNECTED", "YES"); AlertDialog.Builder
-		 * alertDialogBuilder = new AlertDialog.Builder( this);
-		 * alertDialogBuilder.setTitle("Database update is available!");
-		 * 
-		 * alertDialogBuilder .setMessage("Install update?")
-		 * .setCancelable(false) .setPositiveButton("Yes", new
-		 * DialogInterface.OnClickListener() { public void
-		 * onClick(DialogInterface dialog, int id) { // Update Database
-		 * 
-		 * srtcon.getExternalDatabase();
-		 * 
-		 * } }) .setNegativeButton("No", new DialogInterface.OnClickListener() {
-		 * public void onClick(DialogInterface dialog, int id) {
-		 * dialog.cancel(); } }); AlertDialog alertDialog =
-		 * alertDialogBuilder.create(); // show it alertDialog.show(); }
-		 */
 		if (this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}
@@ -111,15 +91,6 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		/*
 		 * Aus DB holen
 		 */
-//		if(this.databaseHelper == null) {
-//			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
-//		}
-//		ArrayList<HistoryItem> listHistoryItems = new ArrayList<HistoryItem>();
-//		listHistoryItems = (ArrayList<HistoryItem>)this.databaseHelper.getHistoryItems();
-//		
-//		Intent intent = new Intent("android.intents.History");
-//		intent.putExtra("history", listHistoryItems);
-//		startActivity(intent);
 		if(this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}

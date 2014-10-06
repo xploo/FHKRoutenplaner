@@ -3,12 +3,12 @@ package de.damianbuecker.fhkroutenplaner.activity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.app.Activity;
+import roboguice.activity.RoboActivity;
 
 /**
  * The Class ModifiedViewActivityImpl.
  */
-public class ModifiedViewActivityImpl extends Activity implements ModifiedViewInterface {
+public class ModifiedViewActivityImpl extends RoboActivity implements ModifiedViewInterface {
 
 	/** The Constant logger. */
 	private static final Logger logger = LoggerFactory.getLogger(ModifiedViewActivityImpl.class);
