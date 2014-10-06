@@ -46,14 +46,14 @@ public class FileController extends Controller {
 							"file:///" + Environment.getExternalStorageDirectory()
 									+ "/FMS/TestIMG-" + startFloor + ".png");
 				} else if (line.contains("###Etage1marker")) {
-					line = line.replace("###Etage1marker", "Etage " + startFloor + "");
+					line = line.replace("###Etage1marker", "Startetage : " + startFloor + "");
 
 				} else if (line.contains("###Marker2")) {
 					line = line.replace("###Marker2",
 							"file:///" + Environment.getExternalStorageDirectory()
 									+ "/FMS/TestIMG-" + endFloor + ".png");
 				} else if (line.contains("###Etage2marker")) {
-					line = line.replace("###Etage2marker", "Etage " + endFloor + "");
+					line = line.replace("###Etage2marker", "Zieletage : " + endFloor + "");
 				}
 				buf.append(line);
 				buf.append('\n');
