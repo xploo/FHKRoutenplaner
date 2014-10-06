@@ -18,7 +18,7 @@ public class ModifiedViewActivityImpl extends Activity implements ModifiedViewIn
 	 */
 	@Override
 	public void logWarning(String message) {
-		logger.warn("WARNING", message);
+		logger.warn(message);
 	}
 
 	/* (non-Javadoc)
@@ -26,7 +26,7 @@ public class ModifiedViewActivityImpl extends Activity implements ModifiedViewIn
 	 */
 	@Override
 	public void logError(String message) {
-		logger.error("ERROR", message);
+		logger.error(message);
 	}
 
 	/* (non-Javadoc)
@@ -34,6 +34,6 @@ public class ModifiedViewActivityImpl extends Activity implements ModifiedViewIn
 	 */
 	@Override
 	public void logInfo(String message) {
-		logger.info("INFO", message);
+		logger.info(message);
 	}
 }

@@ -1,5 +1,6 @@
 package de.damianbuecker.fhkroutenplaner.model;
 
+
 /**
  * The Class Edge.
  */
@@ -121,5 +122,4 @@ public class Edge extends Model {
 	public String toString() {
 		return source + " " + destination;
 	}
-
 }
