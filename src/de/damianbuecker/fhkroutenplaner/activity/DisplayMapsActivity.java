@@ -12,7 +12,6 @@ import android.util.Log;
 import android.webkit.WebView;
 import de.damianbuecker.fhkroutenplaner.controller.FileController;
 import de.damianbuecker.fhkroutenplaner.controller.ImageController;
-import de.damianbuecker.fhkroutenplaner.controller.NFCController;
 
 /**
  * The Class DisplayMapsActivity.
@@ -38,7 +37,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	private Integer endFloor;
 
 	/** The m nfc controller. */
-	private NFCController mNFCController;
+	private NfcController mNFCController;
 	
 	/** The m image controller. */
 	private ImageController mImageController;
@@ -49,9 +48,6 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/** The m nfc adapter. */
 	private NfcAdapter mNfcAdapter;
 	
-	/** The nfccon. */
-	private NFCController nfccon;
-
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
@@ -68,7 +64,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		// ABfrage Running??
 
-		this.mNFCController = new NFCController(this);
+		this.mNFCController = new NfcController(this);
 		// this.mNFCController.setContext(this);
 		mNFCController.handleIntent(getIntent(), this);
 
@@ -116,7 +112,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		}
 		if (this.mNFCController == null) {
 
-			this.mNFCController = new NFCController(this);
+			this.mNFCController = new NfcController(this);
 		}
 
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -172,7 +168,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	 */
 	protected void onNewIntent(Intent intent) {
 
-		nfccon = new NFCController(this);
+		nfccon = new NfcController(this);
 		nfccon.handleIntent(intent, this);
 		// serv = new NFCService(this);
 		// serv.HandleIntent(intent);
@@ -193,7 +189,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		// Setzten von Running auf false
 
-		nfccon = new NFCController(this);
+		nfccon = new NfcController(this);
 		nfccon.setupForegroundDispatch(this, mNfcAdapter);
 		// serv = new NFCService(this);
 		// serv.setupForegroundDispatch(this, mNfcAdapter);
@@ -210,7 +206,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		 * thrown as well.
 		 */
 
-		nfccon = new NFCController(this);
+		nfccon = new NfcController(this);
 		nfccon.stopForegroundDispatch(this, mNfcAdapter);
 		// serv = new NFCService(this);
 		// serv.stopForegroundDispatch(this, mNfcAdapter);

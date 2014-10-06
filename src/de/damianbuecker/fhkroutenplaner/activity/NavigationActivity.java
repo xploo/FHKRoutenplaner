@@ -1,9 +1,14 @@
 package de.damianbuecker.fhkroutenplaner.activity;
 
+import hirondelle.date4j.DateTime;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,17 +27,19 @@ import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
-import de.damianbuecker.fhkroutenplaner.controller.NFCController;
+import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
+import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
+@ContentView(R.layout.nfcconnector_activity)
 public class NavigationActivity extends ModifiedViewActivityImpl implements
 		OnItemSelectedListener {
 
+	@InjectView(R.id.txtV_nfc_hidden)			TextView mTextView;
 	private Spinner SpinnerRoomtype, SpinnerRoom;
 	private List roomtypeSpinnerData, roomSpinnerData;
 	private DatabaseHelper databaseHelper;
-	private TextView mTextView;
 	private TextView mTextViewFloor, mTextViewDescription;
 	private NfcAdapter mNfcAdapter;
 	private static final String MIME_TEXT_PLAIN = "text/plain";
@@ -43,18 +50,15 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 	private SharedPreferences prefs;
 	private AlertDialog alertDialog;
 
-	private NFCController nfccon;
+	private SharedPreferencesController mSharedPreferencesController;
+	private NfcController mNfcController;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.nfcconnector_activity);
-		mTextView = (TextView) findViewById(R.id.txtV_nfc_hidden);
 
-		prefs = getSharedPreferences("de.damianbuecker.fhkroutenplaner",
-				MODE_PRIVATE);
-
+		this.mSharedPreferencesController = new SharedPreferencesController(this);
 		this.mTextView.setText("");
 		if (this.mTextView.getText().equals("")) {
 			
@@ -84,7 +88,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 			public void afterTextChanged(Editable s) {
 				try {
 					if (s.length() > 0) {
-						// Start
 						NavigationActivity.this.start(s.toString());
 						alertDialog.dismiss();
 					}
@@ -115,9 +118,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 				Toast.makeText(this, "R.string.explanation", Toast.LENGTH_LONG)
 						.show();
 			}
-			nfccon = new NFCController(this.mTextView);
+			mNfcController = new NfcController(this.mTextView);
 
-			nfccon.handleIntent(getIntent(), this);
+			mNfcController.handleIntent(getIntent(),this);
 
 		}
 
@@ -245,8 +248,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 		 * It's important, that the activity is in the foreground (resumed).
 		 * Otherwise an IllegalStateException is thrown.
 		 */
-		nfccon = new NFCController(this.mTextView);
-		nfccon.setupForegroundDispatch(this, mNfcAdapter);
+		mNfcController = new NfcController(this.mTextView);
+		mNfcController.setupForegroundDispatch(this, mNfcAdapter);
 	}
 
 	@SuppressWarnings("static-access")
@@ -257,8 +260,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 		 * Call this before onPause, otherwise an IllegalArgumentException is
 		 * thrown as well.
 		 */
-		nfccon = new NFCController(this.mTextView);
-		nfccon.stopForegroundDispatch(this, mNfcAdapter);
+		mNfcController = new NfcController(this.mTextView);
+		mNfcController.stopForegroundDispatch(this, mNfcAdapter);
 
 		
 	}
@@ -274,34 +277,61 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 		 * In our case this method gets called, when the user attaches a Tag to
 		 * the device.
 		 */
-		nfccon = new NFCController(this.mTextView);
-		nfccon.handleIntent(intent, this);
+		mNfcController = new NfcController(this.mTextView);
+		mNfcController.handleIntent(intent,this);
 	}
 
 	public void onClick_GO(View v) {
 		this.SpinnerRoom = (Spinner) findViewById(R.id.nfc_spinner_room);
 
-		// SpinnerData in SharedPref schreiben.
-
 		Intent intent = new Intent("android.intents.NFCGO");
-		String selectedItem = String
-				.valueOf(this.SpinnerRoom.getSelectedItem());
-		String[] splitResult = selectedItem.split(" ");
+		String[] splitResult = String.valueOf(this.SpinnerRoom.getSelectedItem()).split(" ");
 
-		if (prefs.getBoolean("firstrun", true)) {
+		if(this.mSharedPreferencesController == null) {
+			this.mSharedPreferencesController = new SharedPreferencesController(this);
+		}
+		if(this.mSharedPreferencesController.hasSharedPreference("firstrun")) {
+			if(this.mSharedPreferencesController.getBoolean("firstrun")) {
 			intent.putExtra("End_ID", splitResult[0]);
+		}
 		}
 
 		Log.v("ROOMSPINNER AUSGABE",
 				String.valueOf(this.SpinnerRoom.getSelectedItem()));
 		Log.v("ROOMSPINNER NACH SPLIT", splitResult[0]);
+		this.logInfo("ROOMSPINNER AUSGABE - " + String.valueOf(this.SpinnerRoom.getSelectedItem()));
+		this.logInfo("ROOMSPINNER NACH SPLIT - " + splitResult[0]);
 
-		intent.putExtra("Start_ID",
-				String.valueOf(this.mTextView.getText().toString()));
-		intent.putExtra("Start_floor",
-				String.valueOf(this.mTextViewFloor.getText().toString()));
 
-		prefs.edit().putString("lastDestination", splitResult[0]).commit();
+		intent.putExtra("Start_ID",String.valueOf(this.mTextView.getText().toString()));
+		intent.putExtra("Start_floor", String.valueOf(this.mTextViewFloor.getText().toString()));
+		
+		this.mSharedPreferencesController.putInSharedPreference("lastDestination", splitResult[0]);
+		
+		DateTime today = DateTime.today(TimeZone.getDefault());
+		long date = today.getMilliseconds(TimeZone.getDefault());
+
+		DateTime now = DateTime.now(TimeZone.getDefault());
+		long time = now.getMilliseconds(TimeZone.getDefault());
+		
+		StringBuffer name = new StringBuffer("");
+		name.append("Navigation ").append(today.toString());
+		
+		StringBuffer start = new StringBuffer("");
+		start.append(this.mTextViewDescription.getText());
+		
+		StringBuffer destination = new StringBuffer("");
+		destination.append(this.SpinnerRoom.getSelectedItem());
+		
+		HistoryItem item = new HistoryItem();
+		item.setName(name.toString());
+		item.setDate(date);
+		item.setTimestamp(time);
+		item.setStart(start.toString());
+		item.setDestination(destination.toString());
+		item.create(this);
+		
+		this.logInfo("item: " + item.getName() + " " + item.getDate() + " " + item.getTimestamp() + " " + item.getStart() + " " + item.getDestination());
 
 		// TODO: DatumsController
 		startActivity(intent);
