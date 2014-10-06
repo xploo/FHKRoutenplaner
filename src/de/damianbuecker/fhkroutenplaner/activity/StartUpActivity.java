@@ -1,5 +1,6 @@
 package de.damianbuecker.fhkroutenplaner.activity;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import de.damianbuecker.fhkroutenplaner.controller.CsvController;
