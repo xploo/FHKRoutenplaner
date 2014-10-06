@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import de.damianbuecker.fhkroutenplaner.controller.CsvController;
@@ -43,26 +41,6 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		}
 		this.mSharedPreferencesController.putInSharedPreference("RouteRunning", false);
 		
-		// Dateien kopieren(assets -> Intern)
-		/*
-		 * this.srtcon = new StartupContoller(this); if (this.wifistate =
-		 * srtcon.isWifiConnected() && srtcon.checkForUpdate() == 2) {
-		 * Log.v("WIFI CONNECTED", "YES"); AlertDialog.Builder
-		 * alertDialogBuilder = new AlertDialog.Builder( this);
-		 * alertDialogBuilder.setTitle("Database update is available!");
-		 * 
-		 * alertDialogBuilder .setMessage("Install update?")
-		 * .setCancelable(false) .setPositiveButton("Yes", new
-		 * DialogInterface.OnClickListener() { public void
-		 * onClick(DialogInterface dialog, int id) { // Update Database
-		 * 
-		 * srtcon.getExternalDatabase();
-		 * 
-		 * } }) .setNegativeButton("No", new DialogInterface.OnClickListener() {
-		 * public void onClick(DialogInterface dialog, int id) {
-		 * dialog.cancel(); } }); AlertDialog alertDialog =
-		 * alertDialogBuilder.create(); // show it alertDialog.show(); }
-		 */
 		if (this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}

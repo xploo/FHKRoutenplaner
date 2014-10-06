@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000" >
+
+    <View
+    	android:layout_alignParentTop="true"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+    
+    <TextView 
+        android:id="@+id/name"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:text="@string/name"
+        android:textColor="#ffffee"
+        android:textStyle="italic"
+        android:textSize="20sp"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp" />
+    
+    <EditText 
+        android:id="@+id/editName"
+        android:layout_below="@+id/name"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="text"
+        android:hint="@string/enterName"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:paddingLeft="10dp" />
+    
+	<View
+    	android:layout_below="@+id/editName"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:alpha="0.1" />
+    
+    <TextView 
+        android:id="@+id/date"
+        android:layout_below="@+id/editName"
+        android:layout_alignParentLeft="true"
+        android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+        android:text="@string/date"
+        android:textColor="#ffffee"
+        android:textStyle="italic"
+        android:textSize="20sp"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp" />
+    
+	<EditText 
+        android:id="@+id/editDate"
+        android:layout_below="@+id/date"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="date"
+        android:hint="@string/enterDate"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:paddingLeft="10dp" />
+	
+	<View
+    	android:layout_below="@+id/editDate"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:alpha="0.1" />
+	
+    <TextView 
+        android:id="@+id/time"
+        android:layout_below="@+id/editDate"
+        android:layout_alignParentLeft="true"
+        android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+        android:text="@string/time"
+        android:textColor="#ffffee"
+        android:textStyle="italic"
+        android:textSize="20sp"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp" />
+    
+	<EditText 
+        android:id="@+id/editTime"
+        android:layout_below="@+id/time"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="time"
+        android:hint="@string/enterTime"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:paddingLeft="10dp" />
+	
+	<View
+    	android:layout_below="@+id/editTime"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:alpha="0.1" />
+	
+    <TextView 
+        android:id="@+id/start"
+        android:layout_below="@+id/editTime"
+        android:layout_alignParentLeft="true"
+        android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+        android:text="@string/start"
+        android:textColor="#ffffee"
+        android:textStyle="italic"
+        android:textSize="20sp"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp" />
+    
+	<EditText 
+        android:id="@+id/editStart"
+        android:layout_below="@+id/start"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="text"
+        android:hint="@string/enterStart"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:paddingLeft="10dp" />
+	
+	<View
+    	android:layout_below="@+id/editStart"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:alpha="0.1" />
+	
+    <TextView 
+        android:id="@+id/destination"
+        android:layout_below="@+id/editStart"
+        android:layout_alignParentLeft="true"
+        android:layout_height="wrap_content"
+		android:layout_width="fill_parent"
+        android:text="@string/destination"
+        android:textColor="#ffffee"
+        android:textStyle="italic"
+        android:textSize="20sp"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp" />
+    
+	<EditText 
+        android:id="@+id/editDestination"
+        android:layout_below="@+id/destination"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="time"
+        android:hint="@string/enterDestination"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
+        android:paddingLeft="10dp" />
+	
+	<View
+    	android:layout_below="@+id/editDestination"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:alpha="0.1" />
+	
+	<Button 
+	    android:id="@+id/startNavigationButton"
+	    android:layout_below="@+id/editDestination"
+	    android:layout_height="wrap_content" 
+	    android:layout_width="wrap_content" 
+	    android:layout_alignParentLeft="true"
+	    android:text="@string/startNavigation"
+	    android:paddingTop="5dp"
+	    android:textColor="#1FFF09"
+	    android:textStyle="italic"
+	    android:background="#000000"/>
+
+</RelativeLayout>
