@@ -51,7 +51,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 	private AlertDialog alertDialog;
 
 	private SharedPreferencesController mSharedPreferencesController;
-	private NfcController mNfcController;
+//	private NfcController mNfcController;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -118,9 +118,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 				Toast.makeText(this, "R.string.explanation", Toast.LENGTH_LONG)
 						.show();
 			}
-			mNfcController = new NfcController(this.mTextView);
+//			mNfcController = new NfcController(this.mTextView);
 
-			mNfcController.handleIntent(getIntent(),this);
+//			mNfcController.handleIntent(getIntent(),this);
 
 		}
 
@@ -248,8 +248,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 		 * It's important, that the activity is in the foreground (resumed).
 		 * Otherwise an IllegalStateException is thrown.
 		 */
-		mNfcController = new NfcController(this.mTextView);
-		mNfcController.setupForegroundDispatch(this, mNfcAdapter);
+//		mNfcController = new NfcController(this.mTextView);
+//		mNfcController.setupForegroundDispatch(this, mNfcAdapter);
 	}
 
 	@SuppressWarnings("static-access")
@@ -260,8 +260,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 		 * Call this before onPause, otherwise an IllegalArgumentException is
 		 * thrown as well.
 		 */
-		mNfcController = new NfcController(this.mTextView);
-		mNfcController.stopForegroundDispatch(this, mNfcAdapter);
+//		mNfcController = new NfcController(this.mTextView);
+//		mNfcController.stopForegroundDispatch(this, mNfcAdapter);
 
 		
 	}
@@ -277,8 +277,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 		 * In our case this method gets called, when the user attaches a Tag to
 		 * the device.
 		 */
-		mNfcController = new NfcController(this.mTextView);
-		mNfcController.handleIntent(intent,this);
+//		mNfcController = new NfcController(this.mTextView);
+//		mNfcController.handleIntent(intent,this);
 	}
 
 	public void onClick_GO(View v) {
