@@ -32,7 +32,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	private DatabaseHelper databaseHelper;
 	private TextView mTextView;
 	private TextView mTextViewFloor, mTextViewDescription;
-
 	private NfcAdapter mNfcAdapter;
 	private static final String MIME_TEXT_PLAIN = "text/plain";
 	private static final String TAG = "NfcDemo";
@@ -41,7 +40,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	private List<Tag> tagList = null;
 	private SharedPreferences prefs;
 
-	private NFCController nfccon;	
+	private NFCController nfccon;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
