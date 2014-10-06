@@ -24,7 +24,7 @@ import de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity;
 /**
  * The Class NFCController.
  */
-public class NFCController extends Controller {
+public class NfcController extends Controller {
 
 	/** The Constant MIME_TEXT_PLAIN. */
 	public static final String MIME_TEXT_PLAIN = "text/plain";
@@ -49,7 +49,7 @@ public class NFCController extends Controller {
 	 *
 	 * @param tv the tv
 	 */
-	public NFCController(TextView tv) {
+	public NfcController(TextView tv) {
 		super(tv.getContext());
 		this.mTextView = tv;
 	}
@@ -59,7 +59,7 @@ public class NFCController extends Controller {
 	 *
 	 * @param context the context
 	 */
-	public NFCController(Context context) {
+	public NfcController(Context context) {
 		super(context);
 	}
 
@@ -207,16 +207,16 @@ public class NFCController extends Controller {
 			this.textViewReference = null;
 			if (mContext == null) {
 
-				NFCController.this.logError("Constructor Context - null");
+				NfcController.this.logError("Constructor Context - null");
 			} else
-				NFCController.this.logInfo("Constructor Context nicht null");
+				NfcController.this.logInfo("Constructor Context nicht null");
 
 			running = prefs.getBoolean("RouteRunning", false);
 
 			if (running == true) {
-				NFCController.this.logInfo("Constructor - yes");
+				NfcController.this.logInfo("Constructor - yes");
 			} else {
-				NFCController.this.logInfo("Constructor - no");
+				NfcController.this.logInfo("Constructor - no");
 			}
 
 		}
@@ -293,9 +293,9 @@ public class NFCController extends Controller {
 		@Override
 		protected void onPostExecute(String result) {
 
-			NFCController.this.logInfo("RouteRunningreP");
+			NfcController.this.logInfo("RouteRunningreP");
 			if (running == true) {
-				NFCController.this.logInfo("RouteRunning");
+				NfcController.this.logInfo("RouteRunning");
 				// Intent intent = new Intent("android.intents.NFCGO");
 				// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -314,7 +314,7 @@ public class NFCController extends Controller {
 				}
 
 			}
-			NFCController.this.logInfo(result);
+			NfcController.this.logInfo(result);
 		}
 
 	}
