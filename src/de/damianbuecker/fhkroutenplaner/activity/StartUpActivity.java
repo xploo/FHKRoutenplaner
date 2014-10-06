@@ -111,15 +111,6 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		/*
 		 * Aus DB holen
 		 */
-//		if(this.databaseHelper == null) {
-//			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
-//		}
-//		ArrayList<HistoryItem> listHistoryItems = new ArrayList<HistoryItem>();
-//		listHistoryItems = (ArrayList<HistoryItem>)this.databaseHelper.getHistoryItems();
-//		
-//		Intent intent = new Intent("android.intents.History");
-//		intent.putExtra("history", listHistoryItems);
-//		startActivity(intent);
 		if(this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}
