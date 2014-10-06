@@ -31,6 +31,7 @@
         android:inputType="text"
         android:hint="@string/enterName"
         android:textSize="14sp"
+        android:textColor="#ffffff"
         android:singleLine="true"
         android:selectAllOnFocus="true"
         android:paddingLeft="10dp" />
@@ -63,6 +64,7 @@
         android:inputType="date"
         android:hint="@string/enterDate"
         android:textSize="14sp"
+        android:textColor="#ffffff"
         android:singleLine="true"
         android:selectAllOnFocus="true"
         android:paddingLeft="10dp" />
@@ -95,6 +97,7 @@
         android:inputType="time"
         android:hint="@string/enterTime"
         android:textSize="14sp"
+        android:textColor="#ffffff"
         android:singleLine="true"
         android:selectAllOnFocus="true"
         android:paddingLeft="10dp" />
@@ -127,6 +130,7 @@
         android:inputType="text"
         android:hint="@string/enterStart"
         android:textSize="14sp"
+        android:textColor="#ffffff"
         android:singleLine="true"
         android:selectAllOnFocus="true"
         android:paddingLeft="10dp" />
@@ -159,6 +163,7 @@
         android:inputType="time"
         android:hint="@string/enterDestination"
         android:textSize="14sp"
+        android:textColor="#ffffff"
         android:singleLine="true"
         android:selectAllOnFocus="true"
         android:paddingLeft="10dp" />
@@ -180,6 +185,7 @@
 	    android:paddingTop="5dp"
 	    android:textColor="#1FFF09"
 	    android:textStyle="italic"
-	    android:background="#000000"/>
+	    android:background="#000000"
+	    android:paddingLeft="10dp"/>
 
 </RelativeLayout>
