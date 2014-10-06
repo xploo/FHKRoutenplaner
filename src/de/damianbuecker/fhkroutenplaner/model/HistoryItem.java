@@ -1,5 +1,14 @@
 package de.damianbuecker.fhkroutenplaner.model;
 
+import java.io.IOException;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.Expose;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -54,7 +63,15 @@ public class HistoryItem extends Model {
 	/**
 	 * Instantiates a new history item.
 	 */
-	public HistoryItem() {
+	public HistoryItem() {}
+	
+	public HistoryItem(int id, String destination, String start, long timestamp, long date,	String name) {
+		this.id = id;
+		this.destination = destination;
+		this.start = start;
+		this.timestamp = timestamp;
+		this.date = date;
+		this.name = name;
 	}
 
 	/**
@@ -73,6 +90,7 @@ public class HistoryItem extends Model {
 	 *            the new id
 	 */
 	public void setId(int id) {
+		this.id = id;
 	}
 
 	/**
@@ -168,5 +186,47 @@ public class HistoryItem extends Model {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	public HistoryItem fromJson(String json) {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeHierarchyAdapter(HistoryItem.class, new HistoryItemTypeAdapter());
+		gsonBuilder.setPrettyPrinting();
+		Gson gson = gsonBuilder.create();
+		
+		return gson.fromJson(json, HistoryItem.class);
+	}
+	
+	public String toJson(HistoryItem historyItem) {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeHierarchyAdapter(HistoryItem.class, new HistoryItemTypeAdapter());
+		gsonBuilder.setPrettyPrinting();
+		Gson gson = gsonBuilder.create();
+		
+		return gson.toJson(historyItem);
+	}
+	
+	public class HistoryItemTypeAdapter extends TypeAdapter<HistoryItem>{
+
+		@Override
+		public HistoryItem read(JsonReader in) throws IOException {
+			if(in.peek() == JsonToken.NULL) {
+				in.nextNull();
+				return null;
+			}
+			String data = in.nextString();
+			String[] dataParts = data.split(",");
+			return new HistoryItem(Integer.parseInt(dataParts[0]), dataParts[1], dataParts[2], Long.parseLong(dataParts[3]), Long.parseLong(dataParts[4]), dataParts[5]);
+		}
+
+		@Override
+		public void write(JsonWriter out, HistoryItem value) throws IOException {
+			if(value == null) {
+				out.nullValue();
+				return;
+			}
+			StringBuffer sb = new StringBuffer("");
+			sb.append(value.getId()).append(",").append(value.getDestination()).append(",").append(value.getStart()).append(",").append(value.getTimestamp()).append(",").append(value.getDate()).append(",").append(value.getName());
+			out.value(sb.toString());
+		}
 	}
 }

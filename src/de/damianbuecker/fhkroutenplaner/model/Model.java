@@ -12,11 +12,22 @@ import com.j256.ormlite.dao.Dao;
 
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 
-public class Model {
+import android.content.Context;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+
+import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
+
+/**
+ * The Class Model.
+ */
+abstract public class Model {
 
 	/** The database controller. */
 	private DatabaseHelper databaseController;
 	
+	/** The Constant logger. */
 	private static final Logger logger = LoggerFactory.getLogger(Model.class);
 	
 	/**
@@ -25,7 +36,7 @@ public class Model {
 	 * @param message the message
 	 */
 	public void logWarning(String message) {
-		logger.warn("WARNING", "@" + Model.class.getSimpleName() + " " + message);
+		logger.warn("@" + Model.class.getSimpleName() + " " + message);
 	}
 
 	/**
@@ -34,7 +45,7 @@ public class Model {
 	 * @param message the message
 	 */
 	public void logError(String message) {
-		logger.error("ERROR", "@" + Model.class.getSimpleName() + " " + message);
+		logger.error("@" + Model.class.getSimpleName() + " " + message);
 	}
 
 	/**
@@ -43,7 +54,7 @@ public class Model {
 	 * @param message the message
 	 */
 	public void logInfo(String message) {
-		logger.info("INFO", "@" + Model.class.getSimpleName() + " " + message);
+		logger.info("@" + Model.class.getSimpleName() + " " + message);
 	}
 	
 	/**

@@ -16,29 +16,26 @@ import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-import de.damianbuecker.fhkroutenplaner.model.Edge;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
-import de.damianbuecker.fhkroutenplaner.model.Model;
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	private static final String DATABASE_NAME = "database.db";
 	private static final int DATABASE_VERSION = 1;
 
-	private Dao<Tag, Integer> tagDataDao = null;
-	private Dao<HistoryItem, Integer> historyDao;
-	private Dao<HistoryItem, Integer> historyItemDataDao = null;
+	private Dao<Tag, Integer> tagDataDao;
+	private Dao<HistoryItem, Integer> historyItemDataDao;
 
 	/** The room data dao. */
-	private Dao<Room, Integer> roomDataDao = null;
-	private Dao<Docent, Integer> docentDataDao = null;
-	private Dao<Roomtype, Integer> roomtypeDataDao = null;
-	private Dao<Edges, Integer> edgesDataDao = null;
-	private Dao<Roomtype, Integer> roomtypeSpinner = null;
-	private Dao<Tag, Integer> tagLocationAll = null;
-	private Dao<Edges, Integer> edgesAll = null;
-	private Dao<Tag, Integer> tagLocationById = null;
-	private Dao<Room, Integer> roomSpinner = null;
+	private Dao<Room, Integer> roomDataDao;
+	private Dao<Docent, Integer> docentDataDao;
+	private Dao<Roomtype, Integer> roomtypeDataDao;
+	private Dao<Edges, Integer> edgesDataDao;
+	private Dao<Roomtype, Integer> roomtypeSpinner;
+	private Dao<Tag, Integer> tagLocationAll;
+	private Dao<Edges, Integer> edgesAll;
+	private Dao<Tag, Integer> tagLocationById;
+	private Dao<Room, Integer> roomSpinner;
 	private List spinnerRoomList = null;
 	private List spinnerRoomtypeList = new ArrayList<Integer>();
 	private StringBuilder sb = new StringBuilder();
@@ -256,9 +253,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public List<HistoryItem> getHistoryItems() {
 
-		List<HistoryItem> result = null;
+		List<HistoryItem> result = new ArrayList<HistoryItem>();
 		try {
-			PreparedQuery<HistoryItem> preparedQuery = this.getHistoryItemDataDao().queryBuilder().where().eq(HistoryItem.ID, 1).prepare();
+			PreparedQuery<HistoryItem> preparedQuery = this.getHistoryItemDataDao().queryBuilder().prepare();
 			result = this.getHistoryItemDataDao().query(preparedQuery);
 
 		} catch (Exception e) {
