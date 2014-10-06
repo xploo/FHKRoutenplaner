@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
+import de.damianbuecker.fhkroutenplaner.controller.NfcController;
 import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
@@ -167,7 +168,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 			// addRoomSpinner(Integer.parseInt(RESULTSPINNER));
 
 		} catch (SQLException e) {
-			// tv.setText(e.toString());
 			e.printStackTrace();
 		}
 	}
@@ -196,7 +196,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 			roomSpinnerData = null;
 
 		} catch (SQLException e) {
-			// tv.setText(e.toString());
 			e.printStackTrace();
 		}
 	}
@@ -223,7 +222,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -293,15 +291,11 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 		if(this.mSharedPreferencesController.hasSharedPreference("firstrun")) {
 			if(this.mSharedPreferencesController.getBoolean("firstrun")) {
 			intent.putExtra("End_ID", splitResult[0]);
-		}
+			}
 		}
 
-		Log.v("ROOMSPINNER AUSGABE",
-				String.valueOf(this.SpinnerRoom.getSelectedItem()));
-		Log.v("ROOMSPINNER NACH SPLIT", splitResult[0]);
 		this.logInfo("ROOMSPINNER AUSGABE - " + String.valueOf(this.SpinnerRoom.getSelectedItem()));
 		this.logInfo("ROOMSPINNER NACH SPLIT - " + splitResult[0]);
-
 
 		intent.putExtra("Start_ID",String.valueOf(this.mTextView.getText().toString()));
 		intent.putExtra("Start_floor", String.valueOf(this.mTextViewFloor.getText().toString()));
