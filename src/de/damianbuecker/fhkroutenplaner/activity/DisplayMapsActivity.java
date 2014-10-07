@@ -178,6 +178,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onResume()
 	 */
+
 	@SuppressWarnings("static-access")
 	@Override
 	protected void onResume() {
