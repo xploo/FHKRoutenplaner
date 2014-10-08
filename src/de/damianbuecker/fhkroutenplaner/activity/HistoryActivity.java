@@ -28,7 +28,7 @@ import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 public class HistoryActivity extends ModifiedViewListActivityImpl {
 
 	/** The m action mode. */
-	protected Object mActionMode;
+	protected Object mActionMode; 
 
 	/** The selected item. */
 	public int selectedItem = -1;
