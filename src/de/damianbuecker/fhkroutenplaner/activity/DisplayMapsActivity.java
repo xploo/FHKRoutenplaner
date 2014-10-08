@@ -15,7 +15,7 @@ import de.damianbuecker.fhkroutenplaner.controller.ImageController;
 import de.damianbuecker.fhkroutenplaner.controller.NfcController;
 
 /**
- * The Class DisplayMapsActivity.
+ * The Class DisplayMapsActivity. Test.
  */
 public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
