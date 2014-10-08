@@ -293,7 +293,7 @@ public class NfcController extends Controller {
 		@Override
 		protected void onPostExecute(String result) {
 
-			NfcController.this.logInfo("RouteRunningreP");
+			NfcController.this.logInfo("RouteRunningPre");
 			if (running == true) {
 				NfcController.this.logInfo("RouteRunning");
 				// Intent intent = new Intent("android.intents.NFCGO");

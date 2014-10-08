@@ -76,7 +76,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			this.startID = Integer.parseInt(extras.getString("Start_ID"));
 			this.startFloor = mImgCont.getEndFloor(startID);
 
-		} else {
+		}else{
 			if (!(extras == null)) {
 
 				if (prefs.getBoolean("firstrun", true)) {
