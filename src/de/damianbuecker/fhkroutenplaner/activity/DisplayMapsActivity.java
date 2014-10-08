@@ -15,7 +15,7 @@ import de.damianbuecker.fhkroutenplaner.controller.ImageController;
 import de.damianbuecker.fhkroutenplaner.controller.NfcController;
 
 /**
- * The Class DisplayMapsActivity. Test.
+ * The Class DisplayMapsActivity.
  */
 public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
@@ -66,6 +66,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		// ABfrage Running??
 
 		this.mNFCController = new NfcController(this);
+		// this.mNFCController.setContext(this);
 		mNFCController.handleIntent(getIntent(), this);
 
 		extras = getIntent().getExtras();
@@ -178,7 +179,6 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onResume()
 	 */
-
 	@SuppressWarnings("static-access")
 	@Override
 	protected void onResume() {
