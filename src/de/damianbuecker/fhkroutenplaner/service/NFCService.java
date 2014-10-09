@@ -16,10 +16,11 @@ import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class NFCService.
  */
-public class NFCService extends Service{
+public class NFCService extends Service {
 	// Tag auslesen
 	// - StartEtage - Start ID
 	// SharedPrefs -> Letztes Ziel
@@ -28,12 +29,12 @@ public class NFCService extends Service{
 	// Starten der Imageberechnung anhand der Daten
 
 	// Service muss in Imageview laufen
-	
 
 	/**
 	 * Instantiates a new NFC service.
-	 *
-	 * @param context the context
+	 * 
+	 * @param context
+	 *            the context
 	 */
 	public NFCService(Context context) {
 		super(context);
@@ -45,11 +46,12 @@ public class NFCService extends Service{
 	// protected!
 	/**
 	 * Handle intent.
-	 *
-	 * @param intent the intent
+	 * 
+	 * @param intent
+	 *            the intent
 	 */
 	public void HandleIntent(Intent intent) {
-		
+
 		this.logInfo("NFCSERV - HandleIntent");
 
 		StringBuffer action = new StringBuffer(intent.getAction());
@@ -81,22 +83,23 @@ public class NFCService extends Service{
 			}
 		}
 	}
-	
+
 	/**
 	 * Setup foreground dispatch.
-	 *
-	 * @param activity the activity
-	 * @param adapter the adapter
+	 * 
+	 * @param activity
+	 *            the activity
+	 * @param adapter
+	 *            the adapter
 	 */
-//	public static void setupForegroundDispatch(final Activity activity,	NfcAdapter adapter) {
-	public void setupForegroundDispatch(final Activity activity,	NfcAdapter adapter) {
+	// public static void setupForegroundDispatch(final Activity activity,
+	// NfcAdapter adapter) {
+	public void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
 		this.logInfo("NFCSERV - Foreground");
-		final Intent intent = new Intent(activity.getApplicationContext(),
-				activity.getClass());
+		final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-		final PendingIntent pendingIntent = PendingIntent.getActivity(
-				activity.getApplicationContext(), 0, intent, 0);
+		final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
 
 		IntentFilter[] filters = new IntentFilter[1];
 		String[][] techList = new String[][] {};
@@ -111,19 +114,19 @@ public class NFCService extends Service{
 			throw new RuntimeException("Check your mime type.");
 		}
 
-		adapter.enableForegroundDispatch(activity, pendingIntent, filters,
-				techList);
+		adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
 	}
 
 	/**
 	 * Stop foreground dispatch.
-	 *
-	 * @param activity the activity
-	 * @param adapter the adapter
+	 * 
+	 * @param activity
+	 *            the activity
+	 * @param adapter
+	 *            the adapter
 	 */
-//	public static void stopForegroundDispatch(final Activity activity,
-	public void stopForegroundDispatch(final Activity activity,
-			NfcAdapter adapter) {
+	// public static void stopForegroundDispatch(final Activity activity,
+	public void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
 		adapter.disableForegroundDispatch(activity);
 	}
 
@@ -131,8 +134,10 @@ public class NFCService extends Service{
 	 * The Class NdefReaderTask.
 	 */
 	private class NdefReaderTask extends AsyncTask<Tag, Void, String> {
-		
-		/* (non-Javadoc)
+
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
 		@Override
@@ -149,9 +154,7 @@ public class NFCService extends Service{
 
 			NdefRecord[] records = ndefMessage.getRecords();
 			for (NdefRecord ndefRecord : records) {
-				if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN
-						&& Arrays.equals(ndefRecord.getType(),
-								NdefRecord.RTD_TEXT)) {
+				if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
 					try {
 						return readText(ndefRecord);
 					} catch (UnsupportedEncodingException e) {
@@ -162,16 +165,17 @@ public class NFCService extends Service{
 
 			return null;
 		}
-		
+
 		/**
 		 * Read text.
-		 *
-		 * @param record the record
+		 * 
+		 * @param record
+		 *            the record
 		 * @return the string
-		 * @throws UnsupportedEncodingException the unsupported encoding exception
+		 * @throws UnsupportedEncodingException
+		 *             the unsupported encoding exception
 		 */
-		private String readText(NdefRecord record)
-				throws UnsupportedEncodingException {
+		private String readText(NdefRecord record) throws UnsupportedEncodingException {
 			NFCService.this.logInfo("NFCSERV - readTest");
 			/*
 			 * See NFC forum specification for "Text Record Type Definition" at
@@ -196,18 +200,20 @@ public class NFCService extends Service{
 			// e.g. "en"
 
 			// Get the Text
-			return new String(payload, languageCodeLength + 1, payload.length
-					- languageCodeLength - 1, textEncoding);
+			return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
 		}
-		
-		/* (non-Javadoc)
+
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override 
+		@Override
 		protected void onPostExecute(String result) {
 
 			NFCService.this.logInfo("NFCSERV - Postexecute");
-			//this.endID = Integer.parseInt(prefs.getString("lastDestination", "0"));
+			// this.endID = Integer.parseInt(prefs.getString("lastDestination",
+			// "0"));
 
 			NFCService.this.logInfo("tagServ: " + result);
 		}

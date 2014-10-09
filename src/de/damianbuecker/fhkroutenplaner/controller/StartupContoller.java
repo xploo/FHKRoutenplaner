@@ -101,14 +101,19 @@ public class StartupContoller extends Controller {
 	/** The Constant TAG_VERSION. */
 	protected static final String TAG_VERSION = "version";
 
+	/** The Constant ROOM_TXT. */
 	private static final String ROOM_TXT = "/sdcard/FMS/room.txt";
 
+	/** The Constant TAG_TXT. */
 	private static final String TAG_TXT = "/sdcard/FMS/tag.txt";
 
+	/** The Constant ROOMTYPE_TXT. */
 	private static final String ROOMTYPE_TXT = "/sdcard/FMS/roomtype.txt";
 
+	/** The Constant DOCENT_TXT. */
 	private static final String DOCENT_TXT = "/sdcard/FMS/docent.txt";
 
+	/** The Constant EDGES_TXT. */
 	private static final String EDGES_TXT = "/sdcard/FMS/edges.txt";
 
 	/**

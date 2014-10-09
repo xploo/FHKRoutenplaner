@@ -34,13 +34,17 @@ public class JSONParser {
 
 	/** The json. */
 	private static String json = "";
-	
+
+	/** The Constant METHOD_POST. */
 	private static final String METHOD_POST = "POST";
-	
+
+	/** The Constant METHOD_GET. */
 	private static final String METHOD_GET = "GET";
-	
+
+	/** The Constant UTF_8. */
 	private static final String UTF_8 = "utf-8";
-	
+
+	/** The Constant ISO_8859_1. */
 	private static final String ISO_8859_1 = "iso-8859-1";
 
 	/**

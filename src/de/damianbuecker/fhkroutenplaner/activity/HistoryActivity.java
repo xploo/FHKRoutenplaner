@@ -28,12 +28,15 @@ import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 public class HistoryActivity extends ModifiedViewListActivityImpl {
 
 	/** The m action mode. */
-	protected Object mActionMode; 
+	protected Object mActionMode;
 
 	/** The selected item. */
 	public int selectedItem = -1;
-	
+
+	/** The Constant INTENT_EXTRA_HISTORY. */
 	private static final String INTENT_EXTRA_HISTORY = "history";
+	
+	/** The Constant INTENT_EXTRA_SELECTED_ITEM. */
 	private static final String INTENT_EXTRA_SELECTED_ITEM = "selectedItem";
 
 	/*
@@ -50,21 +53,19 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 			} else {
 				ArrayList<String> jsonArray = this.getIntent().getStringArrayListExtra(INTENT_EXTRA_HISTORY);
 				ArrayList<HistoryItem> historyItemsList = new ArrayList<HistoryItem>();
-				for(String s : jsonArray) {
+				for (String s : jsonArray) {
 					HistoryItem h = new HistoryItem();
 					h = h.fromJson(s);
 					historyItemsList.add(h);
 				}
-				
-				HistoryItemArrayAdapter mArrayAdapter = new HistoryItemArrayAdapter(this,
-						R.layout.rowlayout, historyItemsList);
+
+				HistoryItemArrayAdapter mArrayAdapter = new HistoryItemArrayAdapter(this, R.layout.rowlayout, historyItemsList);
 				setListAdapter(mArrayAdapter);
 
 				this.getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 
 					@Override
-					public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
-							long id) {
+					public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 						if (mActionMode != null) {
 							return false;
 						}
@@ -118,8 +119,7 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 	 * Show.
 	 */
 	private void show() {
-		Toast.makeText(HistoryActivity.this, String.valueOf(selectedItem), Toast.LENGTH_LONG)
-				.show();
+		Toast.makeText(HistoryActivity.this, String.valueOf(selectedItem), Toast.LENGTH_LONG).show();
 	}
 
 	/*
@@ -131,40 +131,54 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		HistoryItem item = (HistoryItem) getListAdapter().getItem(position);
-		
+
 		Intent intent = new Intent(this, HistoryItemDetailActivity.class);
 		intent.putExtra(INTENT_EXTRA_SELECTED_ITEM, item.toJson(item));
 		startActivity(intent);
 	}
 
+	/**
+	 * The Class HistoryItemArrayAdapter.
+	 */
 	public class HistoryItemArrayAdapter extends ArrayAdapter<HistoryItem> {
-		
+
+		/** The resource. */
 		int resource;
-		
+
+		/**
+		 * Instantiates a new history item array adapter.
+		 *
+		 * @param context the context
+		 * @param resource the resource
+		 * @param items the items
+		 */
 		public HistoryItemArrayAdapter(Context context, int resource, List<HistoryItem> items) {
 			super(context, resource, items);
 			this.resource = resource;
 		}
-		
+
+		/* (non-Javadoc)
+		 * @see android.widget.ArrayAdapter#getView(int, android.view.View, android.view.ViewGroup)
+		 */
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			
+
 			LinearLayout linearLayout;
 			HistoryItem historyItem = getItem(position);
-			
-			if(convertView == null) {
+
+			if (convertView == null) {
 				linearLayout = new LinearLayout(getContext());
-				LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				layoutInflater.inflate(resource, linearLayout, true);
 			} else {
-				linearLayout = (LinearLayout)convertView;
+				linearLayout = (LinearLayout) convertView;
 			}
-			TextView text = (TextView)linearLayout.findViewById(R.id.label);
+			TextView text = (TextView) linearLayout.findViewById(R.id.label);
 			text.setText(historyItem.getName() + historyItem.getId());
-			
+
 			return linearLayout;
 		}
-		
+
 	}
-	
+
 }

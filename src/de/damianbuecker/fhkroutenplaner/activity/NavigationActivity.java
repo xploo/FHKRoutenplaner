@@ -38,13 +38,16 @@ import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 public class NavigationActivity extends ModifiedViewActivityImpl implements OnItemSelectedListener {
 
 	/** The m text view. */
-	@InjectView(R.id.txtV_nfc_hidden)			TextView mTextView;
+	@InjectView(R.id.txtV_nfc_hidden)
+	TextView mTextView;
 
 	/** The m text view floor. */
-	@InjectView(R.id.txtV_nfc_floor_out)		TextView mTextViewFloor;
+	@InjectView(R.id.txtV_nfc_floor_out)
+	TextView mTextViewFloor;
 
 	/** The m text view description. */
-	@InjectView(R.id.txtV_nfc_description_out)	TextView mTextViewDescription;
+	@InjectView(R.id.txtV_nfc_description_out)
+	TextView mTextViewDescription;
 
 	/** The Spinner room. */
 	private Spinner mSpinnerRoomtype, mSpinnerRoom;
@@ -70,21 +73,28 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 	/** The m nfc controller. */
 	private NfcController mNfcController;
-	
+
+	/** The Constant ALERT_DIALOG_TITLE. */
 	private static final String ALERT_DIALOG_TITLE = "Position";
-	
+
+	/** The Constant ALERT_DIALOG_MESSAGE. */
 	private static final String ALERT_DIALOG_MESSAGE = "Please attach your Phone to RFID-Tag";
 
+	/** The Constant ERROR_MESSAGE_NFC_UNSUPPORTED. */
 	private static final String ERROR_MESSAGE_NFC_UNSUPPORTED = "This device doesn't support NFC.";
-	
+
+	/** The Constant ERROR_MESSAGE_NFC_DISABLED. */
 	private static final String ERROR_MESSAGE_NFC_DISABLED = "NFC is disabled.";
-	
+
+	/** The Constant INTENT_EXTRA_START_ID. */
 	private static final String INTENT_EXTRA_START_ID = "Start_ID";
-	
-	private static final String INTENT_EXTRA_START_FLOOR =  "Start_floor";
-	
+
+	/** The Constant INTENT_EXTRA_START_FLOOR. */
+	private static final String INTENT_EXTRA_START_FLOOR = "Start_floor";
+
+	/** The Constant HISTORY_ITEM_NAME_PREFIX. */
 	private static final String HISTORY_ITEM_NAME_PREFIX = "Navigation ";
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -121,9 +131,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 					if (s.length() > 0) {
 						NavigationActivity.this.start(s.toString());
 						alertDialog.dismiss();
-						//<----- 
+						// <-----
 						addRoomtypeSpinner();
-						//----->
+						// ----->
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -150,7 +160,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			this.mNfcController.handleIntent(getIntent(), this);
 
 		}
-		
+
 	}
 
 	/**
@@ -199,23 +209,21 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	 *            the roomtype id
 	 */
 
+	@SuppressWarnings("unchecked")
 	public void addRoomSpinner(Integer roomtypeID) {
 		this.mSpinnerRoom = (Spinner) findViewById(R.id.nfc_spinner_room);
 		this.roomSpinnerData = null;
 		try {
-			//<------ TV neu
+			// <------ TV neu
 			Integer buffer = databaseHelper.getRoomSpinner(roomtypeID, this.mTextView.getText().toString()).size();
 			this.roomSpinnerData = new ArrayList<Integer>();
 			for (int i = 0; i < buffer; i++) {
-				//<---------- TV neu
-				roomSpinnerData.add(databaseHelper.getRoomSpinner(roomtypeID,this.mTextView.getText().toString())
-						.get(i));
-				//----------------->
+				// <---------- TV neu
+				roomSpinnerData.add(databaseHelper.getRoomSpinner(roomtypeID, this.mTextView.getText().toString()).get(i));
+				// ----------------->
 			}
-			ArrayAdapter<String> RoomAdapter = new ArrayAdapter<String>(this,
-					android.R.layout.simple_spinner_item, roomSpinnerData);
-			RoomAdapter
-			.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			ArrayAdapter<String> RoomAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roomSpinnerData);
+			RoomAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			this.mSpinnerRoom.setAdapter(RoomAdapter);
 			this.mSpinnerRoom.setOnItemSelectedListener(this);
 			roomSpinnerData = null;
@@ -253,7 +261,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	 * .widget.AdapterView)
 	 */
 	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {}
+	public void onNothingSelected(AdapterView<?> arg0) {
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -377,7 +386,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		item.setTimestamp(time);
 		item.setStart(start.toString());
 		item.setDestination(destination.toString());
-		item.create(this);
+		item.writeToDatabase(this);
 
 		this.logInfo("item: " + item.getName() + " " + item.getDate() + " " + item.getTimestamp() + " " + item.getStart() + " "
 				+ item.getDestination());
