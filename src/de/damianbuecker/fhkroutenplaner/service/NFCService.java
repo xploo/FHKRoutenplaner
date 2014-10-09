@@ -1,7 +1,6 @@
-package de.damianbuecker.fhkroutenplaner.controller;
+package de.damianbuecker.fhkroutenplaner.service;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 import android.app.Activity;
@@ -16,80 +15,57 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
-import android.widget.TextView;
-import de.damianbuecker.fhkroutenplaner.activity.DeprecatedDisplayMapsActivity;
 
+// TODO: Auto-generated Javadoc
 /**
- * The Class NFCController.
+ * The Class NFCService.
  */
-public class NfcController extends Controller {
+public class NFCService extends Service {
+	// Tag auslesen
+	// - StartEtage - Start ID
+	// SharedPrefs -> Letztes Ziel
+	// - End Etage - End ID
 
-	/** The Constant MIME_TEXT_PLAIN. */
-	public static final String MIME_TEXT_PLAIN = "text/plain";
+	// Starten der Imageberechnung anhand der Daten
 
-	/** The result. */
-	public static String RESULT = "result";
-
-	/** The m text view. */
-	private TextView mTextView;
-
-	/** The m context. */
-	private Context mContext;
-
-	/** The running. */
-	private Boolean running;
-
-	/** The Constant INTENT_EXTRA_START_ID. */
-	private static final String INTENT_EXTRA_START_ID = "Start_ID";
+	// Service muss in Imageview laufen
 
 	/**
-	 * Instantiates a new NFC controller.
-	 * 
-	 * @param tv
-	 *            the tv
-	 */
-	public NfcController(TextView tv) {
-		super(tv.getContext());
-		this.mTextView = tv;
-	}
-
-	/**
-	 * Instantiates a new NFC controller.
+	 * Instantiates a new NFC service.
 	 * 
 	 * @param context
 	 *            the context
 	 */
-	public NfcController(Context context) {
+	public NFCService(Context context) {
 		super(context);
 	}
 
+	/** The Constant MIME_TEXT_PLAIN. */
+	public static final String MIME_TEXT_PLAIN = "text/plain";
+
+	// protected!
 	/**
 	 * Handle intent.
 	 * 
 	 * @param intent
 	 *            the intent
-	 * @param context
-	 *            the context
-	 * @return the boolean
 	 */
-	public Boolean handleIntent(Intent intent, Context context) {
-		// TODO: handle Intent
+	public void HandleIntent(Intent intent) {
 
-		String action = intent.getAction();
+		this.logInfo("NFCSERV - HandleIntent");
+
+		StringBuffer action = new StringBuffer(intent.getAction());
+
 		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
 
-			String type = intent.getType();
+			StringBuffer type = new StringBuffer(intent.getType());
 			if (MIME_TEXT_PLAIN.equals(type)) {
 
 				Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-				if (this.mTextView == null) {
-					new NdefReaderTask(context).execute(tag);
-				} else {
-					new NdefReaderTask(this.mTextView).execute(tag);
-				}
+				new NdefReaderTask().execute(tag);
 
 			} else {
-				this.logError("Wrong mime type: " + type);
+				this.logError("TAG - Wrong mime type: " + type);
 			}
 		} else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
 
@@ -100,16 +76,12 @@ public class NfcController extends Controller {
 
 			for (String tech : techList) {
 				if (searchedTech.equals(tech)) {
-					if (this.mTextView == null) {
-						new NdefReaderTask(this.mContext).execute(tag);
-					} else {
-						new NdefReaderTask(this.mTextView).execute(tag);
-					}
+					new NdefReaderTask().execute(tag);
+
 					break;
 				}
 			}
 		}
-		return true;
 	}
 
 	/**
@@ -120,7 +92,10 @@ public class NfcController extends Controller {
 	 * @param adapter
 	 *            the adapter
 	 */
-	public static void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
+	// public static void setupForegroundDispatch(final Activity activity,
+	// NfcAdapter adapter) {
+	public void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
+		this.logInfo("NFCSERV - Foreground");
 		final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
@@ -150,83 +125,15 @@ public class NfcController extends Controller {
 	 * @param adapter
 	 *            the adapter
 	 */
-	public static void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
+	// public static void stopForegroundDispatch(final Activity activity,
+	public void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
 		adapter.disableForegroundDispatch(activity);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.damianbuecker.fhkroutenplaner.controller.Controller#getContext()
-	 */
-	public Context getContext() {
-		return this.mContext;
-	}
-
-	/**
-	 * Receive result.
-	 * 
-	 * @param result
-	 *            the result
-	 */
-	public void receiveResult(String result) {
 	}
 
 	/**
 	 * The Class NdefReaderTask.
 	 */
 	private class NdefReaderTask extends AsyncTask<Tag, Void, String> {
-
-		/** The m context. */
-		private Context mContext;
-
-		/** The text view reference. */
-		private final WeakReference<TextView> textViewReference;
-
-		/** The m shared preferences controller. */
-		private SharedPreferencesController mSharedPreferencesController;
-
-		/**
-		 * Instantiates a new ndef reader task.
-		 * 
-		 * @param tv
-		 *            the tv
-		 */
-		public NdefReaderTask(TextView tv) {
-
-			this.textViewReference = new WeakReference<TextView>(tv);
-			this.mContext = tv.getContext();
-			this.mSharedPreferencesController = new SharedPreferencesController(this.mContext);
-
-			running = this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_ROUTE_RUNNING);
-		}
-
-		/**
-		 * Instantiates a new ndef reader task.
-		 * 
-		 * @param context
-		 *            the context
-		 */
-		public NdefReaderTask(Context context) {
-			this.mContext = context;
-			this.mSharedPreferencesController = new SharedPreferencesController(this.mContext);
-			this.textViewReference = null;
-
-			if (mContext == null) {
-
-				NfcController.this.logError("Constructor Context - null");
-			} else
-				NfcController.this.logInfo("Constructor Context nicht null");
-
-			running = this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_ROUTE_RUNNING);
-
-			if (running == true) {
-				NfcController.this.logInfo("Constructor - yes");
-			} else {
-				NfcController.this.logInfo("Constructor - no");
-			}
-
-		}
 
 		/*
 		 * (non-Javadoc)
@@ -235,7 +142,7 @@ public class NfcController extends Controller {
 		 */
 		@Override
 		protected String doInBackground(Tag... params) {
-
+			NFCService.this.logInfo("NFCSERV - async");
 			Tag tag = params[0];
 
 			Ndef ndef = Ndef.get(tag);
@@ -243,7 +150,6 @@ public class NfcController extends Controller {
 				// NDEF is not supported by this Tag.
 				return null;
 			}
-
 			NdefMessage ndefMessage = ndef.getCachedNdefMessage();
 
 			NdefRecord[] records = ndefMessage.getRecords();
@@ -252,10 +158,11 @@ public class NfcController extends Controller {
 					try {
 						return readText(ndefRecord);
 					} catch (UnsupportedEncodingException e) {
-						NfcController.this.logError(e.getMessage());
+						NFCService.this.logError("TAG - Unsupported Encoding: " + e);
 					}
 				}
 			}
+
 			return null;
 		}
 
@@ -269,6 +176,7 @@ public class NfcController extends Controller {
 		 *             the unsupported encoding exception
 		 */
 		private String readText(NdefRecord record) throws UnsupportedEncodingException {
+			NFCService.this.logInfo("NFCSERV - readTest");
 			/*
 			 * See NFC forum specification for "Text Record Type Definition" at
 			 * 3.2.1
@@ -303,19 +211,11 @@ public class NfcController extends Controller {
 		@Override
 		protected void onPostExecute(String result) {
 
-			if (running == true) {
-				Intent i = new Intent(mContext, DeprecatedDisplayMapsActivity.class);
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				i.putExtra(INTENT_EXTRA_START_ID, result);
-				mContext.startActivity(i);
+			NFCService.this.logInfo("NFCSERV - Postexecute");
+			// this.endID = Integer.parseInt(prefs.getString("lastDestination",
+			// "0"));
 
-			} else if (this.textViewReference != null && result != null) {
-				final TextView tv = this.textViewReference.get();
-				if (tv != null) {
-					tv.setText(result);
-				}
-			}
-			NfcController.this.logInfo(result);
+			NFCService.this.logInfo("tagServ: " + result);
 		}
 	}
 }

@@ -1,13 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">FHKRoutenplaner</string>
-    <string name ="startup_search">Search</string>
-    <string name ="startup_history">History</string>
-    <string name ="nfc_route">Go!</string>
-    <string name = "nfc_attach">FH Köln Routenplaner</string>
-    <string name = "nfc_floor">Etage:</string>
-    <string name = "nfc_description">Beschreibung:</string>
-    <string name = "nfc_pos">Aktuelle Position</string>
+    <string name="startup_search">Search</string>
+    <string name="startup_history">History</string>
+    <string name="nfc_route">Go!</string>
+    <string name="nfc_attach">FH Köln Routenplaner</string>
+    <string name="nfc_floor">Etage:</string>
+    <string name="nfc_description">Beschreibung:</string>
+    <string name="nfc_pos">Aktuelle Position</string>
     <string name="fhk_routenplaner">FH Köln Routenplaner</string>
     <string name="delete">Delete</string>
     <string name="name">Name</string>
@@ -21,5 +22,10 @@
     <string name="destination">Ziel</string>
     <string name="enterDestination">Ziel auswählen...</string>
     <string name="startNavigation">Navigation starten</string>
+    <string name="title_activity_display_maps">DisplayMapsActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="btnleft">&lt;&lt;</string>
+    <string name="btnright">&gt;&gt;</string>
 
 </resources>

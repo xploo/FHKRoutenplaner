@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.damianbuecker.fhkroutenplaner.activity"
     android:versionCode="1"
@@ -11,24 +12,19 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-     
-     <uses-feature
-    android:name="android.hardware.nfc"
-    android:required="true" />   
-    
-    
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >       
-        
-        
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="de.damianbuecker.fhkroutenplaner.activity.StartUpActivity" 
-            
+            android:name=".StartUpActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,45 +32,42 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="de.damianbuecker.fhkroutenplaner.activity.NavigationActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:screenOrientation="portrait" >
-            <intent-filter >
-                <action android:name="android.intents.NavigationActivity" />
-                <category android:name ="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity"
-            android:screenOrientation="landscape"
+            android:name=".NavigationActivity"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
-                <action android:name="android.intents.DisplayMapsActivity" />
-        
+                <action android:name="android.intents.NavigationActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="de.damianbuecker.fhkroutenplaner.activity.HistoryActivity"
-            		android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-            <intent-filter >
-                <action android:name="android.intents.History" />
-                <category android:name ="android.intent.category.DEFAULT" />
+            android:name=".DeprecatedDisplayMapsActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intents.DisplayMapsActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="de.damianbuecker.fhkroutenplaner.activity.HistoryItemDetailActivity"
+            android:name=".HistoryActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intents.History" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".HistoryItemDetailActivity"
             android:label="History Item Detail" >
         </activity>
-        
-        
-        
-        
-        
-        
+        <activity
+            android:name=".DisplayMapsActivity"
+            android:label="@string/title_activity_display_maps" >
+        </activity>
     </application>
-    
-    
-     
 
 </manifest>

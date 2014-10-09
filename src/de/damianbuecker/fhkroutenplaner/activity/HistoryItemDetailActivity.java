@@ -5,7 +5,6 @@ import roboguice.inject.InjectView;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
-import de.damianbuecker.fhkroutenplaner.controller.DateTimeController;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
 /**
