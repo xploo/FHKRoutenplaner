@@ -17,7 +17,7 @@ import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.widget.TextView;
-import de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity;
+import de.damianbuecker.fhkroutenplaner.activity.DeprecatedDisplayMapsActivity;
 
 /**
  * The Class NFCController.
@@ -304,7 +304,7 @@ public class NfcController extends Controller {
 		protected void onPostExecute(String result) {
 
 			if (running == true) {
-				Intent i = new Intent(mContext, DisplayMapsActivity.class);
+				Intent i = new Intent(mContext, DeprecatedDisplayMapsActivity.class);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				i.putExtra(INTENT_EXTRA_START_ID, result);
 				mContext.startActivity(i);
