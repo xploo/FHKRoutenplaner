@@ -1,22 +1,26 @@
 package de.damianbuecker.fhkroutenplaner.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
+import de.damianbuecker.fhkroutenplaner.interfaces.ControllerInterface;
+import de.damianbuecker.fhkroutenplaner.interfaces.LogInterface;
 
 /**
  * The Class Controller.
  */
-public class Controller {
+public class Controller implements LogInterface, ControllerInterface {
+
+	/** The Constant SHARED_PREFERENCE_ROUTE_RUNNING. */
+	protected static final String SHARED_PREFERENCE_ROUTE_RUNNING = "RouteRunning";
+
+	/** The Constant SHARED_PREFERENCE_DATABASE_VERSION. */
+	protected static final String SHARED_PREFERENCE_DATABASE_VERSION = "databaseVersion";
 
 	/** The local database helper. */
 	private DatabaseHelper mDatabaseHelper;
@@ -26,12 +30,6 @@ public class Controller {
 
 	/** The Constant logger. */
 	private static final Logger logger = LoggerFactory.getLogger(Controller.class);
-
-	/**
-	 * Instantiates a new controller.
-	 */
-	protected Controller() {
-	}
 
 	/**
 	 * Instantiates a new controller.
@@ -51,6 +49,7 @@ public class Controller {
 	 *            the context
 	 * @return the database helper
 	 */
+	@Override
 	public DatabaseHelper getDatabaseHelper(Context context) {
 		if (this.mDatabaseHelper == null) {
 			this.mDatabaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
@@ -59,67 +58,48 @@ public class Controller {
 	}
 
 	/**
-	 * Gets the time.
-	 * 
-	 * @return the time
-	 */
-	public long getTime() {
-
-		long time = System.currentTimeMillis();
-		return time;
-	}
-
-	/**
-	 * Gets the runtime.
-	 * 
-	 * @param startTime
-	 *            the start time
-	 * @param endTime
-	 *            the end time
-	 * @return the runtime
-	 */
-	@SuppressLint("SimpleDateFormat")
-	public String getRuntime(long startTime, long endTime) {
-
-		long runtime = endTime - startTime;
-		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SSS");
-		return sdf.format(runtime).toString();
-	}
-
-	/**
 	 * Gets the context.
 	 * 
 	 * @return the context
 	 */
+	@Override
 	public Context getContext() {
 		return this.context;
 	}
 
-	/**
-	 * Log warning.
-	 *
-	 * @param message the message
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logWarning(java
+	 * .lang.String)
 	 */
+	@Override
 	public void logWarning(String message) {
-		logger.warn("WARNING", "@" + Controller.class.getSimpleName() + " " + message);
+		logger.warn("@" + Controller.class.getSimpleName() + " " + message);
 	}
 
-	/**
-	 * Log error.
-	 *
-	 * @param message the message
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logError(java
+	 * .lang.String)
 	 */
+	@Override
 	public void logError(String message) {
-		logger.error("ERROR", "@" + Controller.class.getSimpleName() + " " + message);
+		logger.error("@" + Controller.class.getSimpleName() + " " + message);
 	}
 
-	/**
-	 * Log info.
-	 *
-	 * @param message the message
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logInfo(java
+	 * .lang.String)
 	 */
+	@Override
 	public void logInfo(String message) {
-		logger.info("INFO", "@" + Controller.class.getSimpleName() + " " + message);
+		logger.info("@" + Controller.class.getSimpleName() + " " + message);
 	}
 }
