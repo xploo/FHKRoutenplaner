@@ -163,15 +163,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return spinnerRoomtypeList;
 	}
 
-	public List getRoomSpinner(Integer roomid) throws SQLException {
+	public List getRoomSpinner(Integer roomid, String startID) throws SQLException {
 		Log.v("LOL", "BIN IN DATABASEHANDLER");
 		if (this.roomSpinner == null) {
 			this.roomSpinner = this.getRoomDataDao();
 		}
+		//<------- QueryBuilder + RoomID von StartTag
+		//Dazu da um ausgelesenden Standort aus den Spinner zu entfernen
+		List<Tag> startTagList= this.getTagById(startID);
+		Integer bufferRoomIdFromStartTag = startTagList.get(0).getRoom_ID(); 
+		//------------------->
 		this.spinnerRoomList = null;
 		this.spinnerRoomList = new ArrayList<Integer>();
 		this.queryBuilder = roomSpinner.queryBuilder();
-		this.queryBuilder.where().eq(Room.ROOMTYPE_ID, roomid);
+		this.queryBuilder.where().eq(Room.ROOMTYPE_ID, roomid).and().not().like(Tag.ROOM_ID, bufferRoomIdFromStartTag);
 		PreparedQuery<Room> preparedQuery = queryBuilder.prepare();
 		List<Room> RoomList = roomSpinner.query(preparedQuery);
 		for (Room v : RoomList) {

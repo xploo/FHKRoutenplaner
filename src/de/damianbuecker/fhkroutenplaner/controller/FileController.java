@@ -33,7 +33,7 @@ public class FileController extends Controller {
 	 *            the end floor
 	 * @return the file
 	 */
-	public File createHTMLFile(Integer startFloor, Integer endFloor) {
+	public File createHTMLFile(Integer startFloor, Integer endFloor, Integer startID,Integer endID) {
 		StringBuffer buf = new StringBuffer();
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(this.getContext()
@@ -44,14 +44,14 @@ public class FileController extends Controller {
 				if (line.contains("###Marker1")) {
 					line = line.replace("###Marker1",
 							"file:///" + Environment.getExternalStorageDirectory()
-									+ "/FMS/TestIMG-" + startFloor + ".png");
+									+ "/FMS/TestIMG-" + startFloor +startID+ ".png");
 				} else if (line.contains("###Etage1marker")) {
 					line = line.replace("###Etage1marker", "Startetage : " + startFloor + "");
 
 				} else if (line.contains("###Marker2")) {
 					line = line.replace("###Marker2",
 							"file:///" + Environment.getExternalStorageDirectory()
-									+ "/FMS/TestIMG-" + endFloor + ".png");
+									+ "/FMS/TestIMG-" + endFloor +endID+ ".png");
 				} else if (line.contains("###Etage2marker")) {
 					line = line.replace("###Etage2marker", "Zieletage : " + endFloor + "");
 				}
@@ -65,9 +65,10 @@ public class FileController extends Controller {
 		File directory = Environment.getExternalStorageDirectory();
 		File file = new File(directory, "index.html");
 		try {
-			if (file.exists())
+			if (file.exists()){
 				file.delete();
 			file.createNewFile();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

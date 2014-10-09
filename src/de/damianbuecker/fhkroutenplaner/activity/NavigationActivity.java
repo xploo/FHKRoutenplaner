@@ -91,6 +91,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 					if (s.length() > 0) {
 						NavigationActivity.this.start(s.toString());
 						alertDialog.dismiss();
+						//<----- 
+						addRoomtypeSpinner();
+						//----->
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -124,8 +127,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 			mNfcController.handleIntent(getIntent(),this);
 
 		}
-
-		addRoomtypeSpinner();
+		
 	}
 
 	private void start(String s) throws SQLException {
@@ -178,13 +180,17 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements
 		this.SpinnerRoom = (Spinner) findViewById(R.id.nfc_spinner_room);
 		this.roomSpinnerData = null;
 		try {
-			Integer buffer = databaseHelper.getRoomSpinner(roomtypeID).size();
+			//<------ TV neu
+			Integer buffer = databaseHelper.getRoomSpinner(roomtypeID, this.mTextView.getText().toString()).size();
 			this.roomSpinnerData = new ArrayList<Integer>();
 
 			for (int i = 0; i < buffer; i++) {
 				Log.v("RoomSpinnerTest3", "testest");
-				roomSpinnerData.add(databaseHelper.getRoomSpinner(roomtypeID)
+				
+				//<---------- TV neu
+				roomSpinnerData.add(databaseHelper.getRoomSpinner(roomtypeID,this.mTextView.getText().toString())
 						.get(i));
+				//----------------->
 				Log.v("SpinnerData2Testausgabe", String.valueOf(i));
 			}
 
