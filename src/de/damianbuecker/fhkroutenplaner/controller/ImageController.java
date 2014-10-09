@@ -22,6 +22,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
@@ -87,6 +88,7 @@ public class ImageController extends Controller {
 	 *            the end id
 	 * @return the end floor
 	 */
+	//----------> In databaseHelper?
 	public Integer getEndFloor(Integer endID) {
 
 		try {
@@ -112,7 +114,7 @@ public class ImageController extends Controller {
 	 * @param endID
 	 *            the end id
 	 */
-	public void testAlgorithm(Integer etage, Integer startID, Integer endID) {
+	public void testAlgorithm(Integer startFloor, Integer startID, Integer endID, Integer endFloor) {
 
 		this.logInfo("OnDraw Check");
 
@@ -124,13 +126,15 @@ public class ImageController extends Controller {
 
 		this.mPathController = new PathController(mContext);
 		LinkedList<Vertex> list = this.mPathController.testExcute(startID, endID);
-		this.splitVertexList(list);
+		this.splitVertexList(list,startFloor,endFloor);
 
 		if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 2) {
-			this.saveFinalImage(this.vertexHashmap.get(0));
+			Log.v("Wieviele Listen sinds?IF1", String.valueOf(this.vertexHashmap.size()));
+			this.saveFinalImage(this.vertexHashmap.get(0),startID);
 		} else if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 3) {
-			this.saveFinalImage(this.vertexHashmap.get(0));
-			this.saveFinalImage(this.vertexHashmap.get(1));
+			Log.v("Wieviele Listen sindsIF2?", String.valueOf(this.vertexHashmap.size()));
+			this.saveFinalImage(this.vertexHashmap.get(0),startID);
+			this.saveFinalImage(this.vertexHashmap.get(1),endID);
 		}
 
 	}
@@ -141,7 +145,7 @@ public class ImageController extends Controller {
 	 * @param list
 	 *            the list
 	 */
-	private void saveFinalImage(LinkedList<Vertex> list) {
+	private void saveFinalImage(LinkedList<Vertex> list, Integer ID) {
 
 		if ((list != null) && (list.get(0) != null)) {
 			Integer etage = list.get(0).getFloor();
@@ -216,7 +220,7 @@ public class ImageController extends Controller {
 
 			try {
 				File outputFile = new File(Environment.getExternalStorageDirectory()
-						+ ROOT_DIR + PREFIXFILENAME + etage.hashCode() + PNG);
+						+ ROOT_DIR + PREFIXFILENAME + etage.hashCode() +ID+ PNG);
 				FileOutputStream fos = new FileOutputStream(outputFile);
 				bitmapOut.compress(CompressFormat.PNG, 100, fos);
 				fos.flush();
@@ -244,24 +248,23 @@ public class ImageController extends Controller {
 	 *            the list
 	 */
 	@SuppressLint("UseSparseArrays")
-	private void splitVertexList(LinkedList<Vertex> list) {
-		Integer startEtage = list.get(0).getFloor();
-		Integer zielEtage = list.get(list.size() - 1).getFloor();
+	private void splitVertexList(LinkedList<Vertex> list, Integer startFloor, Integer endFloor) {			
 		LinkedList<Vertex> listeVertexStartEtage = new LinkedList<Vertex>();
 		LinkedList<Vertex> listeVertexZielEtage = new LinkedList<Vertex>();
 
 		for (Vertex v : list) {
-			if (startEtage != zielEtage) {
-				if ((startEtage == v.getFloor())) {
+			if (startFloor != endFloor) {
+				if ((startFloor == v.getFloor())) {
 					listeVertexStartEtage.add(v);
-				} else if (zielEtage == v.getFloor()) {
+					Log.v("Was steht in StartEtageListe",v.getName());
+				} else if (endFloor == v.getFloor()) {
 					listeVertexZielEtage.add(v);
+					Log.v("Was steht in ZielEtageListe",v.getName());
 				}
 			} else {
 				listeVertexStartEtage.add(v);
 			}
-		}
-
+		}		
 		this.vertexHashmap = new HashMap<Integer, LinkedList<Vertex>>();
 		this.vertexHashmap.put(0, listeVertexStartEtage);
 		if (listeVertexZielEtage.size() != 0) {

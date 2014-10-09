@@ -10,6 +10,7 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Environment;
 import android.webkit.WebView;
+import android.widget.Toast;
 import de.damianbuecker.fhkroutenplaner.controller.FileController;
 import de.damianbuecker.fhkroutenplaner.controller.ImageController;
 import de.damianbuecker.fhkroutenplaner.controller.NfcController;
@@ -64,8 +65,18 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		this.mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		this.mSharedPreferencesController = new SharedPreferencesController(this);
+		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+		if (this.mImageController == null) {
+			this.mImageController = new ImageController(this);
+		}
+		if (this.mFileController == null) {
+			this.mFileController = new FileController(this);
+		}
+		if (this.mNFCController == null) {
 		this.mNFCController = new NfcController(this);
 		this.mNFCController.handleIntent(getIntent(), this);
+		}
 
 		if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_ROUTE_RUNNING)) {
 
@@ -91,14 +102,15 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			}
 		}
 
-		ImageController mImgCont = new ImageController(this);
-		mImgCont.testAlgorithm(this.startFloor, this.startID, this.endID);
-		this.endFloor = mImgCont.getEndFloor(endID);
+		this.endFloor = mImageController.getEndFloor(endID);
+		mImageController.testAlgorithm(this.startFloor, this.startID, this.endID,
+				this.endFloor);
 
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.getSettings().setLoadWithOverviewMode(true);
 		mWebView.getSettings().setUseWideViewPort(true);
 		mWebView.getSettings().setBuiltInZoomControls(true);
+		mWebView.reload();
 
 		if (this.mImageController == null) {
 			this.mImageController = new ImageController(this);
@@ -126,7 +138,9 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 			} else {
 				// Stelle HTML-Seite dar, die zwei Bilder Lädt
-				File file = this.mFileController.createHTMLFile(startFloor, endFloor);
+				File file = this.mFileController.createHTMLFile(startFloor,
+						endFloor,startID,endID);
+
 				mWebView.loadUrl("file://" + file.getAbsolutePath());
 			}
 		}

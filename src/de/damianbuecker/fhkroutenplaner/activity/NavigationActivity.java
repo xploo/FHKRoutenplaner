@@ -121,6 +121,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 					if (s.length() > 0) {
 						NavigationActivity.this.start(s.toString());
 						alertDialog.dismiss();
+						//<----- 
+						addRoomtypeSpinner();
+						//----->
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -147,8 +150,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			this.mNfcController.handleIntent(getIntent(), this);
 
 		}
-
-		addRoomtypeSpinner();
+		
 	}
 
 	/**
@@ -196,25 +198,29 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	 * @param roomtypeID
 	 *            the roomtype id
 	 */
-	@SuppressWarnings("unchecked")
-	public void addRoomSpinner(Integer roomtypeID) {
 
+	public void addRoomSpinner(Integer roomtypeID) {
+		this.mSpinnerRoom = (Spinner) findViewById(R.id.nfc_spinner_room);
 		this.roomSpinnerData = null;
 		try {
-			Integer buffer = databaseHelper.getRoomSpinner(roomtypeID).size();
+			//<------ TV neu
+			Integer buffer = databaseHelper.getRoomSpinner(roomtypeID, this.mTextView.getText().toString()).size();
 			this.roomSpinnerData = new ArrayList<Integer>();
-
 			for (int i = 0; i < buffer; i++) {
-				this.roomSpinnerData.add(databaseHelper.getRoomSpinner(roomtypeID).get(i));
+				//<---------- TV neu
+				roomSpinnerData.add(databaseHelper.getRoomSpinner(roomtypeID,this.mTextView.getText().toString())
+						.get(i));
+				//----------------->
 			}
-
-			ArrayAdapter<String> RoomAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roomSpinnerData);
-			RoomAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			ArrayAdapter<String> RoomAdapter = new ArrayAdapter<String>(this,
+					android.R.layout.simple_spinner_item, roomSpinnerData);
+			RoomAdapter
+			.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			this.mSpinnerRoom.setAdapter(RoomAdapter);
 			this.mSpinnerRoom.setOnItemSelectedListener(this);
-			this.roomSpinnerData = null;
-
+			roomSpinnerData = null;
 		} catch (SQLException e) {
+			// tv.setText(e.toString());
 			e.printStackTrace();
 		}
 	}
