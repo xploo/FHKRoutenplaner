@@ -39,7 +39,7 @@ public class PathController extends Controller {
 
 	/** The edges. */
 	private List<Edge> edges;
-	
+
 	/**
 	 * Instantiates a new path controller.
 	 * 
@@ -65,14 +65,12 @@ public class PathController extends Controller {
 
 		// Datenbank auslesen for schleife solange wie Punkte sind
 		try {
-			Dao<Tag, Integer> TagListlooper = this.getDatabaseHelper(this.getContext())
-					.getTagDataDao();
+			Dao<Tag, Integer> TagListlooper = this.getDatabaseHelper(this.getContext()).getTagDataDao();
 
 			for (Tag t : TagListlooper) {
 
 				// in die location die Punkte schreiben
-				Vertex location = new Vertex(String.valueOf(t.getTag_id()), t.getDescription(),
-						t.getFloor());
+				Vertex location = new Vertex(String.valueOf(t.getTag_id()), t.getDescription(), t.getFloor());
 
 				this.nodes.add(location);
 
@@ -85,35 +83,27 @@ public class PathController extends Controller {
 
 		try {
 
-			this.edgesStart = this.getDatabaseHelper(this.getContext()).getEdgesBySource(
-					startID.toString());
+			this.edgesStart = this.getDatabaseHelper(this.getContext()).getEdgesBySource(startID.toString());
 			StringBuilder sb = new StringBuilder();
 			for (Edges s : edgesStart) {
 				sb.append(s.getKante_id());
 				addLane(sb.toString(), s.getSource(), s.getDestination(), s.getCost());
-				this.logInfo("Edge Start: " + sb.toString() + " " + s.getSource() + " "
-						+ s.getDestination() + " " + s.getCost());
+				this.logInfo("Edge Start: " + sb.toString() + " " + s.getSource() + " " + s.getDestination() + " " + s.getCost());
 
 			}
 
-			this.edgesRemaining = this.getDatabaseHelper(this.getContext()).getRemainingEdges(
-					startID.toString(), endID.toString());
+			this.edgesRemaining = this.getDatabaseHelper(this.getContext()).getRemainingEdges(startID.toString(), endID.toString());
 
 			for (Edges v : edgesRemaining) {
-				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(),
-						v.getCost());
-				this.logInfo("Edge Remaining: " + v.getKante_id() + " " + v.getSource() + " "
-						+ v.getDestination() + " " + v.getCost());
+				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(), v.getCost());
+				this.logInfo("Edge Remaining: " + v.getKante_id() + " " + v.getSource() + " " + v.getDestination() + " " + v.getCost());
 
 			}
 
-			this.edgesEnd = this.getDatabaseHelper(this.getContext()).getEdgesByDestination(
-					endID.toString());
+			this.edgesEnd = this.getDatabaseHelper(this.getContext()).getEdgesByDestination(endID.toString());
 			for (Edges w : edgesEnd) {
-				addLane(String.valueOf(w.getKante_id()), w.getSource(), w.getDestination(),
-						w.getCost());
-				this.logInfo("Edge End: " + w.getKante_id() + " " + w.getSource() + " "
-						+ w.getDestination() + " " + w.getCost());
+				addLane(String.valueOf(w.getKante_id()), w.getSource(), w.getDestination(), w.getCost());
+				this.logInfo("Edge End: " + w.getKante_id() + " " + w.getSource() + " " + w.getDestination() + " " + w.getCost());
 
 			}
 
@@ -168,8 +158,7 @@ public class PathController extends Controller {
 				destLocNoIndex = this.nodes.indexOf(v);
 			}
 		}
-		Edge lane = new Edge(laneId, this.nodes.get(sourceLocNoIndex),
-				this.nodes.get(destLocNoIndex), duration);
+		Edge lane = new Edge(laneId, this.nodes.get(sourceLocNoIndex), this.nodes.get(destLocNoIndex), duration);
 		this.edges.add(lane);
 	}
 }

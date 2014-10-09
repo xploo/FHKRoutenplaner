@@ -4,11 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.content.Context;
+import de.damianbuecker.fhkroutenplaner.interfaces.LogInterface;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Service.
  */
-public class Service {
+public class Service implements LogInterface {
 
 	/** The m context. */
 	private Context mContext;
@@ -41,6 +43,7 @@ public class Service {
 	 * @param message
 	 *            the message
 	 */
+	@Override
 	public void logWarning(String message) {
 		logger.warn("@" + Service.class.getSimpleName() + " " + message);
 	}
@@ -51,6 +54,7 @@ public class Service {
 	 * @param message
 	 *            the message
 	 */
+	@Override
 	public void logError(String message) {
 		logger.error("@" + Service.class.getSimpleName() + " " + message);
 	}
@@ -61,6 +65,7 @@ public class Service {
 	 * @param message
 	 *            the message
 	 */
+	@Override
 	public void logInfo(String message) {
 		logger.info("@" + Service.class.getSimpleName() + " " + message);
 	}

@@ -26,32 +26,29 @@ public class FileController extends Controller {
 
 	/**
 	 * Creates the html file.
-	 * 
-	 * @param startFloor
-	 *            the start floor
-	 * @param endFloor
-	 *            the end floor
+	 *
+	 * @param startFloor            the start floor
+	 * @param endFloor            the end floor
+	 * @param startID the start id
+	 * @param endID the end id
 	 * @return the file
 	 */
-	public File createHTMLFile(Integer startFloor, Integer endFloor, Integer startID,Integer endID) {
+	public File createHTMLFile(Integer startFloor, Integer endFloor, Integer startID, Integer endID) {
 		StringBuffer buf = new StringBuffer();
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(this.getContext()
-					.getAssets().open("index.html")));
+			BufferedReader br = new BufferedReader(new InputStreamReader(this.getContext().getAssets().open("index.html")));
 			String line;
 
 			while ((line = br.readLine()) != null) {
 				if (line.contains("###Marker1")) {
-					line = line.replace("###Marker1",
-							"file:///" + Environment.getExternalStorageDirectory()
-									+ "/FMS/TestIMG-" + startFloor +startID+ ".png");
+					line = line.replace("###Marker1", "file:///" + Environment.getExternalStorageDirectory() + "/FMS/TestIMG-" + startFloor
+							+ startID + ".png");
 				} else if (line.contains("###Etage1marker")) {
 					line = line.replace("###Etage1marker", "Startetage : " + startFloor + "");
 
 				} else if (line.contains("###Marker2")) {
-					line = line.replace("###Marker2",
-							"file:///" + Environment.getExternalStorageDirectory()
-									+ "/FMS/TestIMG-" + endFloor +endID+ ".png");
+					line = line.replace("###Marker2", "file:///" + Environment.getExternalStorageDirectory() + "/FMS/TestIMG-" + endFloor
+							+ endID + ".png");
 				} else if (line.contains("###Etage2marker")) {
 					line = line.replace("###Etage2marker", "Zieletage : " + endFloor + "");
 				}
@@ -65,9 +62,9 @@ public class FileController extends Controller {
 		File directory = Environment.getExternalStorageDirectory();
 		File file = new File(directory, "index.html");
 		try {
-			if (file.exists()){
+			if (file.exists()) {
 				file.delete();
-			file.createNewFile();
+				file.createNewFile();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -1,9 +1,9 @@
-package de.damianbuecker.fhkroutenplaner.activity;
+package de.damianbuecker.fhkroutenplaner.interfaces;
 
 /**
  * The Interface ModifiedViewInterface.
  */
-public interface ModifiedViewInterface {
+public interface LogInterface {
 
 	/**
 	 * Log warning.

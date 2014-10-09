@@ -37,16 +37,21 @@ import de.damianbuecker.fhkroutenplaner.model.Vertex;
  */
 public class ImageController extends Controller {
 
+	/** The Constant WIDTH_OPTIONS. */
 	private static final String WIDTH_OPTIONS = "Width Options: ";
-	
+
+	/** The Constant HEIGHT_OPTIONS. */
 	private static final String HEIGHT_OPTIONS = "Height Options: ";
-	
+
+	/** The Constant ROOT_DIR. */
 	private static final String ROOT_DIR = "/FMS/";
-	
+
+	/** The Constant PNG. */
 	private static final String PNG = ".png";
-	
+
+	/** The Constant PREFIXFILENAME. */
 	private static final String PREFIXFILENAME = "TestIMG-";
-	
+
 	/** The tag dao. */
 	private Dao<Tag, Integer> tagDao;
 
@@ -88,12 +93,11 @@ public class ImageController extends Controller {
 	 *            the end id
 	 * @return the end floor
 	 */
-	//----------> In databaseHelper?
+	// ----------> In databaseHelper?
 	public Integer getEndFloor(Integer endID) {
 
 		try {
-			this.endTagList = this.getDatabaseHelper(this.getContext())
-					.getTagById(endID.toString());
+			this.endTagList = this.getDatabaseHelper(this.getContext()).getTagById(endID.toString());
 			if (this.endTagList.size() != 0) {
 				this.endFloor = this.endTagList.get(0).getFloor();
 			}
@@ -106,13 +110,11 @@ public class ImageController extends Controller {
 
 	/**
 	 * Test algorithm.
-	 * 
-	 * @param etage
-	 *            the etage
-	 * @param startID
-	 *            the start id
-	 * @param endID
-	 *            the end id
+	 *
+	 * @param startFloor the start floor
+	 * @param startID            the start id
+	 * @param endID            the end id
+	 * @param endFloor the end floor
 	 */
 	public void testAlgorithm(Integer startFloor, Integer startID, Integer endID, Integer endFloor) {
 
@@ -126,24 +128,24 @@ public class ImageController extends Controller {
 
 		this.mPathController = new PathController(mContext);
 		LinkedList<Vertex> list = this.mPathController.testExcute(startID, endID);
-		this.splitVertexList(list,startFloor,endFloor);
+		this.splitVertexList(list, startFloor, endFloor);
 
 		if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 2) {
 			Log.v("Wieviele Listen sinds?IF1", String.valueOf(this.vertexHashmap.size()));
-			this.saveFinalImage(this.vertexHashmap.get(0),startID);
+			this.saveFinalImage(this.vertexHashmap.get(0), startID);
 		} else if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 3) {
 			Log.v("Wieviele Listen sindsIF2?", String.valueOf(this.vertexHashmap.size()));
-			this.saveFinalImage(this.vertexHashmap.get(0),startID);
-			this.saveFinalImage(this.vertexHashmap.get(1),endID);
+			this.saveFinalImage(this.vertexHashmap.get(0), startID);
+			this.saveFinalImage(this.vertexHashmap.get(1), endID);
 		}
 
 	}
 
 	/**
 	 * Save final image.
-	 * 
-	 * @param list
-	 *            the list
+	 *
+	 * @param list            the list
+	 * @param ID the id
 	 */
 	private void saveFinalImage(LinkedList<Vertex> list, Integer ID) {
 
@@ -152,24 +154,21 @@ public class ImageController extends Controller {
 			int ressourceId = this.getResourceForEtage(etage);
 			Options options = new Options();
 			options.inJustDecodeBounds = true;
-			Bitmap b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId,
-					options);
+			Bitmap b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId, options);
 			this.logInfo(WIDTH_OPTIONS + options.outWidth);
 			this.logInfo(HEIGHT_OPTIONS + options.outHeight);
 			Bitmap.Config config = Config.ARGB_8888;
 			options.inScaled = false;
 			options.inJustDecodeBounds = false;
 			Bitmap bitmapOut = Bitmap.createBitmap(options.outWidth, options.outHeight, config);
-			b = BitmapFactory
-					.decodeResource(this.getContext().getResources(), ressourceId, options);
+			b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId, options);
 			bitmapOut.setDensity(b.getDensity());
 			this.logInfo(WIDTH_OPTIONS + b.getWidth());
 			this.logInfo(HEIGHT_OPTIONS + b.getHeight());
 			for (int x = 0; x < options.outWidth; x++) {
 				for (int y = 0; y < options.outHeight; y++) {
 					int pixel = b.getPixel(x, y);
-					bitmapOut.setPixel(x, y,
-							Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
+					bitmapOut.setPixel(x, y, Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
 				}
 			}
 
@@ -195,15 +194,12 @@ public class ImageController extends Controller {
 
 					// Auf null prüfen
 					canvas.drawCircle(Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
-							Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), 5.0f,
-							this.myPaint);
+							Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), 5.0f, this.myPaint);
 
 					if (bufferX != 0 && bufferY != 0) {
 
-						canvas.drawLine(bufferX, bufferY,
-								Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
-								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())),
-								this.myPaint);
+						canvas.drawLine(bufferX, bufferY, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
+								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), this.myPaint);
 
 					}
 					bufferX = (float) tagList.get(0).getX_pos();
@@ -219,18 +215,15 @@ public class ImageController extends Controller {
 				folder.mkdirs();
 
 			try {
-				File outputFile = new File(Environment.getExternalStorageDirectory()
-						+ ROOT_DIR + PREFIXFILENAME + etage.hashCode() +ID+ PNG);
+				File outputFile = new File(Environment.getExternalStorageDirectory() + ROOT_DIR + PREFIXFILENAME + etage.hashCode() + ID
+						+ PNG);
 				FileOutputStream fos = new FileOutputStream(outputFile);
 				bitmapOut.compress(CompressFormat.PNG, 100, fos);
 				fos.flush();
 				fos.close();
 				bitmapOut.recycle();
 				bitmapOut = null;
-				this.getContext()
-						.sendBroadcast(
-								new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri
-										.fromFile(outputFile)));
+				this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outputFile)));
 
 				this.logInfo("WRITE IMAGE CHECK");
 			} catch (FileNotFoundException e) {
@@ -243,12 +236,13 @@ public class ImageController extends Controller {
 
 	/**
 	 * Vertex liste aufteilen.
-	 * 
-	 * @param list
-	 *            the list
+	 *
+	 * @param list            the list
+	 * @param startFloor the start floor
+	 * @param endFloor the end floor
 	 */
 	@SuppressLint("UseSparseArrays")
-	private void splitVertexList(LinkedList<Vertex> list, Integer startFloor, Integer endFloor) {			
+	private void splitVertexList(LinkedList<Vertex> list, Integer startFloor, Integer endFloor) {
 		LinkedList<Vertex> listeVertexStartEtage = new LinkedList<Vertex>();
 		LinkedList<Vertex> listeVertexZielEtage = new LinkedList<Vertex>();
 
@@ -256,15 +250,15 @@ public class ImageController extends Controller {
 			if (startFloor != endFloor) {
 				if ((startFloor == v.getFloor())) {
 					listeVertexStartEtage.add(v);
-					Log.v("Was steht in StartEtageListe",v.getName());
+					Log.v("Was steht in StartEtageListe", v.getName());
 				} else if (endFloor == v.getFloor()) {
 					listeVertexZielEtage.add(v);
-					Log.v("Was steht in ZielEtageListe",v.getName());
+					Log.v("Was steht in ZielEtageListe", v.getName());
 				}
 			} else {
 				listeVertexStartEtage.add(v);
 			}
-		}		
+		}
 		this.vertexHashmap = new HashMap<Integer, LinkedList<Vertex>>();
 		this.vertexHashmap.put(0, listeVertexStartEtage);
 		if (listeVertexZielEtage.size() != 0) {

@@ -84,7 +84,7 @@ public class CsvController extends Controller {
 	 */
 	public void readCSV(DatabaseHelper databaseHelper) {
 
-		this.startTime = this.getTime();
+		this.startTime = DateTimeController.getTime();
 		for (String tableName : tables) {
 			BufferedReader br = null;
 			String line = "";
@@ -210,7 +210,7 @@ public class CsvController extends Controller {
 
 		}
 
-		this.endTime = this.getTime();
-		this.logInfo(this.getRuntime(startTime, endTime));
+		this.endTime = DateTimeController.getTime();
+		this.logInfo(DateTimeController.getRuntime(startTime, endTime));
 	}
 }

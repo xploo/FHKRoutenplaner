@@ -18,41 +18,97 @@ import com.j256.ormlite.table.TableUtils;
 
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
+/**
+ * The Class DatabaseHelper.
+ */
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
+	/** The Constant DATABASE_NAME. */
 	private static final String DATABASE_NAME = "database.db";
+
+	/** The Constant DATABASE_VERSION. */
 	private static final int DATABASE_VERSION = 1;
 
+	/** The tag data dao. */
 	private Dao<Tag, Integer> tagDataDao;
+
+	/** The history item data dao. */
 	private Dao<HistoryItem, Integer> historyItemDataDao;
 
 	/** The room data dao. */
 	private Dao<Room, Integer> roomDataDao;
+
+	/** The docent data dao. */
 	private Dao<Docent, Integer> docentDataDao;
+
+	/** The roomtype data dao. */
 	private Dao<Roomtype, Integer> roomtypeDataDao;
+
+	/** The edges data dao. */
 	private Dao<Edges, Integer> edgesDataDao;
+
+	/** The roomtype spinner. */
 	private Dao<Roomtype, Integer> roomtypeSpinner;
+
+	/** The tag location all. */
 	private Dao<Tag, Integer> tagLocationAll;
+
+	/** The edges all. */
 	private Dao<Edges, Integer> edgesAll;
+
+	/** The room spinner. */
 	private Dao<Room, Integer> roomSpinner;
+
+	/** The spinner room list. */
 	private List spinnerRoomList;
+
+	/** The spinner roomtype list. */
 	private List spinnerRoomtypeList = new ArrayList<Integer>();
+
+	/** The sb. */
 	private StringBuilder sb = new StringBuilder();
+
+	/** The query builder. */
 	private QueryBuilder<Room, Integer> queryBuilder = null;
+
+	/** The query builder tag. */
 	private QueryBuilder<Tag, Integer> queryBuilderTag = null;
+
+	/** The query builder edges. */
 	private QueryBuilder<Edges, Integer> queryBuilderEdges = null;
+
+	/** The Tagresult. */
 	private List<Tag> Tagresult = null;
+
+	/** The edges result. */
 	private List<Edges> edgesResult = null;
+
+	/** The edge result remain. */
 	private List<Edges> edgeResultRemain = null;
+
+	/** The edges result destination. */
 	private List<Edges> edgesResultDestination = null;
 
+	/**
+	 * Instantiates a new database helper.
+	 * 
+	 * @param context
+	 *            the context
+	 */
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper#onCreate(android
+	 * .database.sqlite.SQLiteDatabase,
+	 * com.j256.ormlite.support.ConnectionSource)
+	 */
 	@Override
-	public void onCreate(SQLiteDatabase database,
-			ConnectionSource connectionSource) {
+	public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
 		try {
 			/**
 			 * Dropping table in order to clean up db on restart. Normally you
@@ -80,9 +136,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper#onUpgrade(android
+	 * .database.sqlite.SQLiteDatabase,
+	 * com.j256.ormlite.support.ConnectionSource, int, int)
+	 */
 	@Override
-	public void onUpgrade(SQLiteDatabase database,
-			ConnectionSource connectionSource, int oldVersion, int newVersion) {
+	public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 		try {
 			/**
 			 * In case of an update.
@@ -100,6 +163,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 	}
 
+	/**
+	 * Gets the tag data dao.
+	 * 
+	 * @return the tag data dao
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	public Dao<Tag, Integer> getTagDataDao() throws SQLException {
 		if (this.tagDataDao == null) {
 			tagDataDao = getDao(Tag.class);
@@ -108,6 +178,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return this.tagDataDao;
 	}
 
+	/**
+	 * Gets the room data dao.
+	 * 
+	 * @return the room data dao
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	public Dao<Room, Integer> getRoomDataDao() throws SQLException {
 		if (this.roomDataDao == null) {
 			roomDataDao = getDao(Room.class);
@@ -116,6 +193,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return this.roomDataDao;
 	}
 
+	/**
+	 * Gets the docent data dao.
+	 * 
+	 * @return the docent data dao
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	public Dao<Docent, Integer> getDocentDataDao() throws SQLException {
 		if (this.docentDataDao == null) {
 			docentDataDao = getDao(Docent.class);
@@ -124,6 +208,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return this.docentDataDao;
 	}
 
+	/**
+	 * Gets the roomtype data dao.
+	 * 
+	 * @return the roomtype data dao
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	public Dao<Roomtype, Integer> getRoomtypeDataDao() throws SQLException {
 		if (this.roomtypeDataDao == null) {
 			roomtypeDataDao = getDao(Roomtype.class);
@@ -132,6 +223,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return this.roomtypeDataDao;
 	}
 
+	/**
+	 * Gets the edges data dao.
+	 * 
+	 * @return the edges data dao
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	public Dao<Edges, Integer> getEdgesDataDao() throws SQLException {
 		if (this.edgesDataDao == null) {
 			edgesDataDao = getDao(Edges.class);
@@ -140,22 +238,34 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return this.edgesDataDao;
 	}
 
-	public Dao<HistoryItem, Integer> getHistoryItemDataDao()
-			throws SQLException {
+	/**
+	 * Gets the history item data dao.
+	 * 
+	 * @return the history item data dao
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public Dao<HistoryItem, Integer> getHistoryItemDataDao() throws SQLException {
 		if (this.historyItemDataDao == null) {
 			historyItemDataDao = getDao(HistoryItem.class);
 		}
 		return this.historyItemDataDao;
 	}
 
+	/**
+	 * Gets the roomtype spinner.
+	 * 
+	 * @return the roomtype spinner
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List getRoomtypeSpinner() throws SQLException {
 		if (this.roomtypeSpinner == null) {
 			this.roomtypeSpinner = getRoomtypeDataDao();
 
 			for (Roomtype v : roomtypeSpinner) {
-				spinnerRoomtypeList.add(String.valueOf(v.getRoomtype_id())
-						+ "  " + String.valueOf(v.getDescription()));
+				spinnerRoomtypeList.add(String.valueOf(v.getRoomtype_id()) + "  " + String.valueOf(v.getDescription()));
 			}
 
 		}
@@ -163,17 +273,28 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return spinnerRoomtypeList;
 	}
 
+	/**
+	 * Gets the room spinner.
+	 * 
+	 * @param roomid
+	 *            the roomid
+	 * @param startID
+	 *            the start id
+	 * @return the room spinner
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List getRoomSpinner(Integer roomid, String startID) throws SQLException {
 		Log.v("LOL", "BIN IN DATABASEHANDLER");
 		if (this.roomSpinner == null) {
 			this.roomSpinner = this.getRoomDataDao();
 		}
-		//<------- QueryBuilder + RoomID von StartTag
-		//Dazu da um ausgelesenden Standort aus den Spinner zu entfernen
-		List<Tag> startTagList= this.getTagById(startID);
-		Integer bufferRoomIdFromStartTag = startTagList.get(0).getRoom_ID(); 
-		//------------------->
+		// <------- QueryBuilder + RoomID von StartTag
+		// Dazu da um ausgelesenden Standort aus den Spinner zu entfernen
+		List<Tag> startTagList = this.getTagById(startID);
+		Integer bufferRoomIdFromStartTag = startTagList.get(0).getRoom_ID();
+		// ------------------->
 		this.spinnerRoomList = null;
 		this.spinnerRoomList = new ArrayList<Integer>();
 		this.queryBuilder = roomSpinner.queryBuilder();
@@ -182,8 +303,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		List<Room> RoomList = roomSpinner.query(preparedQuery);
 		for (Room v : RoomList) {
 
-			spinnerRoomList.add(String.valueOf(v.getRoom_id()) + " "
-					+ String.valueOf(v.getDescription()));
+			spinnerRoomList.add(String.valueOf(v.getRoom_id()) + " " + String.valueOf(v.getDescription()));
 			Log.v("LOL", String.valueOf(v.getRoom_id()));
 		}
 		RoomList = null;
@@ -193,6 +313,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	}
 
+	/**
+	 * Gets the tag by id.
+	 * 
+	 * @param ID
+	 *            the id
+	 * @return the tag by id
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	public List<Tag> getTagById(String ID) throws SQLException {
 
 		if (this.tagLocationAll == null) {
@@ -208,6 +337,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	}
 
+	/**
+	 * Gets the edges by source.
+	 * 
+	 * @param sourceId
+	 *            the source id
+	 * @return the edges by source
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	public List<Edges> getEdgesBySource(String sourceId) throws SQLException {
 
 		if (this.edgesAll == null) {
@@ -221,8 +359,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return edgesResult;
 	}
 
-	public List<Edges> getEdgesByDestination(String destinationId)
-			throws SQLException {
+	/**
+	 * Gets the edges by destination.
+	 * 
+	 * @param destinationId
+	 *            the destination id
+	 * @return the edges by destination
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public List<Edges> getEdgesByDestination(String destinationId) throws SQLException {
 
 		this.edgesAll = null;
 		this.queryBuilderEdges = null;
@@ -238,9 +384,19 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return edgesResultDestination;
 	}
 
+	/**
+	 * Gets the remaining edges.
+	 * 
+	 * @param startSource
+	 *            the start source
+	 * @param endDestination
+	 *            the end destination
+	 * @return the remaining edges
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	@SuppressWarnings("rawtypes")
-	public List<Edges> getRemainingEdges(String startSource,
-			String endDestination) throws SQLException {
+	public List<Edges> getRemainingEdges(String startSource, String endDestination) throws SQLException {
 		this.edgesAll = null;
 		this.queryBuilderEdges = null;
 
@@ -249,8 +405,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		this.queryBuilderEdges = edgesAll.queryBuilder();
 		Where where = queryBuilderEdges.where();
-		where.not().like(Edges.SOURCE, startSource).and().not()
-				.like(Edges.DESTINATION, endDestination);
+		where.not().like(Edges.SOURCE, startSource).and().not().like(Edges.DESTINATION, endDestination);
 		PreparedQuery<Edges> preparedEdgesRemain = queryBuilderEdges.prepare();
 		edgeResultRemain = edgesAll.query(preparedEdgesRemain);
 
@@ -258,6 +413,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	}
 
+	/**
+	 * Gets the history items.
+	 * 
+	 * @return the history items
+	 */
 	public List<HistoryItem> getHistoryItems() {
 
 		List<HistoryItem> result = new ArrayList<HistoryItem>();

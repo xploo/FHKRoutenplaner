@@ -39,6 +39,7 @@ public class NfcController extends Controller {
 	/** The running. */
 	private Boolean running;
 
+	/** The Constant INTENT_EXTRA_START_ID. */
 	private static final String INTENT_EXTRA_START_ID = "Start_ID";
 
 	/**
@@ -182,6 +183,7 @@ public class NfcController extends Controller {
 		/** The text view reference. */
 		private final WeakReference<TextView> textViewReference;
 
+		/** The m shared preferences controller. */
 		private SharedPreferencesController mSharedPreferencesController;
 
 		/**

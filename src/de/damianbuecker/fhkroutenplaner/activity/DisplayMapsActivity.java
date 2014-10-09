@@ -10,7 +10,6 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Environment;
 import android.webkit.WebView;
-import android.widget.Toast;
 import de.damianbuecker.fhkroutenplaner.controller.FileController;
 import de.damianbuecker.fhkroutenplaner.controller.ImageController;
 import de.damianbuecker.fhkroutenplaner.controller.NfcController;
@@ -22,6 +21,7 @@ import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
 @ContentView(R.layout.imageview_activity)
 public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
+	/** The m web view. */
 	@InjectView(R.id.imageview_web)			WebView mWebView;
 	
 	/** The start id. */
@@ -33,6 +33,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/** The start floor. */
 	private Integer startFloor;
 	
+	/** The m shared preferences controller. */
 	private SharedPreferencesController mSharedPreferencesController;
 	
 	/** The end floor. */
@@ -50,8 +51,10 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/** The m nfc adapter. */
 	private NfcAdapter mNfcAdapter;
 	
+	/** The Constant INTENT_EXTRA_START_ID. */
 	private static final String INTENT_EXTRA_START_ID = "Start_ID";
 	
+	/** The Constant INTENT_EXTRA_START_FLOOR. */
 	private static final String INTENT_EXTRA_START_FLOOR =  "Start_floor";
 	
 	/* (non-Javadoc)
