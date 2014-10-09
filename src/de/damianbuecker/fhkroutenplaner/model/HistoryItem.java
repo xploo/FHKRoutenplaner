@@ -5,7 +5,6 @@ import java.io.IOException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
@@ -63,9 +62,26 @@ public class HistoryItem extends Model {
 	/**
 	 * Instantiates a new history item.
 	 */
-	public HistoryItem() {}
-	
-	public HistoryItem(int id, String destination, String start, long timestamp, long date,	String name) {
+	public HistoryItem() {
+	}
+
+	/**
+	 * Instantiates a new history item.
+	 * 
+	 * @param id
+	 *            the id
+	 * @param destination
+	 *            the destination
+	 * @param start
+	 *            the start
+	 * @param timestamp
+	 *            the timestamp
+	 * @param date
+	 *            the date
+	 * @param name
+	 *            the name
+	 */
+	public HistoryItem(int id, String destination, String start, long timestamp, long date, String name) {
 		this.id = id;
 		this.destination = destination;
 		this.start = start;
@@ -187,45 +203,78 @@ public class HistoryItem extends Model {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	/**
+	 * From json.
+	 * 
+	 * @param json
+	 *            the json
+	 * @return the history item
+	 */
 	public HistoryItem fromJson(String json) {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeHierarchyAdapter(HistoryItem.class, new HistoryItemTypeAdapter());
 		gsonBuilder.setPrettyPrinting();
 		Gson gson = gsonBuilder.create();
-		
+
 		return gson.fromJson(json, HistoryItem.class);
 	}
-	
+
+	/**
+	 * To json.
+	 * 
+	 * @param historyItem
+	 *            the history item
+	 * @return the string
+	 */
 	public String toJson(HistoryItem historyItem) {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeHierarchyAdapter(HistoryItem.class, new HistoryItemTypeAdapter());
 		gsonBuilder.setPrettyPrinting();
 		Gson gson = gsonBuilder.create();
-		
+
 		return gson.toJson(historyItem);
 	}
-	
-	public class HistoryItemTypeAdapter extends TypeAdapter<HistoryItem>{
 
+	/**
+	 * The Class HistoryItemTypeAdapter.
+	 */
+	public class HistoryItemTypeAdapter extends TypeAdapter<HistoryItem> {
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.google.gson.TypeAdapter#read(com.google.gson.stream.JsonReader)
+		 */
 		@Override
 		public HistoryItem read(JsonReader in) throws IOException {
-			if(in.peek() == JsonToken.NULL) {
+			if (in.peek() == JsonToken.NULL) {
 				in.nextNull();
 				return null;
 			}
 			String data = in.nextString();
 			String[] dataParts = data.split(",");
-			return new HistoryItem(Integer.parseInt(dataParts[0]), dataParts[1], dataParts[2], Long.parseLong(dataParts[3]), Long.parseLong(dataParts[4]), dataParts[5]);
+			return new HistoryItem(Integer.parseInt(dataParts[0]), dataParts[1], dataParts[2], Long.parseLong(dataParts[3]),
+					Long.parseLong(dataParts[4]), dataParts[5]);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.google.gson.TypeAdapter#write(com.google.gson.stream.JsonWriter,
+		 * java.lang.Object)
+		 */
 		@Override
 		public void write(JsonWriter out, HistoryItem value) throws IOException {
-			if(value == null) {
+			if (value == null) {
 				out.nullValue();
 				return;
 			}
 			StringBuffer sb = new StringBuffer("");
-			sb.append(value.getId()).append(",").append(value.getDestination()).append(",").append(value.getStart()).append(",").append(value.getTimestamp()).append(",").append(value.getDate()).append(",").append(value.getName());
+			sb.append(value.getId()).append(",").append(value.getDestination()).append(",").append(value.getStart()).append(",")
+					.append(value.getTimestamp()).append(",").append(value.getDate()).append(",").append(value.getName());
 			out.value(sb.toString());
 		}
 	}

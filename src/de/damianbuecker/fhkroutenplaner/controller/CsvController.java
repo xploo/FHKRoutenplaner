@@ -25,30 +25,29 @@ import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 public class CsvController extends Controller {
 
 	/** The Constant tables. */
-	private static final String[] tables = { "edge.csv", "tag.csv", "room.csv", "dozent.csv",
-			"raumart.csv" };
+	private static final String[] tables = { "edge.csv", "tag.csv", "room.csv", "dozent.csv", "raumart.csv" };
 
 	/** The m asset manager. */
 	private AssetManager mAssetManager;
 
 	/** The Constant CSVSPLITBY. */
 	private static final String CSVSPLITBY = ",";
-	
+
 	/** The Constant EDGE_CSV. */
 	private static final String EDGE_CSV = "edge.csv";
 
 	/** The Constant TAG_CSV. */
 	private static final String TAG_CSV = "tag.csv";
-	
+
 	/** The Constant ROOM_CSV. */
 	private static final String ROOM_CSV = "room.csv";
-	
+
 	/** The Constant DOZENT_CSV. */
 	private static final String DOZENT_CSV = "dozent.csv";
-	
+
 	/** The Constant RAUMART_CSV. */
 	private static final String RAUMART_CSV = "raumart.csv";
-	
+
 	/** The edges dao. */
 	private Dao<Edges, Integer> edgesDao;
 
@@ -85,7 +84,7 @@ public class CsvController extends Controller {
 	 */
 	public void readCSV(DatabaseHelper databaseHelper) {
 
-		this.startTime = this.getTime();
+		this.startTime = DateTimeController.getTime();
 		for (String tableName : tables) {
 			BufferedReader br = null;
 			String line = "";
@@ -149,7 +148,6 @@ public class CsvController extends Controller {
 						if (this.roomDao == null) {
 							this.roomDao = databaseHelper.getRoomDataDao();
 						}
-
 						if (row.length != 0) {
 							Room v = new Room();
 							v.setRoom_id(Integer.parseInt(row[0]));
@@ -171,7 +169,6 @@ public class CsvController extends Controller {
 						if (this.docentDao == null) {
 							this.docentDao = databaseHelper.getDocentDataDao();
 						}
-
 						if (row.length != 0) {
 							Docent v = new Docent();
 							v.setDozent_id(Integer.parseInt(row[0]));
@@ -180,13 +177,11 @@ public class CsvController extends Controller {
 
 							this.docentDao.create(v);
 						}
-
 					} else if (tableName.equals(RAUMART_CSV)) {
 
 						if (this.roomtypeDao == null) {
 							this.roomtypeDao = databaseHelper.getRoomtypeDataDao();
 						}
-
 						if (row.length != 0) {
 							Roomtype v = new Roomtype();
 							v.setRoomtype_id(Integer.parseInt(row[0]));
@@ -194,7 +189,6 @@ public class CsvController extends Controller {
 
 							this.roomtypeDao.create(v);
 						}
-
 					}
 				}
 
@@ -216,7 +210,7 @@ public class CsvController extends Controller {
 
 		}
 
-		this.endTime = this.getTime();
-		this.logInfo(this.getRuntime(startTime, endTime));
+		this.endTime = DateTimeController.getTime();
+		this.logInfo(DateTimeController.getRuntime(startTime, endTime));
 	}
 }

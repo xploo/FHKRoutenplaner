@@ -27,13 +27,25 @@ import android.util.Log;
 public class JSONParser {
 
 	/** The is. */
-	static InputStream is;
+	private static InputStream is;
 
 	/** The j obj. */
-	static JSONObject jObj;
+	private static JSONObject jObj;
 
 	/** The json. */
-	static String json = "";
+	private static String json = "";
+
+	/** The Constant METHOD_POST. */
+	private static final String METHOD_POST = "POST";
+
+	/** The Constant METHOD_GET. */
+	private static final String METHOD_GET = "GET";
+
+	/** The Constant UTF_8. */
+	private static final String UTF_8 = "utf-8";
+
+	/** The Constant ISO_8859_1. */
+	private static final String ISO_8859_1 = "iso-8859-1";
 
 	/**
 	 * Instantiates a new JSON parser.
@@ -58,7 +70,7 @@ public class JSONParser {
 		try {
 
 			// Methode der HTTP-Verbindung ueberpruefen
-			if (method == "POST") {
+			if (method == METHOD_POST) {
 				// Methode ist POST
 				// defaultHttpClient
 				DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -69,10 +81,10 @@ public class JSONParser {
 				HttpEntity httpEntity = httpResponse.getEntity();
 				is = httpEntity.getContent();
 
-			} else if (method == "GET") {
+			} else if (method == METHOD_GET) {
 				// Methode ist GET
 				DefaultHttpClient httpClient = new DefaultHttpClient();
-				String paramString = URLEncodedUtils.format(params, "utf-8");
+				String paramString = URLEncodedUtils.format(params, UTF_8);
 				url += "?" + paramString;
 				HttpGet httpGet = new HttpGet(url);
 
@@ -90,7 +102,7 @@ public class JSONParser {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is, ISO_8859_1), 8);
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -145,7 +157,7 @@ public class JSONParser {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is, ISO_8859_1), 8);
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {

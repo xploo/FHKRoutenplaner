@@ -1,6 +1,5 @@
 package de.damianbuecker.fhkroutenplaner.model;
 
-
 /**
  * The Class Edge.
  */
