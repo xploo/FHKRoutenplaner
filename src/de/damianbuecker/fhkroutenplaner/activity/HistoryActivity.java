@@ -32,6 +32,9 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 
 	/** The selected item. */
 	public int selectedItem = -1;
+	
+	private static final String INTENT_EXTRA_HISTORY = "history";
+	private static final String INTENT_EXTRA_SELECTED_ITEM = "selectedItem";
 
 	/*
 	 * (non-Javadoc)
@@ -41,11 +44,11 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (this.getIntent().getStringArrayListExtra("history") != null) {
-			if (this.getIntent().getStringArrayListExtra("history").size() == 0) {
+		if (this.getIntent().getStringArrayListExtra(INTENT_EXTRA_HISTORY) != null) {
+			if (this.getIntent().getStringArrayListExtra(INTENT_EXTRA_HISTORY).size() == 0) {
 				// Abfangen
 			} else {
-				ArrayList<String> jsonArray = this.getIntent().getStringArrayListExtra("history");
+				ArrayList<String> jsonArray = this.getIntent().getStringArrayListExtra(INTENT_EXTRA_HISTORY);
 				ArrayList<HistoryItem> historyItemsList = new ArrayList<HistoryItem>();
 				for(String s : jsonArray) {
 					HistoryItem h = new HistoryItem();
@@ -130,7 +133,7 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 		HistoryItem item = (HistoryItem) getListAdapter().getItem(position);
 		
 		Intent intent = new Intent(this, HistoryItemDetailActivity.class);
-		intent.putExtra("selectedItem", item.toJson(item));
+		intent.putExtra(INTENT_EXTRA_SELECTED_ITEM, item.toJson(item));
 		startActivity(intent);
 	}
 

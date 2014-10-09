@@ -3,6 +3,7 @@ package de.damianbuecker.fhkroutenplaner.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import roboguice.inject.ContentView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,35 +18,39 @@ import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 /**
  * The Class StartUpActivity.
  */
+@ContentView(R.layout.startup_activity)
 public class StartUpActivity extends ModifiedViewActivityImpl {
 
+	/** The m csv controller. */
 	private CsvController mCsvController;
 
 	/** The database helper. */
 	private DatabaseHelper databaseHelper;
 
+	/** The m shared preferences controller. */
 	private SharedPreferencesController mSharedPreferencesController;
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	/** The Constant INTENT_EXTRA_HISTORY. */
+	private static final String INTENT_EXTRA_HISTORY = "history";
+	
+
+	/* (non-Javadoc)
+	 * @see roboguice.activity.RoboActivity#onCreate(android.os.Bundle)
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.startup_activity);
 	
 		if(this.mSharedPreferencesController == null) {
 			this.mSharedPreferencesController = new SharedPreferencesController(this);
 		}
-		this.mSharedPreferencesController.putInSharedPreference("RouteRunning", false);
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, false);
 		
 		if (this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}
 
-		this.mSharedPreferencesController.putInSharedPreference("firstrun", true);
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
 		HistoryItem h1 = new HistoryItem();
 		h1.setName("H1");h1.setDate(System.currentTimeMillis());h1.setDestination("H1");h1.setStart("H1");h1.setTimestamp(System.currentTimeMillis());
 		HistoryItem h2 = new HistoryItem();
@@ -57,12 +62,12 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		h2.create(this);
 		h3.create(this);
 		
-		this.mSharedPreferencesController.putInSharedPreference("firstrun", true);
-		if(this.mSharedPreferencesController.getBoolean("firstrun")) {
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
+		if(this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
 			this.mCsvController = new CsvController(this);
 			this.mCsvController.readCSV(databaseHelper);
 			
-			this.mSharedPreferencesController.putInSharedPreference("databaseVersion", 1);
+			this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_DATABASE_VERSION, 1);
 		}
 	}
 
@@ -74,7 +79,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 	 */
 	public void onClick_search(View v) {
 
-		Intent intent = new Intent("android.intents.NFCConnector");
+		Intent intent = new Intent(INTENT_NAVIGATION);
 		startActivity(intent);
 	}
 
@@ -86,9 +91,6 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 	 */
 	public void onClick_history(View v) {
 
-		/*
-		 * Aus DB holen
-		 */
 		if(this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}
@@ -99,26 +101,23 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 			jsonList.add(h.toJson(h));
 		}
 		
-		Intent intent = new Intent("android.intents.History");
-		intent.putStringArrayListExtra("history", jsonList);
+		Intent intent = new Intent(INTENT_HISTORY);
+		intent.putStringArrayListExtra(INTENT_EXTRA_HISTORY, jsonList);
 		startActivity(intent);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onResume()
+	/* (non-Javadoc)
+	 * @see roboguice.activity.RoboActivity#onResume()
 	 */
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		
 		if(this.mSharedPreferencesController == null) {
 			this.mSharedPreferencesController = new SharedPreferencesController(this);
 		}
-		if(this.mSharedPreferencesController.getBoolean("firstrun")) {
-			this.mSharedPreferencesController.putInSharedPreference("firstrun", false);
+		if(this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
+			this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, false);
 		}
 	}
 

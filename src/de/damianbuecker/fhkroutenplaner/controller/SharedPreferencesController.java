@@ -26,8 +26,7 @@ public class SharedPreferencesController extends Controller {
 	 */
 	public SharedPreferencesController(Context context) {
 		super(context);
-		this.mSharedPreferences = this.getContext().getSharedPreferences(SHAREDPREFERENCESNAME,
-				Context.MODE_PRIVATE);
+		this.mSharedPreferences = this.getContext().getSharedPreferences(SHAREDPREFERENCESNAME, Context.MODE_PRIVATE);
 		this.mEditor = this.mSharedPreferences.edit();
 	}
 
@@ -42,8 +41,7 @@ public class SharedPreferencesController extends Controller {
 	public void putInSharedPreference(String key, Object value) {
 		if (value != null) {
 			if (this.mSharedPreferences == null) {
-				this.mSharedPreferences = this.getContext().getSharedPreferences(
-						SHAREDPREFERENCESNAME, Context.MODE_PRIVATE);
+				this.mSharedPreferences = this.getContext().getSharedPreferences(SHAREDPREFERENCESNAME, Context.MODE_PRIVATE);
 			}
 			if (this.mEditor == null) {
 				this.mEditor = this.mSharedPreferences.edit();
@@ -150,12 +148,12 @@ public class SharedPreferencesController extends Controller {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Removes the all shared preferences.
 	 */
 	public void removeAllSharedPreferences() {
-		if(this.mEditor != null) {
+		if (this.mEditor != null) {
 			this.mEditor.clear().commit();
 		}
 	}

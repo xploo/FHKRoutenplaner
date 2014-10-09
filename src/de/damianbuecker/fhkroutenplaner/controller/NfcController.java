@@ -10,14 +10,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentFilter.MalformedMimeTypeException;
-import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.TextView;
 import de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity;
 
@@ -28,26 +26,26 @@ public class NfcController extends Controller {
 
 	/** The Constant MIME_TEXT_PLAIN. */
 	public static final String MIME_TEXT_PLAIN = "text/plain";
-	
+
 	/** The result. */
 	public static String RESULT = "result";
-	
+
 	/** The m text view. */
 	private TextView mTextView;
-	
+
 	/** The m context. */
 	private Context mContext;
-	
-	/** The prefs. */
-	private SharedPreferences prefs;
-	
+
 	/** The running. */
 	private Boolean running;
 
+	private static final String INTENT_EXTRA_START_ID = "Start_ID";
+
 	/**
 	 * Instantiates a new NFC controller.
-	 *
-	 * @param tv the tv
+	 * 
+	 * @param tv
+	 *            the tv
 	 */
 	public NfcController(TextView tv) {
 		super(tv.getContext());
@@ -56,8 +54,9 @@ public class NfcController extends Controller {
 
 	/**
 	 * Instantiates a new NFC controller.
-	 *
-	 * @param context the context
+	 * 
+	 * @param context
+	 *            the context
 	 */
 	public NfcController(Context context) {
 		super(context);
@@ -65,9 +64,11 @@ public class NfcController extends Controller {
 
 	/**
 	 * Handle intent.
-	 *
-	 * @param intent the intent
-	 * @param context the context
+	 * 
+	 * @param intent
+	 *            the intent
+	 * @param context
+	 *            the context
 	 * @return the boolean
 	 */
 	public Boolean handleIntent(Intent intent, Context context) {
@@ -87,7 +88,7 @@ public class NfcController extends Controller {
 				}
 
 			} else {
-				Log.d("TAG", "Wrong mime type: " + type);
+				this.logError("Wrong mime type: " + type);
 			}
 		} else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
 
@@ -112,16 +113,17 @@ public class NfcController extends Controller {
 
 	/**
 	 * Setup foreground dispatch.
-	 *
-	 * @param activity the activity
-	 * @param adapter the adapter
+	 * 
+	 * @param activity
+	 *            the activity
+	 * @param adapter
+	 *            the adapter
 	 */
 	public static void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
 		final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-		final PendingIntent pendingIntent = PendingIntent.getActivity(
-				activity.getApplicationContext(), 0, intent, 0);
+		final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
 
 		IntentFilter[] filters = new IntentFilter[1];
 		String[][] techList = new String[][] {};
@@ -141,29 +143,30 @@ public class NfcController extends Controller {
 
 	/**
 	 * Stop foreground dispatch.
-	 *
-	 * @param activity the activity
-	 * @param adapter the adapter
+	 * 
+	 * @param activity
+	 *            the activity
+	 * @param adapter
+	 *            the adapter
 	 */
 	public static void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
 		adapter.disableForegroundDispatch(activity);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.damianbuecker.fhkroutenplaner.controller.Controller#getContext()
 	 */
 	public Context getContext() {
 		return this.mContext;
 	}
 
-	// public void setContext(Context context) {
-	// this.mContext = context;
-	// }
-
 	/**
 	 * Receive result.
-	 *
-	 * @param result the result
+	 * 
+	 * @param result
+	 *            the result
 	 */
 	public void receiveResult(String result) {
 	}
@@ -175,43 +178,45 @@ public class NfcController extends Controller {
 
 		/** The m context. */
 		private Context mContext;
-		
+
 		/** The text view reference. */
 		private final WeakReference<TextView> textViewReference;
 
+		private SharedPreferencesController mSharedPreferencesController;
+
 		/**
 		 * Instantiates a new ndef reader task.
-		 *
-		 * @param tv the tv
+		 * 
+		 * @param tv
+		 *            the tv
 		 */
-		@SuppressWarnings("static-access")
 		public NdefReaderTask(TextView tv) {
 
 			this.textViewReference = new WeakReference<TextView>(tv);
 			this.mContext = tv.getContext();
-			prefs = mContext.getSharedPreferences("de.damianbuecker.fhkroutenplaner",
-					mContext.MODE_PRIVATE);
-			running = prefs.getBoolean("RouteRunning", false);
+			this.mSharedPreferencesController = new SharedPreferencesController(this.mContext);
+
+			running = this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_ROUTE_RUNNING);
 		}
 
 		/**
 		 * Instantiates a new ndef reader task.
-		 *
-		 * @param context the context
+		 * 
+		 * @param context
+		 *            the context
 		 */
-		@SuppressWarnings("static-access")
 		public NdefReaderTask(Context context) {
 			this.mContext = context;
-			prefs = mContext.getSharedPreferences("de.damianbuecker.fhkroutenplaner",
-					mContext.MODE_PRIVATE);
+			this.mSharedPreferencesController = new SharedPreferencesController(this.mContext);
 			this.textViewReference = null;
+
 			if (mContext == null) {
 
 				NfcController.this.logError("Constructor Context - null");
 			} else
 				NfcController.this.logInfo("Constructor Context nicht null");
 
-			running = prefs.getBoolean("RouteRunning", false);
+			running = this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_ROUTE_RUNNING);
 
 			if (running == true) {
 				NfcController.this.logInfo("Constructor - yes");
@@ -221,7 +226,9 @@ public class NfcController extends Controller {
 
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
 		@Override
@@ -239,25 +246,25 @@ public class NfcController extends Controller {
 
 			NdefRecord[] records = ndefMessage.getRecords();
 			for (NdefRecord ndefRecord : records) {
-				if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN
-						&& Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
+				if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
 					try {
 						return readText(ndefRecord);
 					} catch (UnsupportedEncodingException e) {
-						Log.e("TAG", "Unsupported Encoding", e);
+						NfcController.this.logError(e.getMessage());
 					}
 				}
 			}
-
 			return null;
 		}
 
 		/**
 		 * Read text.
-		 *
-		 * @param record the record
+		 * 
+		 * @param record
+		 *            the record
 		 * @return the string
-		 * @throws UnsupportedEncodingException the unsupported encoding exception
+		 * @throws UnsupportedEncodingException
+		 *             the unsupported encoding exception
 		 */
 		private String readText(NdefRecord record) throws UnsupportedEncodingException {
 			/*
@@ -283,39 +290,30 @@ public class NfcController extends Controller {
 			// e.g. "en"
 
 			// Get the Text
-			return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength
-					- 1, textEncoding);
+			return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
 		protected void onPostExecute(String result) {
 
-			NfcController.this.logInfo("RouteRunningreP");
 			if (running == true) {
-				NfcController.this.logInfo("RouteRunning");
-				// Intent intent = new Intent("android.intents.NFCGO");
-				// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-				// NFCController.this.getContext().startActivity(intent);
 				Intent i = new Intent(mContext, DisplayMapsActivity.class);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				i.putExtra("Start_ID", result);
+				i.putExtra(INTENT_EXTRA_START_ID, result);
 				mContext.startActivity(i);
 
 			} else if (this.textViewReference != null && result != null) {
 				final TextView tv = this.textViewReference.get();
 				if (tv != null) {
 					tv.setText(result);
-
-					// NFCController.this.receiveResult(result);
 				}
-
 			}
 			NfcController.this.logInfo(result);
 		}
-
 	}
 }

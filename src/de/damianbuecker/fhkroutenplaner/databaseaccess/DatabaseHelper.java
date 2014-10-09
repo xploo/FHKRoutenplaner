@@ -149,6 +149,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return this.historyItemDataDao;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List getRoomtypeSpinner() throws SQLException {
 		if (this.roomtypeSpinner == null) {
 			this.roomtypeSpinner = getRoomtypeDataDao();
@@ -163,6 +164,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return spinnerRoomtypeList;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List getRoomSpinner(Integer roomid) throws SQLException {
 		Log.v("LOL", "BIN IN DATABASEHANDLER");
 		if (this.roomSpinner == null) {
@@ -232,6 +234,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return edgesResultDestination;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public List<Edges> getRemainingEdges(String startSource,
 			String endDestination) throws SQLException {
 		this.edgesAll = null;

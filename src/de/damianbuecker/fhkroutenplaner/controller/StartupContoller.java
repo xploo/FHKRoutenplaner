@@ -25,87 +25,97 @@ public class StartupContoller extends Controller {
 
 	/** The conn manager. */
 	private ConnectivityManager connManager;
-	
+
 	/** The m wifi. */
 	private NetworkInfo mWifi;
-	
+
 	/** The Constant tables. */
 	private static final String[] tables = { "edge", "tag", "room", "dozent", "raumart" };
-	
+
 	/** The j parser. */
-	private JSONParser jParser = new JSONParser();	
-	
-	
+	private JSONParser jParser = new JSONParser();
+
 	/** The external data. */
 	private JSONArray externalData;
-	
+
 	/** The params. */
 	private List<NameValuePair> params;
-	
+
 	/** The version. */
 	private String version;
-	
+
 	/** The m shared preferences controller. */
 	private SharedPreferencesController mSharedPreferencesController;
 
 	/** The url_get database. */
 	private String url_getDatabase = "http://fhkrp.in24.de/BA/index.php";
-	
+
 	/** The url_get version. */
 	private String url_getVersion = "http://fhkrp.in24.de/BA/index2.php";
-	
+
 	/** The Constant TAG_SUCCESS. */
 	private static final String TAG_SUCCESS = "success";
-	
+
 	/** The Constant TAG_DOCENTID. */
 	protected static final String TAG_DOCENTID = "docentID";
-	
+
 	/** The Constant TAG_ROOMID. */
 	protected static final String TAG_ROOMID = "roomID";
-	
+
 	/** The Constant TAG_FLOOR. */
 	protected static final String TAG_FLOOR = "floor";
-	
+
 	/** The Constant TAG_ROOMTYPEID. */
 	protected static final String TAG_ROOMTYPEID = "roomtypeID";
-	
+
 	/** The Constant TAG_DESCRIPTION. */
 	protected static final String TAG_DESCRIPTION = "description";
-	
+
 	/** The Constant TAG_TAGID. */
 	protected static final String TAG_TAGID = "tagID";
-	
+
 	/** The Constant TAG_XOS. */
 	protected static final String TAG_XOS = "x_pos";
-	
+
 	/** The Constant TAG_YPOS. */
 	protected static final String TAG_YPOS = "y_pos";
-	
+
 	/** The Constant TAG_NAME. */
 	protected static final String TAG_NAME = "name";
-	
+
 	/** The Constant TAG_LASTNAME. */
 	protected static final String TAG_LASTNAME = "lastname";
-	
+
 	/** The Constant TAG_EDGESID. */
 	protected static final String TAG_EDGESID = "edgesID";
-	
+
 	/** The Constant TAG_SOURCE. */
 	protected static final String TAG_SOURCE = "source";
-	
+
 	/** The Constant TAG_DESTINATION. */
 	protected static final String TAG_DESTINATION = "destination";
-	
+
 	/** The Constant TAG_COST. */
 	protected static final String TAG_COST = "cost";
-	
+
 	/** The Constant TAG_VERSION. */
 	protected static final String TAG_VERSION = "version";
 
+	private static final String ROOM_TXT = "/sdcard/FMS/room.txt";
+
+	private static final String TAG_TXT = "/sdcard/FMS/tag.txt";
+
+	private static final String ROOMTYPE_TXT = "/sdcard/FMS/roomtype.txt";
+
+	private static final String DOCENT_TXT = "/sdcard/FMS/docent.txt";
+
+	private static final String EDGES_TXT = "/sdcard/FMS/edges.txt";
+
 	/**
 	 * Instantiates a new startup contoller.
-	 *
-	 * @param context the context
+	 * 
+	 * @param context
+	 *            the context
 	 */
 	public StartupContoller(Context context) {
 		super(context);
@@ -113,14 +123,13 @@ public class StartupContoller extends Controller {
 
 	/**
 	 * Checks if is wifi connected.
-	 *
+	 * 
 	 * @return true, if is wifi connected
 	 */
 	@SuppressWarnings("static-access")
 	public boolean isWifiConnected() {
 
-		this.connManager = (ConnectivityManager) this.getContext().getSystemService(
-				this.getContext().CONNECTIVITY_SERVICE);
+		this.connManager = (ConnectivityManager) this.getContext().getSystemService(this.getContext().CONNECTIVITY_SERVICE);
 		this.mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
 		return (mWifi.isConnected()) ? true : false;
@@ -128,7 +137,7 @@ public class StartupContoller extends Controller {
 
 	/**
 	 * Gets the external database.
-	 *
+	 * 
 	 * @return the external database
 	 */
 	public void getExternalDatabase() {
@@ -173,11 +182,10 @@ public class StartupContoller extends Controller {
 										// 3. Bei gefundener änderung ->
 
 										try {
-											File myFile = new File("/sdcard/FMS/room.txt");
+											File myFile = new File(ROOM_TXT);
 											myFile.createNewFile();
 											FileOutputStream fOut = new FileOutputStream(myFile);
-											OutputStreamWriter myOutWriter = new OutputStreamWriter(
-													fOut);
+											OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 											myOutWriter.append(c.getString(TAG_ROOMID) + ";");
 											myOutWriter.append(c.getString(TAG_FLOOR) + ";");
 											myOutWriter.append(c.getString(TAG_ROOMTYPEID) + ";");
@@ -193,11 +201,10 @@ public class StartupContoller extends Controller {
 									} else if (tblnames.equals("tag")) {
 
 										try {
-											File myFile = new File("/sdcard/FMS/tag.txt");
+											File myFile = new File(TAG_TXT);
 											myFile.createNewFile();
 											FileOutputStream fOut = new FileOutputStream(myFile);
-											OutputStreamWriter myOutWriter = new OutputStreamWriter(
-													fOut);
+											OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 											myOutWriter.append(c.getString(TAG_TAGID) + ";");
 											myOutWriter.append(c.getString(TAG_ROOMID) + ";");
 											myOutWriter.append(c.getString(TAG_XOS) + ";");
@@ -214,11 +221,10 @@ public class StartupContoller extends Controller {
 									} else if (tblnames.equals("roomtype")) {
 
 										try {
-											File myFile = new File("/sdcard/FMS/roomtype.txt");
+											File myFile = new File(ROOMTYPE_TXT);
 											myFile.createNewFile();
 											FileOutputStream fOut = new FileOutputStream(myFile);
-											OutputStreamWriter myOutWriter = new OutputStreamWriter(
-													fOut);
+											OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 											myOutWriter.append(c.getString(TAG_ROOMTYPEID) + ";");
 											myOutWriter.append(c.getString(TAG_DESCRIPTION) + "\n");
 											myOutWriter.close();
@@ -230,11 +236,10 @@ public class StartupContoller extends Controller {
 
 									} else if (tblnames.equals("docent")) {
 										try {
-											File myFile = new File("/sdcard/FMS/docent.txt");
+											File myFile = new File(DOCENT_TXT);
 											myFile.createNewFile();
 											FileOutputStream fOut = new FileOutputStream(myFile);
-											OutputStreamWriter myOutWriter = new OutputStreamWriter(
-													fOut);
+											OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 											myOutWriter.append(c.getString(TAG_DOCENTID) + ";");
 											myOutWriter.append(c.getString(TAG_NAME) + ";");
 											myOutWriter.append(c.getString(TAG_LASTNAME) + "\n");
@@ -248,11 +253,10 @@ public class StartupContoller extends Controller {
 									} else if (tblnames.equals("edges")) {
 
 										try {
-											File myFile = new File("/sdcard/FMS/edges.txt");
+											File myFile = new File(EDGES_TXT);
 											myFile.createNewFile();
 											FileOutputStream fOut = new FileOutputStream(myFile);
-											OutputStreamWriter myOutWriter = new OutputStreamWriter(
-													fOut);
+											OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 											myOutWriter.append(c.getString(TAG_EDGESID) + ";");
 											myOutWriter.append(c.getString(TAG_SOURCE) + ";");
 											myOutWriter.append(c.getString(TAG_DESTINATION) + ";");
@@ -276,12 +280,10 @@ public class StartupContoller extends Controller {
 		}).start();
 
 	}
-	
-	
 
 	/**
 	 * Gets the database version.
-	 *
+	 * 
 	 * @return the database version
 	 */
 	public String getDatabaseVersion() {
@@ -330,16 +332,17 @@ public class StartupContoller extends Controller {
 
 	/**
 	 * Check for update.
-	 *
+	 * 
 	 * @return the integer
 	 */
 	public Integer checkForUpdate() {
 
 		this.mSharedPreferencesController = new SharedPreferencesController(this.getContext());
 		String externalVersion = getDatabaseVersion();
-		Integer internalVersion = this.mSharedPreferencesController.getInteger("databaseVersion");
+		Integer internalVersion = this.mSharedPreferencesController.getInteger(SHARED_PREFERENCE_DATABASE_VERSION);
 
 		Log.v("SharedPrefCHECK", internalVersion.toString());
+		this.logInfo("SharedPrefCheck " + internalVersion.toString());
 
 		if (externalVersion != "0" || internalVersion != 0) {
 			if (Integer.parseInt(externalVersion) == internalVersion) {

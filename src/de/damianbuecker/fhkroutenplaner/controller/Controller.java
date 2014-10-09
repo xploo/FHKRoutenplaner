@@ -18,6 +18,11 @@ import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
  */
 public class Controller {
 
+	
+	protected static final String SHARED_PREFERENCE_ROUTE_RUNNING = "RouteRunning";
+	
+	protected static final String SHARED_PREFERENCE_DATABASE_VERSION = "databaseVersion";
+	
 	/** The local database helper. */
 	private DatabaseHelper mDatabaseHelper;
 
@@ -26,6 +31,10 @@ public class Controller {
 
 	/** The Constant logger. */
 	private static final Logger logger = LoggerFactory.getLogger(Controller.class);
+	
+	private static final String TIMEZONE = "GMT";
+	
+	private static final String DATE_FORMAT = "HH:mm:ss:SSS";
 
 	/**
 	 * Instantiates a new controller.
@@ -82,8 +91,8 @@ public class Controller {
 	public String getRuntime(long startTime, long endTime) {
 
 		long runtime = endTime - startTime;
-		TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SSS");
+		TimeZone.setDefault(TimeZone.getTimeZone(TIMEZONE));
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		return sdf.format(runtime).toString();
 	}
 
@@ -102,7 +111,7 @@ public class Controller {
 	 * @param message the message
 	 */
 	public void logWarning(String message) {
-		logger.warn("WARNING", "@" + Controller.class.getSimpleName() + " " + message);
+		logger.warn("@" + Controller.class.getSimpleName() + " " + message);
 	}
 
 	/**
@@ -111,7 +120,7 @@ public class Controller {
 	 * @param message the message
 	 */
 	public void logError(String message) {
-		logger.error("ERROR", "@" + Controller.class.getSimpleName() + " " + message);
+		logger.error("@" + Controller.class.getSimpleName() + " " + message);
 	}
 
 	/**
@@ -120,6 +129,6 @@ public class Controller {
 	 * @param message the message
 	 */
 	public void logInfo(String message) {
-		logger.info("INFO", "@" + Controller.class.getSimpleName() + " " + message);
+		logger.info("@" + Controller.class.getSimpleName() + " " + message);
 	}
 }

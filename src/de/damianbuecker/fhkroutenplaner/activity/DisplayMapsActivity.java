@@ -2,23 +2,27 @@ package de.damianbuecker.fhkroutenplaner.activity;
 
 import java.io.File;
 
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.webkit.WebView;
 import de.damianbuecker.fhkroutenplaner.controller.FileController;
 import de.damianbuecker.fhkroutenplaner.controller.ImageController;
 import de.damianbuecker.fhkroutenplaner.controller.NfcController;
+import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
 
 /**
  * The Class DisplayMapsActivity.
  */
+@ContentView(R.layout.imageview_activity)
 public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
+	@InjectView(R.id.imageview_web)			WebView mWebView;
+	
 	/** The start id. */
 	private Integer startID;
 	
@@ -28,11 +32,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/** The start floor. */
 	private Integer startFloor;
 	
-	/** The extras. */
-	private Bundle extras;
-	
-	/** The prefs. */
-	private SharedPreferences prefs;
+	private SharedPreferencesController mSharedPreferencesController;
 	
 	/** The end floor. */
 	private Integer endFloor;
@@ -49,46 +49,42 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/** The m nfc adapter. */
 	private NfcAdapter mNfcAdapter;
 	
+	private static final String INTENT_EXTRA_START_ID = "Start_ID";
+	
+	private static final String INTENT_EXTRA_START_FLOOR =  "Start_floor";
+	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.imageview_activity);
 
-		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-
-		prefs = getSharedPreferences("de.damianbuecker.fhkroutenplaner", MODE_PRIVATE);
-
-		// ABfrage Running??
-
+		this.mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+		this.mSharedPreferencesController = new SharedPreferencesController(this);
 		this.mNFCController = new NfcController(this);
-		// this.mNFCController.setContext(this);
-		mNFCController.handleIntent(getIntent(), this);
+		this.mNFCController.handleIntent(getIntent(), this);
 
-		extras = getIntent().getExtras();
-		if (prefs.getBoolean("RouteRunning", true)) {
+		if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_ROUTE_RUNNING)) {
 
-			this.endID = Integer.parseInt(prefs.getString("lastDestination", "0"));
+			this.endID = Integer.parseInt(this.mSharedPreferencesController.getString(SHARED_PREFERENCE_LAST_DESTINATION));
 			ImageController mImgCont = new ImageController(this);
-			this.startID = Integer.parseInt(extras.getString("Start_ID"));
+			this.startID = Integer.parseInt(this.getIntent().getExtras().getString(INTENT_EXTRA_START_ID));
 			this.startFloor = mImgCont.getEndFloor(startID);
 
 		} else {
-			if (!(extras == null)) {
+			if (!(this.getIntent().getExtras() == null)) {
 
-				if (prefs.getBoolean("firstrun", true)) {
-					this.endID = Integer.parseInt(extras.getString("End_ID"));
+				if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
+					this.endID = Integer.parseInt(this.getIntent().getExtras().getString("End_ID"));
 				} else {
-					this.endID = Integer.parseInt(prefs.getString("lastDestination", "0"));
+					this.endID = Integer.parseInt(this.mSharedPreferencesController.getString(SHARED_PREFERENCE_LAST_DESTINATION));
 				}
-				this.startID = Integer.parseInt(extras.getString("Start_ID"));
+				this.startID = Integer.parseInt(this.getIntent().getExtras().getString(INTENT_EXTRA_START_ID));
 
-				this.startFloor = Integer.parseInt(extras
-						.getString("Start_floor"));
+				this.startFloor = Integer.parseInt(this.getIntent().getExtras().getString(INTENT_EXTRA_START_FLOOR));
 				
 				this.logInfo("Was steht im ENDID "+endID.toString());
 
@@ -99,7 +95,6 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		mImgCont.testAlgorithm(this.startFloor, this.startID, this.endID);
 		this.endFloor = mImgCont.getEndFloor(endID);
 
-		WebView mWebView = (WebView) findViewById(R.id.imageview_web);
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		mWebView.getSettings().setLoadWithOverviewMode(true);
 		mWebView.getSettings().setUseWideViewPort(true);
@@ -117,7 +112,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		}
 
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			Log.d("TAG", "No SDCARD");
+			this.logWarning("No SD Card!");
 		} else {
 
 			// 1. Template auslesen
@@ -126,54 +121,24 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			// (HTML)
 			// 4. Mit WebvView öffnen
 			if (startFloor == endFloor) {
-
 				mWebView.loadUrl("file:///" + Environment.getExternalStorageDirectory()
 						+ "/FMS/TestIMG-" + endFloor + ".png");
 
 			} else {
-
 				// Stelle HTML-Seite dar, die zwei Bilder Lädt
-
 				File file = this.mFileController.createHTMLFile(startFloor, endFloor);
-
 				mWebView.loadUrl("file://" + file.getAbsolutePath());
-
-				// mWebView.loadUrl("file:///"
-				// + Environment.getExternalStorageDirectory()
-				// + "/FMS/template.html");
-
 			}
-
 		}
-		prefs.edit().putBoolean("RouteRunning", true).commit();
-	}
-
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onDestroy()
-	 */
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-
-		/**
-		 * Disposes the DatabaseHelper.
-		 */
-		// if (this.databaseHelper != null) {
-		// OpenHelperManager.releaseHelper();
-		// this.databaseHelper = null;
-		// }
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, true);
 	}
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onNewIntent(android.content.Intent)
 	 */
 	protected void onNewIntent(Intent intent) {
-
 		this.mNFCController = new NfcController(this);
 		this.mNFCController.handleIntent(intent, this);
-		// serv = new NFCService(this);
-		// serv.HandleIntent(intent);
-
 	}
 
 	/* (non-Javadoc)
@@ -187,13 +152,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		 * It's important, that the activity is in the foreground (resumed).
 		 * Otherwise an IllegalStateException is thrown.
 		 */
-
-		// Setzten von Running auf false
-
 		this.mNFCController = new NfcController(this);
 		this.mNFCController.setupForegroundDispatch(this, mNfcAdapter);
-		// serv = new NFCService(this);
-		// serv.setupForegroundDispatch(this, mNfcAdapter);
 	}
 
 	/* (non-Javadoc)
@@ -202,17 +162,15 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void onPause() {
+		super.onPause();
 		/**
 		 * Call this before onPause, otherwise an IllegalArgumentException is
 		 * thrown as well.
 		 */
-
 		this.mNFCController = new NfcController(this);
 		this.mNFCController.stopForegroundDispatch(this, mNfcAdapter);
-		// serv = new NFCService(this);
-		// serv.stopForegroundDispatch(this, mNfcAdapter);
 
-		super.onPause();
+
 	}
 
 }

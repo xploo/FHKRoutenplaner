@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
 
@@ -24,21 +23,12 @@ public class PathController extends Controller {
 
 	/** The edges start. */
 	private List<Edges> edgesStart;
-	
+
 	/** The edges end. */
 	private List<Edges> edgesEnd;
-	
+
 	/** The edges remaining. */
 	private List<Edges> edgesRemaining;
-
-	/**
-	 * Instantiates a new path controller.
-	 *
-	 * @param context the context
-	 */
-	public PathController(Context context) {
-		super(context);
-	}
 
 	/** The tagsize. */
 	@SuppressWarnings("unused")
@@ -46,15 +36,27 @@ public class PathController extends Controller {
 
 	/** The nodes. */
 	private List<Vertex> nodes;
-	
+
 	/** The edges. */
 	private List<Edge> edges;
+	
+	/**
+	 * Instantiates a new path controller.
+	 * 
+	 * @param context
+	 *            the context
+	 */
+	public PathController(Context context) {
+		super(context);
+	}
 
 	/**
 	 * Test excute.
-	 *
-	 * @param startID the start id
-	 * @param endID the end id
+	 * 
+	 * @param startID
+	 *            the start id
+	 * @param endID
+	 *            the end id
 	 * @return the linked list
 	 */
 	public LinkedList<Vertex> testExcute(Integer startID, Integer endID) {
@@ -72,7 +74,7 @@ public class PathController extends Controller {
 				Vertex location = new Vertex(String.valueOf(t.getTag_id()), t.getDescription(),
 						t.getFloor());
 
-				this.nodes.add(location);				
+				this.nodes.add(location);
 
 			}
 
@@ -89,8 +91,9 @@ public class PathController extends Controller {
 			for (Edges s : edgesStart) {
 				sb.append(s.getKante_id());
 				addLane(sb.toString(), s.getSource(), s.getDestination(), s.getCost());
-				this.logInfo("Edge Start: " + sb.toString() + " " + s.getSource() + " " + s.getDestination() + " " + s.getCost());
-				
+				this.logInfo("Edge Start: " + sb.toString() + " " + s.getSource() + " "
+						+ s.getDestination() + " " + s.getCost());
+
 			}
 
 			this.edgesRemaining = this.getDatabaseHelper(this.getContext()).getRemainingEdges(
@@ -99,8 +102,9 @@ public class PathController extends Controller {
 			for (Edges v : edgesRemaining) {
 				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(),
 						v.getCost());
-				this.logInfo("Edge Remaining: " + v.getKante_id() + " " + v.getSource() + " " + v.getDestination() + " " + v.getCost());
-				
+				this.logInfo("Edge Remaining: " + v.getKante_id() + " " + v.getSource() + " "
+						+ v.getDestination() + " " + v.getCost());
+
 			}
 
 			this.edgesEnd = this.getDatabaseHelper(this.getContext()).getEdgesByDestination(
@@ -108,8 +112,9 @@ public class PathController extends Controller {
 			for (Edges w : edgesEnd) {
 				addLane(String.valueOf(w.getKante_id()), w.getSource(), w.getDestination(),
 						w.getCost());
-				this.logInfo("Edge End: " + w.getKante_id() + " " + w.getSource() + " " + w.getDestination() + " " + w.getCost());
-				
+				this.logInfo("Edge End: " + w.getKante_id() + " " + w.getSource() + " "
+						+ w.getDestination() + " " + w.getCost());
+
 			}
 
 		} catch (SQLException e) {
@@ -129,29 +134,33 @@ public class PathController extends Controller {
 				arsch = nodes.indexOf(v);
 			}
 		}
-		
-		dijkstra.execute(nodes.get(arsch));		
+
+		dijkstra.execute(nodes.get(arsch));
 		LinkedList<Vertex> path = dijkstra.getPath(nodes.get(nase));
-		
+
 		for (Vertex vertex : path) {
-			Log.v("ENDPATH", vertex.toString());
+			this.logInfo("ENDPATH : " + vertex.toString());
 		}
-		
+
 		return path;
 	}
 
 	/**
 	 * Adds the lane.
-	 *
-	 * @param laneId the lane id
-	 * @param sourceLocNo the source loc no
-	 * @param destLocNo the dest loc no
-	 * @param duration the duration
+	 * 
+	 * @param laneId
+	 *            the lane id
+	 * @param sourceLocNo
+	 *            the source loc no
+	 * @param destLocNo
+	 *            the dest loc no
+	 * @param duration
+	 *            the duration
 	 */
 	private void addLane(String laneId, int sourceLocNo, int destLocNo, int duration) {
 		Integer sourceLocNoIndex, destLocNoIndex;
 		sourceLocNoIndex = destLocNoIndex = 0;
-		
+
 		for (Vertex v : nodes) {
 			if (Integer.parseInt(v.getId()) == sourceLocNo) {
 				sourceLocNoIndex = this.nodes.indexOf(v);
@@ -159,7 +168,8 @@ public class PathController extends Controller {
 				destLocNoIndex = this.nodes.indexOf(v);
 			}
 		}
-		Edge lane = new Edge(laneId, this.nodes.get(sourceLocNoIndex), this.nodes.get(destLocNoIndex), duration);
+		Edge lane = new Edge(laneId, this.nodes.get(sourceLocNoIndex),
+				this.nodes.get(destLocNoIndex), duration);
 		this.edges.add(lane);
 	}
 }

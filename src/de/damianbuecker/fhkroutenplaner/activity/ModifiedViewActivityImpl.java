@@ -10,6 +10,22 @@ import roboguice.activity.RoboActivity;
  */
 public class ModifiedViewActivityImpl extends RoboActivity implements ModifiedViewInterface {
 
+	protected static final String SHARED_PREFERENCE_ROUTE_RUNNING = "RouteRunning";
+	
+	protected static final String SHARED_PREFERENCE_LAST_DESTINATION = "lastDestination";
+	
+	protected static final String SHARED_PREFERENCE_FIRST_RUN = "firstrun";
+	
+	protected static final String SHARED_PREFERENCE_DATABASE_VERSION = "databaseVersion";
+	
+	/** The Constant INTENT_HISTORY. */
+	protected static final String INTENT_HISTORY = "android.intents.History";
+	
+	/** The Constant INTENT_NAVIGATION. */
+	protected static final String INTENT_NAVIGATION = "android.intents.NavigationActivity";
+	
+	protected static final String INTENT_DISPLAY_MAPS_ACTIVITY = "android.intents.DisplayMapsActivity";
+	
 	/** The Constant logger. */
 	private static final Logger logger = LoggerFactory.getLogger(ModifiedViewActivityImpl.class);
 

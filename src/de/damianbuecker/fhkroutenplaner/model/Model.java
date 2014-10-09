@@ -12,13 +12,6 @@ import com.j256.ormlite.dao.Dao;
 
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 
-import android.content.Context;
-
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
-
-import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
-
 /**
  * The Class Model.
  */

@@ -42,7 +42,7 @@ public class Service {
 	 *            the message
 	 */
 	public void logWarning(String message) {
-		logger.warn("WARNING", "@" + Service.class.getSimpleName() + " " + message);
+		logger.warn("@" + Service.class.getSimpleName() + " " + message);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class Service {
 	 *            the message
 	 */
 	public void logError(String message) {
-		logger.error("ERROR", "@" + Service.class.getSimpleName() + " " + message);
+		logger.error("@" + Service.class.getSimpleName() + " " + message);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class Service {
 	 *            the message
 	 */
 	public void logInfo(String message) {
-		logger.info("INFO", "@" + Service.class.getSimpleName() + " " + message);
+		logger.info("@" + Service.class.getSimpleName() + " " + message);
 	}
 
 }
