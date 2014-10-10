@@ -50,11 +50,14 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	TextView mTextViewDescription;
 
 	/** The Spinner room. */
-	private Spinner mSpinnerRoomtype, mSpinnerRoom;
+	private Spinner mSpinnerRoom;
 
 	/** The room spinner data. */
 	@SuppressWarnings("rawtypes")
 	private List roomtypeSpinnerData, roomSpinnerData;
+	
+	@InjectView(R.id.nfc_spinner_roomtype)
+	private Spinner mSpinnerRoomtype;
 
 	/** The database helper. */
 	private DatabaseHelper databaseHelper;
