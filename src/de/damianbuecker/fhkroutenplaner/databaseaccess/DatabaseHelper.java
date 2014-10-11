@@ -161,6 +161,79 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			e.printStackTrace();
 		}
 	}
+	
+	public void deleteTag(){
+		try {
+		
+		Dao<Tag, Integer> tagDao = getTagDataDao();
+		List<Tag> listTag = tagDao.queryForAll();
+		tagDao.delete(listTag);
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}		
+	}
+	
+	public void deleteRoom(){
+		try {
+		
+		Dao<Room, Integer> roomDao = getRoomDataDao();
+		List<Room> listRoom = roomDao.queryForAll();
+		roomDao.delete(listRoom);
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void deleteRoomtype(){
+		try {
+		
+		Dao<Roomtype, Integer> roomtypeDao = getRoomtypeDataDao();
+		List<Roomtype> roomtypeList = roomtypeDao.queryForAll();
+		roomtypeDao.delete(roomtypeList);
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void deleteDocent(){
+		try {
+		
+		Dao<Docent, Integer> docentDao = getDocentDataDao();
+		List<Docent> listDocent = docentDao.queryForAll();
+		docentDao.delete(listDocent);
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		}
+		
+		public void deleteEdges(){
+			try {
+			
+			Dao<Edges, Integer> edgesDao = getEdgesDataDao();
+			List<Edges> listEdges = edgesDao.queryForAll();
+			edgesDao.delete(listEdges);
+				
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+			
+		}
+		
+		public void deleteCompleteDatabase(){
+			deleteEdges();
+			deleteTag();
+			deleteRoom();
+			deleteRoomtype();
+			deleteDocent();
+		}
+		
+	
 
 	/**
 	 * Gets the tag data dao.
@@ -249,6 +322,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			historyItemDataDao = getDao(HistoryItem.class);
 		}
 		return this.historyItemDataDao;
+	}
+	
+	public void deleteTagDao() throws SQLException{
+		if(this.tagDataDao == null){
+			tagDataDao = getDao(Tag.class);
+		}
+		
+		
 	}
 
 	/**

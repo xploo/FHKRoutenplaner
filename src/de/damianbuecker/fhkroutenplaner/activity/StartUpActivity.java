@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.ContentView;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,8 +14,10 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import de.damianbuecker.fhkroutenplaner.controller.CsvController;
 import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
+import de.damianbuecker.fhkroutenplaner.controller.StartupContoller;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
+
 
 /**
  * The Class StartUpActivity.
@@ -32,6 +36,8 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 
 	/** The Constant INTENT_EXTRA_HISTORY. */
 	private static final String INTENT_EXTRA_HISTORY = "history";
+	
+	private StartupContoller mStartupController;
 
 	/*
 	 * (non-Javadoc)
@@ -53,6 +59,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
 
+		/*
 		// Testdaten
 		HistoryItem h1 = new HistoryItem();
 		h1.setName("H1");
@@ -77,7 +84,43 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		h2.writeToDatabase(this);
 		h3.writeToDatabase(this);
 		// Testdaten Ende
+		 * 
+		 */
 
+		/**
+		 * Abfrage ob Updateverfügbar und WIfi-Connected
+		 */
+		if(this.mStartupController == null){
+			
+			mStartupController = new StartupContoller(this);
+		}
+		
+		if(this.mStartupController.isWifiConnected() == true) {
+			
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+			alertDialogBuilder.setTitle("Datenbankupdate verfügbar!");
+			alertDialogBuilder.setMessage("Möchten Sie das Update herrunterladen und installieren?").setCancelable(false).setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					mStartupController.getExternalDatabase();
+				}
+			}).setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					
+					dialog.cancel();
+				}
+			});
+			
+			AlertDialog alertDialog = alertDialogBuilder.create();
+			alertDialog.show();
+		}
+		
+		
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
 		if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
 			this.mCsvController = new CsvController(this);

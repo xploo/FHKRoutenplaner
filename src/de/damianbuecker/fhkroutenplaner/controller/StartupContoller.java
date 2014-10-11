@@ -1,8 +1,5 @@
 package de.damianbuecker.fhkroutenplaner.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +13,16 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+
+import com.j256.ormlite.dao.Dao;
+
+import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Docent;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Edges;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.JSONParser;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Room;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Roomtype;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 
 /**
  * The Class StartupContoller.
@@ -25,12 +31,15 @@ public class StartupContoller extends Controller {
 
 	/** The conn manager. */
 	private ConnectivityManager connManager;
+	
+	private DatabaseHelper databaseHelper;
 
 	/** The m wifi. */
 	private NetworkInfo mWifi;
 
 	/** The Constant tables. */
-	private static final String[] tables = { "edge", "tag", "room", "dozent", "raumart" };
+	private static final String[] tables = { "edge", "tag", "room", "dozent",
+			"raumart" };
 
 	/** The j parser. */
 	private JSONParser jParser = new JSONParser();
@@ -55,6 +64,16 @@ public class StartupContoller extends Controller {
 
 	/** The Constant TAG_SUCCESS. */
 	private static final String TAG_SUCCESS = "success";
+
+	private Dao<Edges, Integer> edgesDao;
+
+	private Dao<Tag, Integer> tagDao;
+
+	private Dao<Room, Integer> roomDao;
+
+	private Dao<Docent, Integer> docentDao;
+
+	private Dao<Roomtype, Integer> roomtypeDao;
 
 	/** The Constant TAG_DOCENTID. */
 	protected static final String TAG_DOCENTID = "docentID";
@@ -134,7 +153,8 @@ public class StartupContoller extends Controller {
 	@SuppressWarnings("static-access")
 	public boolean isWifiConnected() {
 
-		this.connManager = (ConnectivityManager) this.getContext().getSystemService(this.getContext().CONNECTIVITY_SERVICE);
+		this.connManager = (ConnectivityManager) this.getContext()
+				.getSystemService(this.getContext().CONNECTIVITY_SERVICE);
 		this.mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
 		return (mWifi.isConnected()) ? true : false;
@@ -147,6 +167,13 @@ public class StartupContoller extends Controller {
 	 */
 	public void getExternalDatabase() {
 
+		if(this.databaseHelper == null){
+			databaseHelper = this.getDatabaseHelper(this.getContext());
+		}
+		
+		databaseHelper.deleteCompleteDatabase();
+		
+		// TODO: Delete Databaseentries first
 		new Thread(new Runnable() {
 
 			public void run() {
@@ -158,7 +185,8 @@ public class StartupContoller extends Controller {
 					params.add(new BasicNameValuePair("tablename", tblnames));
 					try {
 						// JSON objekte per http-Request holen
-						JSONObject json = jParser.makeHttpRequest(url_getDatabase, "GET", params);
+						JSONObject json = jParser.makeHttpRequest(
+								url_getDatabase, "GET", params);
 
 						// Ausgabe der geholten Daten in der Log cat
 						Log.d("Kompletter Inhalt extern: ", json.toString());
@@ -176,28 +204,24 @@ public class StartupContoller extends Controller {
 
 								// Per Schleife durch alle Klausuren
 								for (int i = 0; i < externalData.length(); i++) {
-									JSONObject c = externalData.getJSONObject(i);
+									JSONObject c = externalData
+											.getJSONObject(i);
 
 									if (tblnames.equals("room")) {
-
-										// 1. Tabelle auf Server mit (Name |
-										// hashwert)
-										// 2. Lokalen hashwert mit Server
-										// Hashwert vergleichen
-										// 3. Bei gefundener änderung ->
-
 										try {
-											File myFile = new File(ROOM_TXT);
-											myFile.createNewFile();
-											FileOutputStream fOut = new FileOutputStream(myFile);
-											OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-											myOutWriter.append(c.getString(TAG_ROOMID) + ";");
-											myOutWriter.append(c.getString(TAG_FLOOR) + ";");
-											myOutWriter.append(c.getString(TAG_ROOMTYPEID) + ";");
-											myOutWriter.append(c.getString(TAG_DOCENTID) + ";");
-											myOutWriter.append(c.getString(TAG_DESCRIPTION) + "\n");
-											myOutWriter.close();
-											fOut.close();
+											if (roomDao == null) {
+												roomDao = databaseHelper
+														.getRoomDataDao();
+											}
+
+											Room room = new Room();
+											room.setRoom_id(Integer.parseInt(c.getString(TAG_ROOMID)));
+											room.setFloor(Integer.parseInt(c.getString(TAG_FLOOR)));
+											room.setRoomtype_ID(Integer.parseInt(c.getString(TAG_ROOMTYPEID)));
+											room.setDocent_ID(Integer.parseInt(c.getString(TAG_DOCENTID)));
+											room.setDescription(c.getString(TAG_DESCRIPTION));
+											
+											roomDao.create(room);
 
 										} catch (Exception e) {
 											e.printStackTrace();
@@ -206,18 +230,19 @@ public class StartupContoller extends Controller {
 									} else if (tblnames.equals("tag")) {
 
 										try {
-											File myFile = new File(TAG_TXT);
-											myFile.createNewFile();
-											FileOutputStream fOut = new FileOutputStream(myFile);
-											OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-											myOutWriter.append(c.getString(TAG_TAGID) + ";");
-											myOutWriter.append(c.getString(TAG_ROOMID) + ";");
-											myOutWriter.append(c.getString(TAG_XOS) + ";");
-											myOutWriter.append(c.getString(TAG_YPOS) + ";");
-											myOutWriter.append(c.getString(TAG_DESCRIPTION) + ";");
-											myOutWriter.append(c.getString(TAG_FLOOR) + "\n");
-											myOutWriter.close();
-											fOut.close();
+											if(tagDao == null){
+												tagDao = databaseHelper.getTagDataDao();
+											}
+											
+											Tag tag = new Tag();
+
+											tag.setTag_id(Integer.parseInt(c.getString(TAG_TAGID)));
+											tag.setRoom_ID(Integer.parseInt(c.getString(TAG_ROOMID)));
+											tag.setX_pos(Double.parseDouble(c.getString(TAG_XOS)));
+											tag.setY_pos(Double.parseDouble(c.getString(TAG_YPOS)));
+											tag.setDescription(c.getString(TAG_DESCRIPTION));
+											tag.setFloor(Integer.parseInt(c.getString(TAG_FLOOR)));
+											tagDao.create(tag);
 
 										} catch (Exception e) {
 											e.printStackTrace();
@@ -226,14 +251,16 @@ public class StartupContoller extends Controller {
 									} else if (tblnames.equals("roomtype")) {
 
 										try {
-											File myFile = new File(ROOMTYPE_TXT);
-											myFile.createNewFile();
-											FileOutputStream fOut = new FileOutputStream(myFile);
-											OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-											myOutWriter.append(c.getString(TAG_ROOMTYPEID) + ";");
-											myOutWriter.append(c.getString(TAG_DESCRIPTION) + "\n");
-											myOutWriter.close();
-											fOut.close();
+											if(roomtypeDao == null){
+												roomtypeDao  = databaseHelper.getRoomtypeDataDao();
+											}
+											
+											Roomtype roomtype = new Roomtype();
+
+											roomtype.setRoomtype_id(Integer.parseInt(c.getString(TAG_ROOMTYPEID)));
+											roomtype.setDescription(c.getString(TAG_DESCRIPTION));
+											
+											roomtypeDao.create(roomtype);
 
 										} catch (Exception e) {
 											e.printStackTrace();
@@ -241,15 +268,18 @@ public class StartupContoller extends Controller {
 
 									} else if (tblnames.equals("docent")) {
 										try {
-											File myFile = new File(DOCENT_TXT);
-											myFile.createNewFile();
-											FileOutputStream fOut = new FileOutputStream(myFile);
-											OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-											myOutWriter.append(c.getString(TAG_DOCENTID) + ";");
-											myOutWriter.append(c.getString(TAG_NAME) + ";");
-											myOutWriter.append(c.getString(TAG_LASTNAME) + "\n");
-											myOutWriter.close();
-											fOut.close();
+											if(docentDao == null){
+												
+												docentDao = databaseHelper.getDocentDataDao();
+											}
+											
+											Docent docent = new Docent();
+											
+											docent.setDozent_id(Integer.parseInt(c.getString(TAG_DOCENTID)));
+											docent.setD_name(c.getString(TAG_NAME));
+											docent.setD_lastname(c.getString(TAG_LASTNAME));
+											
+											docentDao.create(docent);
 
 										} catch (Exception e) {
 											e.printStackTrace();
@@ -258,16 +288,19 @@ public class StartupContoller extends Controller {
 									} else if (tblnames.equals("edges")) {
 
 										try {
-											File myFile = new File(EDGES_TXT);
-											myFile.createNewFile();
-											FileOutputStream fOut = new FileOutputStream(myFile);
-											OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-											myOutWriter.append(c.getString(TAG_EDGESID) + ";");
-											myOutWriter.append(c.getString(TAG_SOURCE) + ";");
-											myOutWriter.append(c.getString(TAG_DESTINATION) + ";");
-											myOutWriter.append(c.getString(TAG_COST) + "\n");
-											myOutWriter.close();
-											fOut.close();
+											if(edgesDao == null)
+											{
+												edgesDao = databaseHelper.getEdgesDataDao();
+											}
+											
+											Edges edge = new Edges();
+
+											edge.setKante_id(Integer.parseInt(c.getString(TAG_EDGESID)));
+											edge.setSource(Integer.parseInt(c.getString(TAG_SOURCE)));
+											edge.setDestination(Integer.parseInt(c.getString(TAG_DESTINATION)));
+											edge.setCost(Integer.parseInt(c.getString(TAG_COST)));
+											
+											edgesDao.create(edge);
 
 										} catch (Exception e) {
 											e.printStackTrace();
@@ -301,7 +334,8 @@ public class StartupContoller extends Controller {
 
 				try {
 					// JSON objekte per http-Request holen
-					JSONObject json = jParser.makeHttpRequest(url_getVersion, "GET", params);
+					JSONObject json = jParser.makeHttpRequest(url_getVersion,
+							"GET", params);
 
 					// Ausgabe der geholten Daten in der Log cat
 					Log.d("Kompletter Inhalt extern: ", json.toString());
@@ -320,8 +354,6 @@ public class StartupContoller extends Controller {
 							JSONObject c = externalData.getJSONObject(i);
 
 							version = c.getString(TAG_VERSION);
-							Log.v("VERSIONSTEST", version);
-
 						}
 					}
 				} catch (JSONException e) {
@@ -342,9 +374,11 @@ public class StartupContoller extends Controller {
 	 */
 	public Integer checkForUpdate() {
 
-		this.mSharedPreferencesController = new SharedPreferencesController(this.getContext());
+		this.mSharedPreferencesController = new SharedPreferencesController(
+				this.getContext());
 		String externalVersion = getDatabaseVersion();
-		Integer internalVersion = this.mSharedPreferencesController.getInteger(SHARED_PREFERENCE_DATABASE_VERSION);
+		Integer internalVersion = this.mSharedPreferencesController
+				.getInteger(SHARED_PREFERENCE_DATABASE_VERSION);
 
 		Log.v("SharedPrefCHECK", internalVersion.toString());
 		this.logInfo("SharedPrefCheck " + internalVersion.toString());

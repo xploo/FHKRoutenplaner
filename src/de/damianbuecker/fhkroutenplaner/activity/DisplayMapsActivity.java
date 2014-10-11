@@ -40,11 +40,11 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		super.onCreate(savedInstanceState);
 
 		// Import listItems here
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, listItems));
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-		btnToggleDrawer.setOnClickListener(new ButtonDrawerToggleListener());
-		btnLeft.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-		btnRight.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+		this.mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, listItems));
+		this.mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+		this.btnToggleDrawer.setOnClickListener(new ButtonDrawerToggleListener());
+		this.btnLeft.setOnClickListener(new ButtonLeftRightListener());
+		this.btnRight.setOnClickListener(new ButtonLeftRightListener());
 		
 	}
 	
@@ -57,8 +57,11 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	}
 	
 	private void selectItem(int position) {
-		Intent intent = new Intent();
-		//Wechsel in NavigationActivity
+		Intent intent = new Intent(this, NavigationActivity.class);
+		startActivity(intent);
+		/**
+		 * Cleanup here
+		 */
 	}
 	
 	private class ButtonDrawerToggleListener implements View.OnClickListener {
@@ -71,5 +74,24 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				DisplayMapsActivity.this.mDrawerLayout.openDrawer(DisplayMapsActivity.this.mListViewDrawer);
 			}
 		}
+	}
+	
+	private class ButtonLeftRightListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			if(v.getId() == R.id.btnleft) {
+				DisplayMapsActivity.this.btnLeft.setHapticFeedbackEnabled(true);
+				DisplayMapsActivity.this.btnLeft.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+				DisplayMapsActivity.this.btnLeft.setVisibility(View.INVISIBLE);
+				DisplayMapsActivity.this.btnRight.setVisibility(View.VISIBLE);
+			} else if(v.getId() == R.id.btnright) {
+				DisplayMapsActivity.this.btnRight.setHapticFeedbackEnabled(true);
+				DisplayMapsActivity.this.btnRight.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+				DisplayMapsActivity.this.btnRight.setVisibility(View.INVISIBLE);
+				DisplayMapsActivity.this.btnLeft.setVisibility(View.VISIBLE);
+			}
+		}
+		
 	}
 }
