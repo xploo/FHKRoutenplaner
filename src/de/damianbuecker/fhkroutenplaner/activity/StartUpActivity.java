@@ -112,7 +112,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 				public void onClick(DialogInterface dialog, int which) {
 					// TODO Auto-generated method stub
 					
-					dialog.cancel();
+					dialog.cancel(); 
 				}
 			});
 			
