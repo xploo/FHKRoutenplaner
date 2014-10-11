@@ -58,7 +58,7 @@ public class HistoryItem extends Model {
 	/** The name. */
 	@DatabaseField(canBeNull = false, useGetSet = true, columnName = NAME)
 	private String name;
-
+	
 	/**
 	 * Instantiates a new history item.
 	 */

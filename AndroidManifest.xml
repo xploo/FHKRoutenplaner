@@ -46,7 +46,7 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
-                <action android:name="android.intents.DisplayMapsActivity" />
+                <action android:name="android.intents.DeprecatedDisplayMapsActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -66,7 +66,8 @@
         </activity>
         <activity
             android:name=".DisplayMapsActivity"
-            android:label="@string/title_activity_display_maps" >
+            android:label="@string/title_activity_display_maps"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
     </application>
 

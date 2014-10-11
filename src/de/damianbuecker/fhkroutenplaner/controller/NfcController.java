@@ -73,7 +73,6 @@ public class NfcController extends Controller {
 	 * @return the boolean
 	 */
 	public Boolean handleIntent(Intent intent, Context context) {
-		// TODO: handle Intent
 
 		String action = intent.getAction();
 		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {

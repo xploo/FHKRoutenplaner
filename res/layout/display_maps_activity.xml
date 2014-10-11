@@ -1,26 +1,65 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity" >
+    android:layout_height="match_parent" >
 
-	<Button 
-	    android:id="@+id/btnleft"
-	    android:layout_alignParentBottom="true"
-	    android:layout_alignParentLeft="true"
-	    android:layout_height="wrap_content"
-	    android:layout_width="wrap_content"
-	    android:alpha="0.5"
-	    android:text="@string/btnleft" />
-	
-	<Button 
-	    android:id="@+id/btnright"
-	    android:layout_alignParentBottom="true"
-	    android:layout_alignParentRight="true"
-	   	android:layout_height="wrap_content"
-	    android:layout_width="wrap_content"
-	    android:alpha="0.5"
+	<FrameLayout
+	    android:id="@+id/content_frame"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="#ffffff" />
+
+	<RelativeLayout
+	    android:id="@+id/relative_layout"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" >
 	    
-	    android:text="@string/btnright" />
+	    <Button 
+	        android:id="@+id/btntoggledrawer" 
+	        android:background="@drawable/icon_drawer_256"
+	        android:layout_height="50dp"
+	        android:layout_width="50dp"
+	        android:layout_alignParentTop="true"
+	        android:layout_alignParentLeft="true"
+	        android:layout_marginTop="5dp"
+	        android:layout_marginLeft="5dp"
+	        android:alpha="0.6"
+	        />
+	    
+        <Button
+            android:id="@+id/btnleft"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:alpha="0.5"
+            android:background="@drawable/arrow_left_256" />
+
+        <Button
+            android:id="@+id/btnright"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:alpha="0.5"
+            android:background="@drawable/arrow_right_256" />
+        
+    </RelativeLayout>
+    
+    <ListView 
+        android:id="@+id/left_drawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="#111"/>
 	
-</RelativeLayout>
+	
+</android.support.v4.widget.DrawerLayout>

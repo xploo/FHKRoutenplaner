@@ -10,6 +10,7 @@ import java.util.TimeZone;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
@@ -39,18 +40,21 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 	/** The m text view. */
 	@InjectView(R.id.txtV_nfc_hidden)
-	TextView mTextView;
+	private TextView mTextView;
 
 	/** The m text view floor. */
 	@InjectView(R.id.txtV_nfc_floor_out)
-	TextView mTextViewFloor;
+	private TextView mTextViewFloor;
 
 	/** The m text view description. */
 	@InjectView(R.id.txtV_nfc_description_out)
-	TextView mTextViewDescription;
-
-	/** The Spinner room. */
-	private Spinner mSpinnerRoomtype, mSpinnerRoom;
+	private TextView mTextViewDescription;
+	
+	@InjectView(R.id.nfc_spinner_roomtype)
+	private Spinner mSpinnerRoomtype;
+	
+	@InjectView(R.id.nfc_spinner_room)
+	private Spinner mSpinnerRoom;
 
 	/** The room spinner data. */
 	@SuppressWarnings("rawtypes")
@@ -111,6 +115,16 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 			alertDialogBuilder.setTitle(ALERT_DIALOG_TITLE);
 			alertDialogBuilder.setMessage(ALERT_DIALOG_MESSAGE).setCancelable(false);
+			
+			// <<< For testing purposes only
+			alertDialogBuilder.setNeutralButton("Magic Beans", new DialogInterface.OnClickListener(){
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					NavigationActivity.this.mTextView.setText("1");
+				}
+			});
+			// End >>>
 			this.alertDialog = alertDialogBuilder.create();
 			this.alertDialog.show();
 
@@ -211,7 +225,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 	@SuppressWarnings("unchecked")
 	public void addRoomSpinner(Integer roomtypeID) {
-		this.mSpinnerRoom = (Spinner) findViewById(R.id.nfc_spinner_room);
 		this.roomSpinnerData = null;
 		try {
 			// <------ TV neu
@@ -345,7 +358,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	 */
 	public void onClick_GO(View v) {
 
-		Intent intent = new Intent(INTENT_DISPLAY_MAPS_ACTIVITY);
+		Intent intent = new Intent(this, DisplayMapsActivity.class);
 		String[] splitResult = String.valueOf(this.mSpinnerRoom.getSelectedItem()).split(" ");
 
 		if (this.mSharedPreferencesController == null) {
