@@ -19,6 +19,7 @@ import com.j256.ormlite.dao.Dao;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.util.Log;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Docent;
@@ -37,7 +38,7 @@ public class StartupContoller extends Controller {
 
 	/** The conn manager. */
 	private ConnectivityManager connManager;
-	
+
 	private DatabaseHelper databaseHelper;
 
 	/** The m wifi. */
@@ -173,156 +174,168 @@ public class StartupContoller extends Controller {
 	 */
 	public void getExternalDatabase() {
 
-		if(this.databaseHelper == null){
+		if (this.databaseHelper == null) {
 			databaseHelper = this.getDatabaseHelper(this.getContext());
 		}
-		
+
 		databaseHelper.deleteCompleteDatabase();
-		
-		// TODO: Delete Databaseentries first
-		new Thread(new Runnable() {
 
-			public void run() {
+		for (String tblnames : tables) {
 
-				for (String tblnames : tables) {
+			// Übergabeparameter festlegen für http-Request
+			params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("tablename", tblnames));
+			try {
+				// JSON objekte per http-Request holen
+				JSONObject json = jParser.makeHttpRequest(url_getDatabase,
+						"GET", params);
 
-					// Übergabeparameter festlegen für http-Request
-					params = new ArrayList<NameValuePair>();
-					params.add(new BasicNameValuePair("tablename", tblnames));
-					try {
-						// JSON objekte per http-Request holen
-						JSONObject json = jParser.makeHttpRequest(
-								url_getDatabase, "GET", params);
+				// Ausgabe der geholten Daten in der Log cat
+				Log.d("Kompletter Inhalt extern: ", json.toString());
 
-						// Ausgabe der geholten Daten in der Log cat
-						Log.d("Kompletter Inhalt extern: ", json.toString());
+				try {
+					// Überprüfen ob HTTP-Request erfolgreich
+					int success = json.getInt(TAG_SUCCESS);
 
-						try {
-							// Überprüfen ob HTTP-Request erfolgreich
-							int success = json.getInt(TAG_SUCCESS);
+					if (success == 1) {
+						// Abfrage erfolgreich.
+						// Abgefragte Daten in einem JSON-Array
+						// speichern
 
-							if (success == 1) {
-								// Abfrage erfolgreich.
-								// Abgefragte Daten in einem JSON-Array
-								// speichern
+						externalData = json.getJSONArray(tblnames);
 
-								externalData = json.getJSONArray(tblnames);
+						// Per Schleife durch alle Klausuren
+						for (int i = 0; i < externalData.length(); i++) {
+							JSONObject c = externalData.getJSONObject(i);
 
-								// Per Schleife durch alle Klausuren
-								for (int i = 0; i < externalData.length(); i++) {
-									JSONObject c = externalData
-											.getJSONObject(i);
-
-									if (tblnames.equals("room")) {
-										try {
-											if (roomDao == null) {
-												roomDao = databaseHelper
-														.getRoomDataDao();
-											}
-
-											Room room = new Room();
-											room.setRoom_id(Integer.parseInt(c.getString(TAG_ROOMID)));
-											room.setFloor(Integer.parseInt(c.getString(TAG_FLOOR)));
-											room.setRoomtype_ID(Integer.parseInt(c.getString(TAG_ROOMTYPEID)));
-											room.setDocent_ID(Integer.parseInt(c.getString(TAG_DOCENTID)));
-											room.setDescription(c.getString(TAG_DESCRIPTION));
-											
-											roomDao.create(room);
-
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
-
-									} else if (tblnames.equals("tag")) {
-
-										try {
-											if(tagDao == null){
-												tagDao = databaseHelper.getTagDataDao();
-											}
-											
-											Tag tag = new Tag();
-
-											tag.setTag_id(Integer.parseInt(c.getString(TAG_TAGID)));
-											tag.setRoom_ID(Integer.parseInt(c.getString(TAG_ROOMID)));
-											tag.setX_pos(Double.parseDouble(c.getString(TAG_XOS)));
-											tag.setY_pos(Double.parseDouble(c.getString(TAG_YPOS)));
-											tag.setDescription(c.getString(TAG_DESCRIPTION));
-											tag.setFloor(Integer.parseInt(c.getString(TAG_FLOOR)));
-											tagDao.create(tag);
-
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
-
-									} else if (tblnames.equals("roomtype")) {
-
-										try {
-											if(roomtypeDao == null){
-												roomtypeDao  = databaseHelper.getRoomtypeDataDao();
-											}
-											
-											Roomtype roomtype = new Roomtype();
-
-											roomtype.setRoomtype_id(Integer.parseInt(c.getString(TAG_ROOMTYPEID)));
-											roomtype.setDescription(c.getString(TAG_DESCRIPTION));
-											
-											roomtypeDao.create(roomtype);
-
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
-
-									} else if (tblnames.equals("docent")) {
-										try {
-											if(docentDao == null){
-												
-												docentDao = databaseHelper.getDocentDataDao();
-											}
-											
-											Docent docent = new Docent();
-											
-											docent.setDozent_id(Integer.parseInt(c.getString(TAG_DOCENTID)));
-											docent.setD_name(c.getString(TAG_NAME));
-											docent.setD_lastname(c.getString(TAG_LASTNAME));
-											
-											docentDao.create(docent);
-
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
-
-									} else if (tblnames.equals("edges")) {
-
-										try {
-											if(edgesDao == null)
-											{
-												edgesDao = databaseHelper.getEdgesDataDao();
-											}
-											
-											Edges edge = new Edges();
-
-											edge.setKante_id(Integer.parseInt(c.getString(TAG_EDGESID)));
-											edge.setSource(Integer.parseInt(c.getString(TAG_SOURCE)));
-											edge.setDestination(Integer.parseInt(c.getString(TAG_DESTINATION)));
-											edge.setCost(Integer.parseInt(c.getString(TAG_COST)));
-											
-											edgesDao.create(edge);
-
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
+							if (tblnames.equals("room")) {
+								try {
+									if (roomDao == null) {
+										roomDao = databaseHelper
+												.getRoomDataDao();
 									}
+
+									Room room = new Room();
+									room.setRoom_id(Integer.parseInt(c
+											.getString(TAG_ROOMID)));
+									room.setFloor(Integer.parseInt(c
+											.getString(TAG_FLOOR)));
+									room.setRoomtype_ID(Integer.parseInt(c
+											.getString(TAG_ROOMTYPEID)));
+									room.setDocent_ID(Integer.parseInt(c
+											.getString(TAG_DOCENTID)));
+									room.setDescription(c
+											.getString(TAG_DESCRIPTION));
+
+									roomDao.create(room);
+
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+
+							} else if (tblnames.equals("tag")) {
+
+								try {
+									if (tagDao == null) {
+										tagDao = databaseHelper.getTagDataDao();
+									}
+
+									Tag tag = new Tag();
+
+									tag.setTag_id(Integer.parseInt(c
+											.getString(TAG_TAGID)));
+									tag.setRoom_ID(Integer.parseInt(c
+											.getString(TAG_ROOMID)));
+									tag.setX_pos(Double.parseDouble(c
+											.getString(TAG_XOS)));
+									tag.setY_pos(Double.parseDouble(c
+											.getString(TAG_YPOS)));
+									tag.setDescription(c
+											.getString(TAG_DESCRIPTION));
+									tag.setFloor(Integer.parseInt(c
+											.getString(TAG_FLOOR)));
+									tagDao.create(tag);
+
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+
+							} else if (tblnames.equals("roomtype")) {
+
+								try {
+									if (roomtypeDao == null) {
+										roomtypeDao = databaseHelper
+												.getRoomtypeDataDao();
+									}
+
+									Roomtype roomtype = new Roomtype();
+
+									roomtype.setRoomtype_id(Integer.parseInt(c
+											.getString(TAG_ROOMTYPEID)));
+									roomtype.setDescription(c
+											.getString(TAG_DESCRIPTION));
+
+									roomtypeDao.create(roomtype);
+
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+
+							} else if (tblnames.equals("docent")) {
+								try {
+									if (docentDao == null) {
+
+										docentDao = databaseHelper
+												.getDocentDataDao();
+									}
+
+									Docent docent = new Docent();
+
+									docent.setDozent_id(Integer.parseInt(c
+											.getString(TAG_DOCENTID)));
+									docent.setD_name(c.getString(TAG_NAME));
+									docent.setD_lastname(c
+											.getString(TAG_LASTNAME));
+
+									docentDao.create(docent);
+
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+
+							} else if (tblnames.equals("edges")) {
+
+								try {
+									if (edgesDao == null) {
+										edgesDao = databaseHelper
+												.getEdgesDataDao();
+									}
+
+									Edges edge = new Edges();
+
+									edge.setKante_id(Integer.parseInt(c
+											.getString(TAG_EDGESID)));
+									edge.setSource(Integer.parseInt(c
+											.getString(TAG_SOURCE)));
+									edge.setDestination(Integer.parseInt(c
+											.getString(TAG_DESTINATION)));
+									edge.setCost(Integer.parseInt(c
+											.getString(TAG_COST)));
+
+									edgesDao.create(edge);
+
+								} catch (Exception e) {
+									e.printStackTrace();
 								}
 							}
-						} catch (JSONException e) {
-							e.printStackTrace();
 						}
-					} catch (Exception ex) {
 					}
+				} catch (JSONException e) {
+					e.printStackTrace();
 				}
+			} catch (Exception ex) {
 			}
-		}).start();
-
+		}
 	}
 
 	/**
@@ -361,7 +374,6 @@ public class StartupContoller extends Controller {
 
 							version = c.getString(TAG_VERSION);
 							Log.v("VERSIONSTEST", version);
-							
 
 						}
 					}
