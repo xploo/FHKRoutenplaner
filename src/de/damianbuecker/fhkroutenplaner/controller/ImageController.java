@@ -20,6 +20,7 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -184,15 +185,18 @@ public class ImageController extends Controller {
 
 					this.tagDao = this.getDatabaseHelper(this.getContext()).getTagDataDao();
 				}
-				QueryBuilder<Tag, Integer> queryBuilder = this.tagDao.queryBuilder();
+				QueryBuilder<Tag, Integer> queryBuilder = this.tagDao.queryBuilder();				
 
+				int i = 0;
 				for (Vertex vertex : list) {
 
 					queryBuilder.where().eq(Tag.DESCRIPTION, vertex);
 					PreparedQuery<Tag> preparedQuery = queryBuilder.prepare();
 					List<Tag> tagList = this.tagDao.query(preparedQuery);
-
+					
+					
 					// Auf null prüfen
+					
 					canvas.drawCircle(Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 							Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), 5.0f, this.myPaint);
 
@@ -200,13 +204,30 @@ public class ImageController extends Controller {
 
 						canvas.drawLine(bufferX, bufferY, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), this.myPaint);
+						
+						//canvas.drawVertices(Canvas.VertexMode, vertexCount, verts, vertOffset, texs, texOffset, colors, colorOffset, indices, indexOffset, indexCount, paint)
 
+					}
+					
+					if(i == 1){
+						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.map44, options);
+						canvas.drawBitmap(mBitmap, bufferX-12,bufferY-30,null);
 					}
 					bufferX = (float) tagList.get(0).getX_pos();
 					bufferY = (float) tagList.get(0).getY_pos();
+					
+					
+					i++;
+					
+					
 
 					this.logInfo("ViewImageVertex: " + vertex.toString());
-				}
+				}	
+				
+				
+				
+				
+				
 			} catch (SQLException e) {
 				this.logError(e.getMessage());
 			}
