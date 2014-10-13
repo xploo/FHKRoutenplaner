@@ -118,6 +118,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, false);
 		NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);
 		
+		
+		
+		
 		if (this.mTextView.getText().equals("")) {
 
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -156,12 +159,15 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 						// <-----
 						addRoomtypeSpinner();
 						// ----->
+						
+						
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
-		});
+		});		
+		
 
 		if (this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
@@ -181,7 +187,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			this.mNfcController.handleIntent(getIntent(), this);
 
 		}
-
 	}
 
 	/**
@@ -245,7 +250,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			ArrayAdapter<String> RoomAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roomSpinnerData);
 			RoomAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			this.mSpinnerRoom.setAdapter(RoomAdapter);
-			this.mSpinnerRoom.setOnItemSelectedListener(this);
+			this.mSpinnerRoom.setOnItemSelectedListener(this);		
+			
 			roomSpinnerData = null;
 		} catch (SQLException e) {
 			// tv.setText(e.toString());

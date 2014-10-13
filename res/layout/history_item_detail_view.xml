@@ -186,6 +186,7 @@
 	    android:textColor="#1FFF09"
 	    android:textStyle="italic"
 	    android:background="#000000"
-	    android:paddingLeft="10dp"/>
+	    android:paddingLeft="10dp"
+	    android:onClick="on_ClickstartNavigation"/>
 
 </RelativeLayout>
