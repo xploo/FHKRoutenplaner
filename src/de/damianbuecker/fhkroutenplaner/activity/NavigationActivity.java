@@ -311,6 +311,10 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);
+		
+		
 		/**
 		 * It's important, that the activity is in the foreground (resumed).
 		 * Otherwise an IllegalStateException is thrown.

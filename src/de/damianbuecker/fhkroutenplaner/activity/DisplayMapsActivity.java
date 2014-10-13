@@ -182,6 +182,46 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		 * Cleanup here
 		 */
 	}
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onNewIntent(android.content.Intent)
+	 */
+	protected void onNewIntent(Intent intent) {
+		this.mNFCController = new NfcController(this);
+		this.mNFCController.handleIntent(intent, this);
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onResume()
+	 */
+	@SuppressWarnings("static-access")
+	@Override
+	protected void onResume() {
+		super.onResume();
+		/**
+		 * It's important, that the activity is in the foreground (resumed).
+		 * Otherwise an IllegalStateException is thrown.
+		 */
+		this.mNFCController = new NfcController(this);
+		this.mNFCController.setupForegroundDispatch(this, mNfcAdapter);
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onPause()
+	 */
+	@SuppressWarnings("static-access")
+	@Override
+	protected void onPause() {
+		super.onPause();
+		/**
+		 * Call this before onPause, otherwise an IllegalArgumentException is
+		 * thrown as well.
+		 */
+		this.mNFCController = new NfcController(this);
+		this.mNFCController.stopForegroundDispatch(this, mNfcAdapter);
+
+
+	}
 
 	/**
 	 * The listener interface for receiving drawerItemClick events. The class
