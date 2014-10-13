@@ -1,9 +1,5 @@
 package de.damianbuecker.fhkroutenplaner.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,14 +9,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gson.GsonBuilder;
-import com.j256.ormlite.dao.Dao;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.util.Log;
+
+import com.j256.ormlite.dao.Dao;
+
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Docent;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Edges;
@@ -28,8 +23,6 @@ import de.damianbuecker.fhkroutenplaner.databaseaccess.JSONParser;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Room;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Roomtype;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
-import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
-import de.damianbuecker.fhkroutenplaner.model.HistoryItem.HistoryItemTypeAdapter;
 
 /**
  * The Class StartupContoller.
@@ -45,8 +38,7 @@ public class StartupContoller extends Controller {
 	private NetworkInfo mWifi;
 
 	/** The Constant tables. */
-	private static final String[] tables = { "edge", "tag", "room", "dozent",
-			"raumart" };
+	private static final String[] tables = { "edge", "tag", "room", "dozent", "raumart" };
 
 	/** The j parser. */
 	private JSONParser jParser = new JSONParser();

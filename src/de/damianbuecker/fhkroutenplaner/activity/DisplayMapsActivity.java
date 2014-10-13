@@ -1,9 +1,5 @@
 package de.damianbuecker.fhkroutenplaner.activity;
 
-import de.damianbuecker.fhkroutenplaner.controller.FileController;
-import de.damianbuecker.fhkroutenplaner.controller.ImageController;
-import de.damianbuecker.fhkroutenplaner.controller.NfcController;
-import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.content.Intent;
@@ -11,15 +7,17 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import de.damianbuecker.fhkroutenplaner.controller.FileController;
+import de.damianbuecker.fhkroutenplaner.controller.ImageController;
+import de.damianbuecker.fhkroutenplaner.controller.NfcController;
+import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
 
 /**
  * The Class DisplayMapsActivity.
@@ -143,23 +141,21 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		mImageController.testAlgorithm(this.startFloor, this.startID, this.endID, this.endFloor);
 
 		// WebView Settings hier
-		mWebView.getSettings().setBuiltInZoomControls(true);
-		//mWebView.setInitialScale(85);		
-		mWebView.getSettings().setLoadWithOverviewMode(true);
-		mWebView.getSettings().setUseWideViewPort(true);
-		mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-		mWebView.setScrollbarFadingEnabled(false);
-		mWebView.scrollTo(0, 50);
+		this.mWebView.getSettings().setBuiltInZoomControls(true);
+		this.mWebView.getSettings().setLoadWithOverviewMode(true);
+		this.mWebView.getSettings().setUseWideViewPort(true);
+		this.mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+		this.mWebView.setScrollbarFadingEnabled(false);
+		this.mWebView.scrollTo(0, 50);
 		
 
 		if (startFloor == endFloor) {
-			DisplayMapsActivity.this.btnLeft.setVisibility(View.INVISIBLE);
-			DisplayMapsActivity.this.btnRight.setVisibility(View.INVISIBLE);
+			this.btnLeft.setVisibility(View.INVISIBLE);
+			this.btnRight.setVisibility(View.INVISIBLE);
 		}
 
-		DisplayMapsActivity.this.btnLeft.setVisibility(View.INVISIBLE);
-		mWebView.loadUrl("file:///" + Environment.getExternalStorageDirectory() + "/FMS/TestIMG-" + startFloor + startID + ".png");
-	//	mWebView.loadDataWithBaseURL("file:///" + Environment.getExternalStorageDirectory() + "/FMS/","<html><center><img src=\"TestIMG-61.png\"></html>","text/html","utf-8","");
+		btnLeft.setVisibility(View.INVISIBLE);
+		this.mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY +"TestIMG-" + startFloor + startID + PNG);
 	}	
 
 	/**
@@ -181,6 +177,46 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		/**
 		 * Cleanup here
 		 */
+	}
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onNewIntent(android.content.Intent)
+	 */
+	protected void onNewIntent(Intent intent) {
+		this.mNFCController = new NfcController(this);
+		this.mNFCController.handleIntent(intent, this);
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onResume()
+	 */
+	@SuppressWarnings("static-access")
+	@Override
+	protected void onResume() {
+		super.onResume();
+		/**
+		 * It's important, that the activity is in the foreground (resumed).
+		 * Otherwise an IllegalStateException is thrown.
+		 */
+		this.mNFCController = new NfcController(this);
+		this.mNFCController.setupForegroundDispatch(this, mNfcAdapter);
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onPause()
+	 */
+	@SuppressWarnings("static-access")
+	@Override
+	protected void onPause() {
+		super.onPause();
+		/**
+		 * Call this before onPause, otherwise an IllegalArgumentException is
+		 * thrown as well.
+		 */
+		this.mNFCController = new NfcController(this);
+		this.mNFCController.stopForegroundDispatch(this, mNfcAdapter);
+
+
 	}
 
 	/**
@@ -264,14 +300,14 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				DisplayMapsActivity.this.btnLeft.setVisibility(View.INVISIBLE);
 				DisplayMapsActivity.this.btnRight.setVisibility(View.VISIBLE);
 
-				mWebView.loadUrl("file:///" + Environment.getExternalStorageDirectory() + "/FMS/TestIMG-" + startFloor + startID + ".png");
+				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
 			} else if (v.getId() == R.id.btnright) {
 				DisplayMapsActivity.this.btnRight.setHapticFeedbackEnabled(true);
 				DisplayMapsActivity.this.btnRight.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				DisplayMapsActivity.this.btnRight.setVisibility(View.INVISIBLE);
 				DisplayMapsActivity.this.btnLeft.setVisibility(View.VISIBLE);
 
-				mWebView.loadUrl("file:///" + Environment.getExternalStorageDirectory() + "/FMS/TestIMG-" + endFloor + endID + ".png");
+				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + endFloor + endID + PNG);
 			}
 		}
 

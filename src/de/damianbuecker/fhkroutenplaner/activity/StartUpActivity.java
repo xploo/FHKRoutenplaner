@@ -153,6 +153,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 	
 class getExternalDatabase extends AsyncTask<String,String,String>{
 		
+		@SuppressWarnings("deprecation")
 		@Override		
         protected void onPreExecute() {
             super.onPreExecute();
@@ -174,7 +175,8 @@ class getExternalDatabase extends AsyncTask<String,String,String>{
 			 
 		 }
 		 
-		 protected void onPostExecute(String file_url){
+		 @SuppressWarnings("deprecation")
+		protected void onPostExecute(String file_url){
 			 dismissDialog(progress_bar_type);
 		 }
 	}

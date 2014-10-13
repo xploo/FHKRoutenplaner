@@ -20,7 +20,6 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;

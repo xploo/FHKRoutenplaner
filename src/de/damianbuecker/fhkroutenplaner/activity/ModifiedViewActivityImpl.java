@@ -32,6 +32,12 @@ public class ModifiedViewActivityImpl extends RoboActivity implements LogInterfa
 
 	/** The Constant INTENT_DISPLAY_MAPS_ACTIVITY. */
 	protected static final String INTENT_DISPLAY_MAPS_ACTIVITY = "android.intents.DisplayMapsActivity";
+	
+	protected static final String DIRECTORY = "/FMS/";
+	
+	protected static final String FILE_PREFIX = "file:///";
+	
+	protected static final String PNG = ".png";
 
 	/** The Constant logger. */
 	private static final Logger logger = LoggerFactory.getLogger(ModifiedViewActivityImpl.class);
