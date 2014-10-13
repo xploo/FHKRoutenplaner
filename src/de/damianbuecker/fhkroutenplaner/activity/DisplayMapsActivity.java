@@ -144,11 +144,12 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		// WebView Settings hier
 		mWebView.getSettings().setBuiltInZoomControls(true);
-		mWebView.setInitialScale(85);		
+		//mWebView.setInitialScale(85);		
 		mWebView.getSettings().setLoadWithOverviewMode(true);
 		mWebView.getSettings().setUseWideViewPort(true);
 		mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
 		mWebView.setScrollbarFadingEnabled(false);
+		mWebView.scrollTo(0, 50);
 		
 
 		if (startFloor == endFloor) {

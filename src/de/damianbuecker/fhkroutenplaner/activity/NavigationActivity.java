@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +42,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	/** The m text view. */
 	@InjectView(R.id.txtV_nfc_hidden)
 	private TextView mTextView;
+	
+	@InjectView(R.id.btn_nfc_route)
+	private Button btnGo;
 
 	/** The m text view floor. */
 	@InjectView(R.id.txtV_nfc_floor_out)
@@ -110,6 +114,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 		this.mSharedPreferencesController = new SharedPreferencesController(this);
 		this.mTextView.setText("");
+		
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, false);
+		
 		if (this.mTextView.getText().equals("")) {
 
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -166,8 +173,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			}
 			if (!this.mNfcAdapter.isEnabled()) {
 				Toast.makeText(this, ERROR_MESSAGE_NFC_DISABLED, Toast.LENGTH_LONG).show();
-			} else {
-				Toast.makeText(this, "R.string.explanation", Toast.LENGTH_LONG).show();
+			} else {				
 			}
 			this.mNfcController = new NfcController(this.mTextView);
 
@@ -357,6 +363,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	 *            the v
 	 */
 	public void onClick_GO(View v) {
+		
+		NavigationActivity.this.btnGo.setVisibility(View.INVISIBLE);
 
 		Intent intent = new Intent(this, DisplayMapsActivity.class);
 		String[] splitResult = String.valueOf(this.mSpinnerRoom.getSelectedItem()).split(" ");
@@ -406,5 +414,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 		// TODO: DatumsController
 		startActivity(intent);
+		Toast.makeText(this, "Route wird berechnet.", Toast.LENGTH_LONG).show();
+		
+		
 	}
 }
