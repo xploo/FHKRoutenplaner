@@ -118,6 +118,10 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, false);
 		NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);
 		
+		if (!(this.getIntent().getExtras() == null)) {
+		}
+		
+		
 		if (this.mTextView.getText().equals("")) {
 
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -156,6 +160,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 						// <-----
 						addRoomtypeSpinner();
 						// ----->
+						
+						
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();

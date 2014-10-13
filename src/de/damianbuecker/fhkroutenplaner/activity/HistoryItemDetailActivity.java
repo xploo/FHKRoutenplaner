@@ -2,6 +2,7 @@ package de.damianbuecker.fhkroutenplaner.activity;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,5 +80,15 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 		this.editTime.setText(String.valueOf(this.mHistoryItem.getTimestamp()));
 		this.editStart.setText(this.mHistoryItem.getStart());
 		this.editDestination.setText(this.mHistoryItem.getDestination());
+	}
+	
+	public void on_ClickstartNavigation(){
+		
+		Intent intent = new Intent(this, NavigationActivity.class);
+		intent.putExtra("endID", this.editDestination.getText());
+		startActivity(intent);
+		
+		
+		
 	}
 }
