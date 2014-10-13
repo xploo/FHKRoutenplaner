@@ -66,6 +66,7 @@
         </activity>
         <activity
             android:name=".DisplayMapsActivity"
+            android:screenOrientation="landscape"
             android:label="@string/title_activity_display_maps"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>

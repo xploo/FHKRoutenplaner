@@ -20,6 +20,7 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -75,6 +76,25 @@ public class ImageController extends Controller {
 
 	/** The end floor. */
 	private Integer endFloor;
+	
+	private Integer start_ID;
+	public Integer getStart_ID() {
+		return start_ID;
+	}
+
+	public void setStart_ID(Integer start_ID) {
+		this.start_ID = start_ID;
+	}
+
+	public Integer getEnd_ID() {
+		return end_ID;
+	}
+
+	public void setEnd_ID(Integer end_ID) {
+		this.end_ID = end_ID;
+	}
+
+	private Integer end_ID;
 
 	/**
 	 * Instantiates a new image controller.
@@ -110,16 +130,24 @@ public class ImageController extends Controller {
 
 	/**
 	 * Test algorithm.
-	 *
-	 * @param startFloor the start floor
-	 * @param startID            the start id
-	 * @param endID            the end id
-	 * @param endFloor the end floor
+	 * 
+	 * @param startFloor
+	 *            the start floor
+	 * @param startID
+	 *            the start id
+	 * @param endID
+	 *            the end id
+	 * @param endFloor
+	 *            the end floor
 	 */
 	public void testAlgorithm(Integer startFloor, Integer startID, Integer endID, Integer endFloor) {
 
 		this.logInfo("OnDraw Check");
 
+		setEnd_ID(endID);
+		setStart_ID(startID);
+		
+		
 		this.myPaint = new Paint();
 		this.myPaint.setAntiAlias(true);
 		this.myPaint.setStyle(Paint.Style.FILL);
@@ -135,17 +163,21 @@ public class ImageController extends Controller {
 			this.saveFinalImage(this.vertexHashmap.get(0), startID);
 		} else if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 3) {
 			Log.v("Wieviele Listen sindsIF2?", String.valueOf(this.vertexHashmap.size()));
-			this.saveFinalImage(this.vertexHashmap.get(0), startID);
-			this.saveFinalImage(this.vertexHashmap.get(1), endID);
+			this.saveFinalImage(this.vertexHashmap.get(0), startID); // anfang
+			this.saveFinalImage(this.vertexHashmap.get(1), endID); // ende
 		}
 
 	}
+	
+	
 
 	/**
 	 * Save final image.
-	 *
-	 * @param list            the list
-	 * @param ID the id
+	 * 
+	 * @param list
+	 *            the list
+	 * @param ID
+	 *            the id
 	 */
 	private void saveFinalImage(LinkedList<Vertex> list, Integer ID) {
 
@@ -185,14 +217,35 @@ public class ImageController extends Controller {
 					this.tagDao = this.getDatabaseHelper(this.getContext()).getTagDataDao();
 				}
 				QueryBuilder<Tag, Integer> queryBuilder = this.tagDao.queryBuilder();
-
+				
+				 Integer startID =getEnd_ID();
+				 Integer endID = getStart_ID();
+				
+				
 				for (Vertex vertex : list) {
 
 					queryBuilder.where().eq(Tag.DESCRIPTION, vertex);
 					PreparedQuery<Tag> preparedQuery = queryBuilder.prepare();
 					List<Tag> tagList = this.tagDao.query(preparedQuery);
+					
+					
+
+					// Start und Ziel Markierungen setzen
+					if (tagList.get(0).getTag_id() == ID && ID == startID) {
+						// StartMarkierung einfügen
+						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.pins9, options);
+						canvas.drawBitmap(mBitmap, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - 12,
+								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - 30, null);
+
+					} else if (tagList.get(0).getTag_id() == ID && ID == endID) {
+						// Zielmarkierung setzten
+
+						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.map44, options);
+						canvas.drawBitmap(mBitmap, bufferX - 12, bufferY - 30, null);
+					}
 
 					// Auf null prüfen
+
 					canvas.drawCircle(Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 							Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), 5.0f, this.myPaint);
 
@@ -200,13 +253,23 @@ public class ImageController extends Controller {
 
 						canvas.drawLine(bufferX, bufferY, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), this.myPaint);
+						
+						//Hier vektorRechnung für Dreiecke
+						
+						
+
+						// canvas.drawVertices(Canvas.VertexMode, vertexCount,
+						// verts, vertOffset, texs, texOffset, colors,
+						// colorOffset, indices, indexOffset, indexCount, paint)
 
 					}
+
 					bufferX = (float) tagList.get(0).getX_pos();
-					bufferY = (float) tagList.get(0).getY_pos();
+					bufferY = (float) tagList.get(0).getY_pos();					
 
 					this.logInfo("ViewImageVertex: " + vertex.toString());
 				}
+
 			} catch (SQLException e) {
 				this.logError(e.getMessage());
 			}
@@ -236,10 +299,13 @@ public class ImageController extends Controller {
 
 	/**
 	 * Vertex liste aufteilen.
-	 *
-	 * @param list            the list
-	 * @param startFloor the start floor
-	 * @param endFloor the end floor
+	 * 
+	 * @param list
+	 *            the list
+	 * @param startFloor
+	 *            the start floor
+	 * @param endFloor
+	 *            the end floor
 	 */
 	@SuppressLint("UseSparseArrays")
 	private void splitVertexList(LinkedList<Vertex> list, Integer startFloor, Integer endFloor) {
