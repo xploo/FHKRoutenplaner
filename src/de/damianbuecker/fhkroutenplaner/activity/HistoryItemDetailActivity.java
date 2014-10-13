@@ -83,14 +83,12 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 		this.editDestination.setText(this.mHistoryItem.getDestination());
 	}
 	
+
 	public void on_ClickstartNavigation(View v){
 		
 		Intent intent = new Intent(this, NavigationActivity.class);
 		String[] splitResult = String.valueOf(this.editDestination.getText()).split(" ");
 		intent.putExtra("endID", splitResult[0]);
-		startActivity(intent);
-		
-		
-		
 	}
 }
+

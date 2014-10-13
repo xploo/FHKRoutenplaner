@@ -116,10 +116,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		this.mTextView.setText("");
 		
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, false);
-		NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);
-		
-		
-		
+		NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);		
 		
 		if (this.mTextView.getText().equals("")) {
 
