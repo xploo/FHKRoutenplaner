@@ -3,6 +3,7 @@ package de.damianbuecker.fhkroutenplaner.activity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
@@ -55,6 +56,9 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 	/** The edit destination. */
 	@InjectView(R.id.editDestination)
 	private EditText editDestination;
+	
+	@InjectView(R.id.startNavigationButton)
+	private Button startNavigationButton;
 
 	/*
 	 * (non-Javadoc)

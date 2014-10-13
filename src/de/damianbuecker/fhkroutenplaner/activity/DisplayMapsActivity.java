@@ -180,14 +180,6 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	}
 	
 	/* (non-Javadoc)
-	 * @see android.app.Activity#onNewIntent(android.content.Intent)
-	 */
-	protected void onNewIntent(Intent intent) {
-		this.mNFCController = new NfcController(this);
-		this.mNFCController.handleIntent(intent, this);
-	}
-
-	/* (non-Javadoc)
 	 * @see android.app.Activity#onResume()
 	 */
 	@SuppressWarnings("static-access")
@@ -217,6 +209,14 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		this.mNFCController.stopForegroundDispatch(this, mNfcAdapter);
 
 
+	}
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onNewIntent(android.content.Intent)
+	 */
+	protected void onNewIntent(Intent intent) {
+		this.mNFCController = new NfcController(this);
+		this.mNFCController.handleIntent(intent, this);
 	}
 
 	/**

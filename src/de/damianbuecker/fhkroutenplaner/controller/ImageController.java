@@ -217,7 +217,7 @@ public class ImageController extends Controller {
 				}
 				QueryBuilder<Tag, Integer> queryBuilder = this.tagDao.queryBuilder();
 				
-				 Integer startID =getEnd_ID();
+				 Integer startID = getEnd_ID();
 				 Integer endID = getStart_ID();
 				
 				
@@ -358,5 +358,24 @@ public class ImageController extends Controller {
 		} else {
 			return null;
 		}
+	}
+	
+	private Float determineDrawingAngle(Float x1, Float y1, Float x2, Float y2) {
+		
+		Integer quadrant;
+		
+		// Bestimmen Quadrant
+		if(x2 > x1 && y2 < y1) {
+			quadrant = 1;
+		} else if(x2 > x1 && y2 > y2) {
+			quadrant = 2;
+		} else if(x2 < x1 && y2 > y1) {
+			quadrant = 3;
+		} else if(x2 < x1 && y2 < y1) {
+			quadrant = 4;
+		}
+		
+		
+		return null;
 	}
 }
