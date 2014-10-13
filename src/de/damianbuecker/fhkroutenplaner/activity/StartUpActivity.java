@@ -55,19 +55,15 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		super.onCreate(savedInstanceState);
 
 		if (this.mSharedPreferencesController == null) {
-			this.mSharedPreferencesController = new SharedPreferencesController(
-					this);
+			this.mSharedPreferencesController = new SharedPreferencesController(this);
 		}
-		this.mSharedPreferencesController.putInSharedPreference(
-				SHARED_PREFERENCE_ROUTE_RUNNING, false);
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, false);
 
 		if (this.databaseHelper == null) {
-			this.databaseHelper = OpenHelperManager.getHelper(this,
-					DatabaseHelper.class);
+			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}
 
-		this.mSharedPreferencesController.putInSharedPreference(
-				SHARED_PREFERENCE_FIRST_RUN, true);
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
 
 		/*
 		 * // Testdaten HistoryItem h1 = new HistoryItem(); h1.setName("H1");
@@ -92,11 +88,9 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 			mStartupController = new StartupContoller(this);
 		}
 
-		if (this.mStartupController.isWifiConnected() == true
-				&& this.mStartupController.getDatabaseVersion().equals("2")) {
+		if(this.mStartupController.isWifiConnected() == true) {
 
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-					this);
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 			alertDialogBuilder.setTitle("Datenbankupdate verfügbar!");
 			alertDialogBuilder
 					.setMessage(
@@ -128,10 +122,9 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 			alertDialog.show();
 		}
 
-		this.mSharedPreferencesController.putInSharedPreference(
-				SHARED_PREFERENCE_FIRST_RUN, true);
-		if (this.mSharedPreferencesController
-				.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
+		
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
+		if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
 			this.mCsvController = new CsvController(this);
 			this.mCsvController.readCSV(databaseHelper);
 
@@ -207,8 +200,7 @@ class getExternalDatabase extends AsyncTask<String,String,String>{
 	public void onClick_history(View v) {
 
 		if (this.databaseHelper == null) {
-			this.databaseHelper = OpenHelperManager.getHelper(this,
-					DatabaseHelper.class);
+			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}
 		List<HistoryItem> listHistoryItems = new ArrayList<HistoryItem>();
 		listHistoryItems = this.databaseHelper.getHistoryItems();
@@ -232,13 +224,10 @@ class getExternalDatabase extends AsyncTask<String,String,String>{
 		super.onResume();
 
 		if (this.mSharedPreferencesController == null) {
-			this.mSharedPreferencesController = new SharedPreferencesController(
-					this);
+			this.mSharedPreferencesController = new SharedPreferencesController(this);
 		}
-		if (this.mSharedPreferencesController
-				.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
-			this.mSharedPreferencesController.putInSharedPreference(
-					SHARED_PREFERENCE_FIRST_RUN, false);
+		if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
+			this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, false);
 		}
 	}
 

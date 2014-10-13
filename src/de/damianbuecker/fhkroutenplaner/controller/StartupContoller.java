@@ -187,8 +187,8 @@ public class StartupContoller extends Controller {
 			params.add(new BasicNameValuePair("tablename", tblnames));
 			try {
 				// JSON objekte per http-Request holen
-				JSONObject json = jParser.makeHttpRequest(url_getDatabase,
-						"GET", params);
+						JSONObject json = jParser.makeHttpRequest(
+								url_getDatabase, "GET", params);
 
 				// Ausgabe der geholten Daten in der Log cat
 				Log.d("Kompletter Inhalt extern: ", json.toString());
@@ -206,7 +206,8 @@ public class StartupContoller extends Controller {
 
 						// Per Schleife durch alle Klausuren
 						for (int i = 0; i < externalData.length(); i++) {
-							JSONObject c = externalData.getJSONObject(i);
+									JSONObject c = externalData
+											.getJSONObject(i);
 
 							if (tblnames.equals("room")) {
 								try {
@@ -216,16 +217,11 @@ public class StartupContoller extends Controller {
 									}
 
 									Room room = new Room();
-									room.setRoom_id(Integer.parseInt(c
-											.getString(TAG_ROOMID)));
-									room.setFloor(Integer.parseInt(c
-											.getString(TAG_FLOOR)));
-									room.setRoomtype_ID(Integer.parseInt(c
-											.getString(TAG_ROOMTYPEID)));
-									room.setDocent_ID(Integer.parseInt(c
-											.getString(TAG_DOCENTID)));
-									room.setDescription(c
-											.getString(TAG_DESCRIPTION));
+											room.setRoom_id(Integer.parseInt(c.getString(TAG_ROOMID)));
+											room.setFloor(Integer.parseInt(c.getString(TAG_FLOOR)));
+											room.setRoomtype_ID(Integer.parseInt(c.getString(TAG_ROOMTYPEID)));
+											room.setDocent_ID(Integer.parseInt(c.getString(TAG_DOCENTID)));
+											room.setDescription(c.getString(TAG_DESCRIPTION));
 
 									roomDao.create(room);
 
@@ -242,18 +238,12 @@ public class StartupContoller extends Controller {
 
 									Tag tag = new Tag();
 
-									tag.setTag_id(Integer.parseInt(c
-											.getString(TAG_TAGID)));
-									tag.setRoom_ID(Integer.parseInt(c
-											.getString(TAG_ROOMID)));
-									tag.setX_pos(Double.parseDouble(c
-											.getString(TAG_XOS)));
-									tag.setY_pos(Double.parseDouble(c
-											.getString(TAG_YPOS)));
-									tag.setDescription(c
-											.getString(TAG_DESCRIPTION));
-									tag.setFloor(Integer.parseInt(c
-											.getString(TAG_FLOOR)));
+											tag.setTag_id(Integer.parseInt(c.getString(TAG_TAGID)));
+											tag.setRoom_ID(Integer.parseInt(c.getString(TAG_ROOMID)));
+											tag.setX_pos(Double.parseDouble(c.getString(TAG_XOS)));
+											tag.setY_pos(Double.parseDouble(c.getString(TAG_YPOS)));
+											tag.setDescription(c.getString(TAG_DESCRIPTION));
+											tag.setFloor(Integer.parseInt(c.getString(TAG_FLOOR)));
 									tagDao.create(tag);
 
 								} catch (Exception e) {
@@ -264,16 +254,13 @@ public class StartupContoller extends Controller {
 
 								try {
 									if (roomtypeDao == null) {
-										roomtypeDao = databaseHelper
-												.getRoomtypeDataDao();
+												roomtypeDao  = databaseHelper.getRoomtypeDataDao();
 									}
 
 									Roomtype roomtype = new Roomtype();
 
-									roomtype.setRoomtype_id(Integer.parseInt(c
-											.getString(TAG_ROOMTYPEID)));
-									roomtype.setDescription(c
-											.getString(TAG_DESCRIPTION));
+											roomtype.setRoomtype_id(Integer.parseInt(c.getString(TAG_ROOMTYPEID)));
+											roomtype.setDescription(c.getString(TAG_DESCRIPTION));
 
 									roomtypeDao.create(roomtype);
 
@@ -285,17 +272,14 @@ public class StartupContoller extends Controller {
 								try {
 									if (docentDao == null) {
 
-										docentDao = databaseHelper
-												.getDocentDataDao();
+												docentDao = databaseHelper.getDocentDataDao();
 									}
 
 									Docent docent = new Docent();
 
-									docent.setDozent_id(Integer.parseInt(c
-											.getString(TAG_DOCENTID)));
+											docent.setDozent_id(Integer.parseInt(c.getString(TAG_DOCENTID)));
 									docent.setD_name(c.getString(TAG_NAME));
-									docent.setD_lastname(c
-											.getString(TAG_LASTNAME));
+											docent.setD_lastname(c.getString(TAG_LASTNAME));
 
 									docentDao.create(docent);
 
@@ -306,21 +290,17 @@ public class StartupContoller extends Controller {
 							} else if (tblnames.equals("edges")) {
 
 								try {
-									if (edgesDao == null) {
-										edgesDao = databaseHelper
-												.getEdgesDataDao();
+											if(edgesDao == null)
+											{
+												edgesDao = databaseHelper.getEdgesDataDao();
 									}
 
 									Edges edge = new Edges();
 
-									edge.setKante_id(Integer.parseInt(c
-											.getString(TAG_EDGESID)));
-									edge.setSource(Integer.parseInt(c
-											.getString(TAG_SOURCE)));
-									edge.setDestination(Integer.parseInt(c
-											.getString(TAG_DESTINATION)));
-									edge.setCost(Integer.parseInt(c
-											.getString(TAG_COST)));
+											edge.setKante_id(Integer.parseInt(c.getString(TAG_EDGESID)));
+											edge.setSource(Integer.parseInt(c.getString(TAG_SOURCE)));
+											edge.setDestination(Integer.parseInt(c.getString(TAG_DESTINATION)));
+											edge.setCost(Integer.parseInt(c.getString(TAG_COST)));
 
 									edgesDao.create(edge);
 

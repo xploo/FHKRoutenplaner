@@ -3,7 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp" >
+    android:paddingRight="16dp"
+    android:background="@drawable/gradient_background" >
+    
+    <ImageView 
+        android:id="@+id/logo"
+        android:background="@drawable/logo_256"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
 
     <TextView 
         android:id="@+id/activity_headline"
@@ -11,24 +20,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="100dp" />
+        android:paddingBottom="50dp"
+        android:layout_below="@+id/logo"
+        android:textColor="#ffffff"
+        android:textStyle="italic" />
     
     <Button
         android:id="@+id/btn_startup_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
         android:onClick="onClick_search"
         android:text="@string/startup_search"
         android:layout_below="@id/activity_headline"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        android:drawableLeft="@drawable/start_search_51"
+        android:background="#ffffff" />
 
     <Button
         android:id="@+id/btn_startup_history"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/btn_startup_search"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="5dp"
         android:onClick="onClick_history"
         android:text="@string/startup_history"
-        android:layout_below="@id/btn_startup_search"
-        android:layout_centerVertical="true" />
+        android:drawableLeft="@drawable/history_item_51"
+        android:background="#ffffff" />
 
 </RelativeLayout>

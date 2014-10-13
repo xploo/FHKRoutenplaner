@@ -2,14 +2,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background" >
 
-	<FrameLayout
-	    android:id="@+id/content_frame"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:background="#ffffff" />
-
+    <WebView 
+        android:id="@+id/webView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+    
 	<RelativeLayout
 	    android:id="@+id/relative_layout"
 	    android:layout_width="match_parent"
