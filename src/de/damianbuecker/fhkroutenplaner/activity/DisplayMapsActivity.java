@@ -142,6 +142,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		// WebView Settings hier
 		this.mWebView.getSettings().setBuiltInZoomControls(true);
+		this.mWebView.getSettings().setDisplayZoomControls(false);
 		this.mWebView.getSettings().setLoadWithOverviewMode(true);
 		this.mWebView.getSettings().setUseWideViewPort(true);
 		this.mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
