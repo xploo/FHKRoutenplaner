@@ -16,6 +16,7 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -102,6 +103,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 	/** The Constant HISTORY_ITEM_NAME_PREFIX. */
 	private static final String HISTORY_ITEM_NAME_PREFIX = "Navigation ";
+	
+	private String endID;
 
 	/*
 	 * (non-Javadoc)
@@ -115,8 +118,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		this.mSharedPreferencesController = new SharedPreferencesController(this);
 		this.mTextView.setText("");
 		
+		
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, false);
-		NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);
+		NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);		
 		
 		if (this.mTextView.getText().equals("")) {
 
@@ -155,13 +159,16 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 						alertDialog.dismiss();
 						// <-----
 						addRoomtypeSpinner();
-						// ----->
+						// ----->			
+					
+					
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
-		});
+		});		
+		
 
 		if (this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
@@ -180,8 +187,24 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 			this.mNfcController.handleIntent(getIntent(), this);
 
+		}		
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public void setSpinner(){
+		
+		if (!(this.getIntent().getExtras() == null)) {
+			this.endID = this.getIntent().getExtras().getString("endID");			
+			if(this.mSpinnerRoom.getAdapter() == null) {
+				Log.v("dnjsandjnaskdn",endID);	
+			}
+			
+			
+			ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoom.getAdapter(); //cast to an ArrayAdapter
+			int spinnerPosition = myAdap.getPosition(endID);
+			//set the default according to value
+			mSpinnerRoom.setSelection(spinnerPosition);
 		}
-
 	}
 
 	/**
@@ -200,6 +223,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			this.mTextViewDescription.setText(tagList.get(0).getDescription());
 		}
 	}
+	
 
 	/**
 	 * Adds the roomtype spinner.
@@ -245,7 +269,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			ArrayAdapter<String> RoomAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roomSpinnerData);
 			RoomAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			this.mSpinnerRoom.setAdapter(RoomAdapter);
-			this.mSpinnerRoom.setOnItemSelectedListener(this);
+			this.mSpinnerRoom.setOnItemSelectedListener(this);		
+			
 			roomSpinnerData = null;
 		} catch (SQLException e) {
 			// tv.setText(e.toString());
@@ -268,6 +293,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			String selState = (String) this.mSpinnerRoomtype.getSelectedItem();
 			String[] splitResult = selState.split(" ");
 			addRoomSpinner(Integer.parseInt(splitResult[0]));
+			setSpinner();
 		} else if (spinner.getId() == R.id.nfc_spinner_room) {
 			this.mSpinnerRoom.setSelection(position);
 		}
