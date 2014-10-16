@@ -175,7 +175,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 				finish();
 				return;
 			}
-			if (!this.mNfcAdapter.isEnabled()) { 
+			if (!this.mNfcAdapter.isEnabled()) {
 				Toast.makeText(this, ERROR_MESSAGE_NFC_DISABLED, Toast.LENGTH_LONG).show();
 			} else {				
 			}
