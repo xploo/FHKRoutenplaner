@@ -121,7 +121,7 @@ public class ImageController extends Controller {
 				this.endFloor = this.endTagList.get(0).getFloor();
 			}
 		} catch (SQLException e) {
-			this.logError(e.getMessage());
+			this.logMessage("ERROR", e.getMessage());
 		}
 
 		return endFloor;
@@ -141,7 +141,7 @@ public class ImageController extends Controller {
 	 */
 	public void testAlgorithm(Integer startFloor, Integer startID, Integer endID, Integer endFloor) {
 
-		this.logInfo("OnDraw Check");
+		this.logMessage("INFO", "OnDraw Check");
 
 		setEnd_ID(endID);
 		setStart_ID(startID);
@@ -186,16 +186,16 @@ public class ImageController extends Controller {
 			Options options = new Options();
 			options.inJustDecodeBounds = true;
 			Bitmap b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId, options);
-			this.logInfo(WIDTH_OPTIONS + options.outWidth);
-			this.logInfo(HEIGHT_OPTIONS + options.outHeight);
+			this.logMessage("INFO", WIDTH_OPTIONS + options.outWidth);
+			this.logMessage("INFO", HEIGHT_OPTIONS + options.outHeight);
 			Bitmap.Config config = Config.ARGB_8888;
 			options.inScaled = false;
 			options.inJustDecodeBounds = false;
 			Bitmap bitmapOut = Bitmap.createBitmap(options.outWidth, options.outHeight, config);
 			b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId, options);
 			bitmapOut.setDensity(b.getDensity());
-			this.logInfo(WIDTH_OPTIONS + b.getWidth());
-			this.logInfo(HEIGHT_OPTIONS + b.getHeight());
+			this.logMessage("INFO", WIDTH_OPTIONS + b.getWidth());
+			this.logMessage("INFO", HEIGHT_OPTIONS + b.getHeight());
 			for (int x = 0; x < options.outWidth; x++) {
 				for (int y = 0; y < options.outHeight; y++) {
 					int pixel = b.getPixel(x, y);
@@ -267,11 +267,11 @@ public class ImageController extends Controller {
 					bufferX = (float) tagList.get(0).getX_pos();
 					bufferY = (float) tagList.get(0).getY_pos();					
 
-					this.logInfo("ViewImageVertex: " + vertex.toString());
+					this.logMessage("INFO", "ViewImageVertex: " + vertex.toString());
 				}
 
 			} catch (SQLException e) {
-				this.logError(e.getMessage());
+				this.logMessage("ERROR", e.getMessage());
 			}
 			File folder = new File(Environment.getExternalStorageDirectory() + ROOT_DIR);
 			if (!folder.exists())
@@ -288,11 +288,11 @@ public class ImageController extends Controller {
 				bitmapOut = null;
 				this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outputFile)));
 
-				this.logInfo("WRITE IMAGE CHECK");
+				this.logMessage("INFO", "WRITE IMAGE CHECK");
 			} catch (FileNotFoundException e) {
-				this.logError(e.getMessage());
+				this.logMessage("ERROR", e.getMessage());
 			} catch (IOException e) {
-				this.logError(e.getMessage());
+				this.logMessage("ERROR", e.getMessage());
 			}
 		}
 	}

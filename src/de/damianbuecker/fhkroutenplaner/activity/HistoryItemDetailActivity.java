@@ -76,6 +76,7 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 			this.mHistoryItem = this.mHistoryItem.fromJson(this.getIntent().getStringExtra("selectedItem"));
 		}
 
+		this.startNavigationButton.setOnClickListener(new ButtonListener());
 		this.editName.setText(this.mHistoryItem.getName());
 		this.editDate.setText(String.valueOf(this.mHistoryItem.getDate()));
 		this.editTime.setText(String.valueOf(this.mHistoryItem.getTimestamp()));
@@ -83,12 +84,17 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 		this.editDestination.setText(this.mHistoryItem.getDestination());
 	}
 	
+	private class ButtonListener implements View.OnClickListener {
 
-	public void on_ClickstartNavigation(View v){
-		
-		Intent intent = new Intent(this, NavigationActivity.class);
-		String[] splitResult = String.valueOf(this.editDestination.getText()).split(" ");
-		intent.putExtra("endID", splitResult[0]);
+		@Override
+		public void onClick(View v) {
+			if(v.getId() == R.id.startNavigationButton) {
+				Intent intent = new Intent(v.getContext(), NavigationActivity.class);
+				String[] splitResult = String.valueOf(HistoryItemDetailActivity.this.editDestination.getText()).split(" ");
+				intent.putExtra("endID", splitResult[0]);
+				startActivity(intent);
+			}
+		}
 	}
 }
 

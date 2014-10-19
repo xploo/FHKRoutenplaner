@@ -58,7 +58,7 @@ public class SharedPreferencesController extends Controller {
 			} else if (value instanceof String) {
 				this.mEditor.putString(key, (String) value).commit();
 			} else {
-				this.logError("Unsupported data type.");
+				this.logMessage("ERROR", "Unsupported data type.");
 			}
 		}
 	}

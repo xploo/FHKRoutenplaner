@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -24,40 +25,18 @@ public class Model implements LogInterface {
 	/** The Constant logger. */
 	private static final Logger logger = LoggerFactory.getLogger(Model.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logWarning(java
-	 * .lang.String)
+	/* (non-Javadoc)
+	 * @see de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logMessage(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void logWarning(String message) {
-		logger.warn("@" + Model.class.getSimpleName() + " " + message);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logError(java
-	 * .lang.String)
-	 */
-	@Override
-	public void logError(String message) {
-		logger.error("@" + Model.class.getSimpleName() + " " + message);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logInfo(java
-	 * .lang.String)
-	 */
-	@Override
-	public void logInfo(String message) {
-		logger.info("@" + Model.class.getSimpleName() + " " + message);
+	public void logMessage(String tag, String message) {
+		if(tag.equals("INFO")) {
+			Log.i("INFO", message);
+		} else if(tag.equals("WARNING")) {
+			Log.w("WARNING", message);
+		} else if(tag.equals("ERROR")) {
+			Log.e("ERROR", message);
+		}
 	}
 
 	/**
@@ -89,7 +68,7 @@ public class Model implements LogInterface {
 					historyItemDao.create((HistoryItem) this);
 				}
 			} catch (SQLException e) {
-				this.logError(e.getMessage());
+				this.logMessage("ERROR", e.getMessage());
 			}
 		}
 	}

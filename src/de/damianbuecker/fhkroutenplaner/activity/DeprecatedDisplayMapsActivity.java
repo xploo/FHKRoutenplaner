@@ -100,7 +100,7 @@ public class DeprecatedDisplayMapsActivity extends ModifiedViewActivityImpl {
 
 				this.startFloor = Integer.parseInt(this.getIntent().getExtras().getString(INTENT_EXTRA_START_FLOOR));
 				
-				this.logInfo("Was steht im ENDID "+endID.toString());
+//				this.logInfo("Was steht im ENDID "+endID.toString());
 
 			}
 		}
@@ -127,7 +127,7 @@ public class DeprecatedDisplayMapsActivity extends ModifiedViewActivityImpl {
 		}
 
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			this.logWarning("No SD Card!");
+//			this.logWarning("No SD Card!");
 		} else {
 
 			// 1. Template auslesen

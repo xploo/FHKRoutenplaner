@@ -88,7 +88,7 @@ public class NfcController extends Controller {
 				}
 
 			} else {
-				this.logError("Wrong mime type: " + type);
+				this.logMessage("ERROR", "Wrong mime type: " + type);
 			}
 		} else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
 
@@ -213,16 +213,16 @@ public class NfcController extends Controller {
 
 			if (mContext == null) {
 
-				NfcController.this.logError("Constructor Context - null");
+				NfcController.this.logMessage("INFI", "Constructor Context - null");
 			} else
-				NfcController.this.logInfo("Constructor Context nicht null");
+				NfcController.this.logMessage("INFO", "Constructor Context nicht null");
 
 			running = this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_ROUTE_RUNNING);
 
 			if (running == true) {
-				NfcController.this.logInfo("Constructor - yes");
+				NfcController.this.logMessage("INFO", "Constructor - yes");
 			} else {
-				NfcController.this.logInfo("Constructor - no");
+				NfcController.this.logMessage("INFO", "Constructor - no");
 			}
 
 		}
@@ -251,7 +251,7 @@ public class NfcController extends Controller {
 					try {
 						return readText(ndefRecord);
 					} catch (UnsupportedEncodingException e) {
-						NfcController.this.logError(e.getMessage());
+						NfcController.this.logMessage("ERROR", e.getMessage());
 					}
 				}
 			}
@@ -314,7 +314,7 @@ public class NfcController extends Controller {
 					tv.setText(result);
 				}
 			}
-			NfcController.this.logInfo(result);
+			NfcController.this.logMessage("INFO", result);
 		}
 	}
 }

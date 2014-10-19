@@ -29,7 +29,6 @@
         android:id="@+id/btn_startup_search"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:onClick="onClick_search"
         android:text="@string/startup_search"
         android:layout_below="@id/activity_headline"
         android:layout_centerVertical="true"
@@ -43,7 +42,6 @@
         android:layout_below="@id/btn_startup_search"
         android:layout_centerVertical="true"
         android:layout_marginTop="5dp"
-        android:onClick="onClick_history"
         android:text="@string/startup_history"
         android:drawableLeft="@drawable/history_item_51"
         android:background="#ffffff" />

@@ -386,8 +386,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			}
 		}
 
-		this.logInfo("ROOMSPINNER AUSGABE - " + String.valueOf(this.mSpinnerRoom.getSelectedItem()));
-		this.logInfo("ROOMSPINNER NACH SPLIT - " + splitResult[0]);
+		this.logMessage("INFO", "ROOMSPINNER AUSGABE - " + String.valueOf(this.mSpinnerRoom.getSelectedItem()));
+		this.logMessage("INFO", "ROOMSPINNER NACH SPLIT - " + splitResult[0]);
 
 		intent.putExtra(INTENT_EXTRA_START_ID, String.valueOf(this.mTextView.getText().toString()));
 		intent.putExtra(INTENT_EXTRA_START_FLOOR, String.valueOf(this.mTextViewFloor.getText().toString()));
@@ -417,7 +417,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		item.setDestination(destination.toString());
 		item.writeToDatabase(this);
 
-		this.logInfo("item: " + item.getName() + " " + item.getDate() + " " + item.getTimestamp() + " " + item.getStart() + " "
+		this.logMessage("INFO", "item: " + item.getName() + " " + item.getDate() + " " + item.getTimestamp() + " " + item.getStart() + " "
 				+ item.getDestination());
 
 		// TODO: DatumsController
