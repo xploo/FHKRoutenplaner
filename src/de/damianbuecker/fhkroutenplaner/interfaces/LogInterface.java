@@ -6,27 +6,13 @@ package de.damianbuecker.fhkroutenplaner.interfaces;
 public interface LogInterface {
 
 	/**
-	 * Log warning.
+	 * Log Message.
 	 * 
 	 * @param message
 	 *            the message
+	 * @param tag
+	 *            the tag
 	 */
-	public void logWarning(String message);
-
-	/**
-	 * Log error.
-	 * 
-	 * @param message
-	 *            the message
-	 */
-	public void logError(String message);
-
-	/**
-	 * Log info.
-	 * 
-	 * @param message
-	 *            the message
-	 */
-	public void logInfo(String message);
+	public void logMessage(String tag, String message);
 
 }

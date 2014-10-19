@@ -1,11 +1,9 @@
 package de.damianbuecker.fhkroutenplaner.activity;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.damianbuecker.fhkroutenplaner.interfaces.LogInterface;
+import android.util.Log;
 
 import roboguice.activity.RoboActivity;
+import de.damianbuecker.fhkroutenplaner.interfaces.LogInterface;
 
 /**
  * The Class ModifiedViewActivityImpl.
@@ -33,36 +31,27 @@ public class ModifiedViewActivityImpl extends RoboActivity implements LogInterfa
 	/** The Constant INTENT_DISPLAY_MAPS_ACTIVITY. */
 	protected static final String INTENT_DISPLAY_MAPS_ACTIVITY = "android.intents.DisplayMapsActivity";
 	
+	/** The Constant DIRECTORY. */
 	protected static final String DIRECTORY = "/FMS/";
 	
+	/** The Constant FILE_PREFIX. */
 	protected static final String FILE_PREFIX = "file:///";
 	
+	/** The Constant PNG. */
 	protected static final String PNG = ".png";
 
-	/** The Constant logger. */
-	private static final Logger logger = LoggerFactory.getLogger(ModifiedViewActivityImpl.class);
-
 	/* (non-Javadoc)
-	 * @see de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logWarning(java.lang.String)
+	 * @see de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logMessage(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void logWarning(String message) {
-		logger.warn(message);
+	public void logMessage(String tag, String message) {
+		if(tag.equals("INFO")) {
+			Log.i("INFO", message);
+		} else if(tag.equals("WARNING")) {
+			Log.w("WARNING", message);
+		} else if(tag.equals("ERROR")) {
+			Log.e("ERROR", message);
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logError(java.lang.String)
-	 */
-	@Override
-	public void logError(String message) {
-		logger.error(message);
-	}
-
-	/* (non-Javadoc)
-	 * @see de.damianbuecker.fhkroutenplaner.interfaces.LogInterface#logInfo(java.lang.String)
-	 */
-	@Override
-	public void logInfo(String message) {
-		logger.info(message);
-	}
 }

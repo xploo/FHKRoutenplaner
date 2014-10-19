@@ -78,7 +78,7 @@ public class PathController extends Controller {
 
 			TAGSIZE = this.nodes.size() - 1;
 		} catch (SQLException e) {
-			this.logError(e.toString());
+			this.logMessage("ERROR", e.toString());
 		}
 
 		try {
@@ -88,7 +88,7 @@ public class PathController extends Controller {
 			for (Edges s : edgesStart) {
 				sb.append(s.getKante_id());
 				addLane(sb.toString(), s.getSource(), s.getDestination(), s.getCost());
-				this.logInfo("Edge Start: " + sb.toString() + " " + s.getSource() + " " + s.getDestination() + " " + s.getCost());
+				this.logMessage("INFO", "Edge Start: " + sb.toString() + " " + s.getSource() + " " + s.getDestination() + " " + s.getCost());
 
 			}
 
@@ -96,19 +96,19 @@ public class PathController extends Controller {
 
 			for (Edges v : edgesRemaining) {
 				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(), v.getCost());
-				this.logInfo("Edge Remaining: " + v.getKante_id() + " " + v.getSource() + " " + v.getDestination() + " " + v.getCost());
+				this.logMessage("INFO", "Edge Remaining: " + v.getKante_id() + " " + v.getSource() + " " + v.getDestination() + " " + v.getCost());
 
 			}
 
 			this.edgesEnd = this.getDatabaseHelper(this.getContext()).getEdgesByDestination(endID.toString());
 			for (Edges w : edgesEnd) {
 				addLane(String.valueOf(w.getKante_id()), w.getSource(), w.getDestination(), w.getCost());
-				this.logInfo("Edge End: " + w.getKante_id() + " " + w.getSource() + " " + w.getDestination() + " " + w.getCost());
+				this.logMessage("INFO", "Edge End: " + w.getKante_id() + " " + w.getSource() + " " + w.getDestination() + " " + w.getCost());
 
 			}
 
 		} catch (SQLException e) {
-			this.logError(e.toString());
+			this.logMessage("ERROR", e.toString());
 		}
 
 		// Lets check from location Loc_1 to Loc_10
@@ -129,7 +129,7 @@ public class PathController extends Controller {
 		LinkedList<Vertex> path = dijkstra.getPath(nodes.get(nase));
 
 		for (Vertex vertex : path) {
-			this.logInfo("ENDPATH : " + vertex.toString());
+			this.logMessage("INFO", "ENDPATH : " + vertex.toString());
 		}
 
 		return path;

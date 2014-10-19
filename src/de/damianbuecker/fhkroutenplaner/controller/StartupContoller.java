@@ -374,7 +374,7 @@ public class StartupContoller extends Controller {
 				.getInteger(SHARED_PREFERENCE_DATABASE_VERSION);
 
 		Log.v("SharedPrefCHECK", internalVersion.toString());
-		this.logInfo("SharedPrefCheck " + internalVersion.toString());
+		this.logMessage("INFO", "SharedPrefCheck " + internalVersion.toString());
 
 		if (externalVersion != "0" || internalVersion != 0) {
 			if (Integer.parseInt(externalVersion) == internalVersion) {
