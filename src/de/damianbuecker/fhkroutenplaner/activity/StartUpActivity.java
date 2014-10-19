@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
@@ -38,11 +40,22 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 
 	/** The Constant INTENT_EXTRA_HISTORY. */
 	private static final String INTENT_EXTRA_HISTORY = "history";
+	
+	/** The btn start search. */
+	@InjectView(R.id.btn_startup_search)
+	Button btnStartSearch;
+	
+	/** The btn open history. */
+	@InjectView(R.id.btn_startup_history)
+	Button btnOpenHistory;
 
+	/** The m startup controller. */
 	private StartupContoller mStartupController;
 
+	/** The Constant progress_bar_type. */
 	public static final int progress_bar_type = 0;
 
+	/** The prg dialog. */
 	private ProgressDialog prgDialog;
 
 	/*
@@ -53,7 +66,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		if (this.mSharedPreferencesController == null) {
 			this.mSharedPreferencesController = new SharedPreferencesController(this);
 		}
@@ -64,6 +77,8 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		}
 
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
+		this.btnStartSearch.setOnClickListener(new ButtonListener());
+		this.btnOpenHistory.setOnClickListener(new ButtonListener());
 
 		/*
 		 * // Testdaten HistoryItem h1 = new HistoryItem(); h1.setName("H1");
@@ -102,7 +117,6 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// TODO Auto-generated method stub
 //									new getExternalDatabase()
 								}
 							})
@@ -112,7 +126,6 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									// TODO Auto-generated method stub
 
 									dialog.cancel();
 								}
@@ -133,6 +146,9 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreateDialog(int)
+	 */
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
@@ -151,8 +167,14 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 	}
 	
 	
+/**
+ * The Class getExternalDatabase.
+ */
 class getExternalDatabase extends AsyncTask<String,String,String>{
 		
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#onPreExecute()
+		 */
 		@SuppressWarnings("deprecation")
 		@Override		
         protected void onPreExecute() {
@@ -161,6 +183,9 @@ class getExternalDatabase extends AsyncTask<String,String,String>{
             showDialog(progress_bar_type);
         }
 		
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
 		protected String doInBackground(String... f_url) {
 			
 			mStartupController.getExternalDatabase();
@@ -169,51 +194,22 @@ class getExternalDatabase extends AsyncTask<String,String,String>{
 		}		
 			
 		
-		 protected void onProgressUpdate(String... progress) {
+		 /* (non-Javadoc)
+ 		 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
+ 		 */
+ 		protected void onProgressUpdate(String... progress) {
 			 
 			 prgDialog.setProgress(Integer.parseInt(progress[0]));
 			 
 		 }
 		 
-		 @SuppressWarnings("deprecation")
+		 /* (non-Javadoc)
+ 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+ 		 */
+ 		@SuppressWarnings("deprecation")
 		protected void onPostExecute(String file_url){
 			 dismissDialog(progress_bar_type);
 		 }
-	}
-
-	/**
-	 * On click_search.
-	 * 
-	 * @param v
-	 *            the v
-	 */
-	public void onClick_search(View v) {
-
-		Intent intent = new Intent(INTENT_NAVIGATION);
-		startActivity(intent);
-	}
-
-	/**
-	 * On click_history.
-	 * 
-	 * @param v
-	 *            the v
-	 */
-	public void onClick_history(View v) {
-
-		if (this.databaseHelper == null) {
-			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
-		}
-		List<HistoryItem> listHistoryItems = new ArrayList<HistoryItem>();
-		listHistoryItems = this.databaseHelper.getHistoryItems();
-		ArrayList<String> jsonList = new ArrayList<String>();
-		for (HistoryItem h : listHistoryItems) {
-			jsonList.add(h.toJson(h));
-		}
-
-		Intent intent = new Intent(INTENT_HISTORY);
-		intent.putStringArrayListExtra(INTENT_EXTRA_HISTORY, jsonList);
-		startActivity(intent);
 	}
 
 	/*
@@ -233,4 +229,45 @@ class getExternalDatabase extends AsyncTask<String,String,String>{
 		}
 	}
 
+	/**
+	 * The listener interface for receiving button events.
+	 * The class that is interested in processing a button
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addButtonListener<code> method. When
+	 * the button event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see ButtonEvent
+	 */
+	private class ButtonListener implements View.OnClickListener{
+
+		/** The database helper. */
+		private DatabaseHelper databaseHelper;
+		
+		/* (non-Javadoc)
+		 * @see android.view.View.OnClickListener#onClick(android.view.View)
+		 */
+		@Override
+		public void onClick(View v) {
+			if(v.getId() == R.id.btn_startup_search) {
+				Intent intent = new Intent(v.getContext(),NavigationActivity.class);
+				startActivity(intent);
+			} else if(v.getId() == R.id.btn_startup_history) {
+				if (this.databaseHelper == null) {
+					this.databaseHelper = OpenHelperManager.getHelper(v.getContext(), DatabaseHelper.class);
+				}
+				List<HistoryItem> listHistoryItems = new ArrayList<HistoryItem>();
+				listHistoryItems = this.databaseHelper.getHistoryItems();
+				ArrayList<String> jsonList = new ArrayList<String>();
+				for (HistoryItem h : listHistoryItems) {
+					jsonList.add(h.toJson(h));
+				}
+
+				Intent intent = new Intent(v.getContext(), HistoryActivity.class);
+				intent.putStringArrayListExtra(INTENT_EXTRA_HISTORY, jsonList);
+				startActivity(intent);
+			}
+		}
+	}
 }

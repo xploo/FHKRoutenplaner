@@ -20,6 +20,7 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -94,6 +95,9 @@ public class ImageController extends Controller {
 	}
 
 	private Integer end_ID;
+	
+	private Paint mPaint;                 // paint object
+	 private Path mPathGrid;                   // path object
 
 	/**
 	 * Instantiates a new image controller.
@@ -121,7 +125,7 @@ public class ImageController extends Controller {
 				this.endFloor = this.endTagList.get(0).getFloor();
 			}
 		} catch (SQLException e) {
-			this.logError(e.getMessage());
+			this.logMessage("ERROR", e.getMessage());
 		}
 
 		return endFloor;
@@ -141,7 +145,7 @@ public class ImageController extends Controller {
 	 */
 	public void testAlgorithm(Integer startFloor, Integer startID, Integer endID, Integer endFloor) {
 
-		this.logInfo("OnDraw Check");
+		this.logMessage("INFO", "OnDraw Check");
 
 		setEnd_ID(endID);
 		setStart_ID(startID);
@@ -186,16 +190,16 @@ public class ImageController extends Controller {
 			Options options = new Options();
 			options.inJustDecodeBounds = true;
 			Bitmap b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId, options);
-			this.logInfo(WIDTH_OPTIONS + options.outWidth);
-			this.logInfo(HEIGHT_OPTIONS + options.outHeight);
+			this.logMessage("INFO", WIDTH_OPTIONS + options.outWidth);
+			this.logMessage("INFO", HEIGHT_OPTIONS + options.outHeight);
 			Bitmap.Config config = Config.ARGB_8888;
 			options.inScaled = false;
 			options.inJustDecodeBounds = false;
 			Bitmap bitmapOut = Bitmap.createBitmap(options.outWidth, options.outHeight, config);
 			b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId, options);
 			bitmapOut.setDensity(b.getDensity());
-			this.logInfo(WIDTH_OPTIONS + b.getWidth());
-			this.logInfo(HEIGHT_OPTIONS + b.getHeight());
+			this.logMessage("INFO", WIDTH_OPTIONS + b.getWidth());
+			this.logMessage("INFO", HEIGHT_OPTIONS + b.getHeight());
 			for (int x = 0; x < options.outWidth; x++) {
 				for (int y = 0; y < options.outHeight; y++) {
 					int pixel = b.getPixel(x, y);
@@ -236,7 +240,8 @@ public class ImageController extends Controller {
 						canvas.drawBitmap(mBitmap, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - 32, null);
 
-					} else if (tagList.get(0).getTag_id() == ID && ID == endID) {
+					}
+					if (tagList.get(0).getTag_id() == ID && ID == endID) {
 						// Zielmarkierung setzten
 
 						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.turn7, options);
@@ -254,7 +259,38 @@ public class ImageController extends Controller {
 						canvas.drawLine(bufferX, bufferY, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), this.myPaint);
 						
-						//Hier vektorRechnung für Dreiecke
+						//Hier vektorRechnung für Dreiecke						
+						
+							Paint paint = new Paint();
+							paint.setStyle(Paint.Style.FILL);
+
+						    float deltaX = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - bufferX;
+						    float deltaY = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - bufferY;
+						    float frac = (float) 0.05;
+
+						    float point_x_1 = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - (float) ((1 - frac) * deltaX + frac * deltaY);
+						    float point_y_1 = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - (float) ((1 - frac) * deltaY - frac * deltaX);						    
+						   
+
+						    float point_x_2 = bufferX;
+						    float point_y_2 = bufferY;
+
+						    float point_x_3 = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - (float) ((1 - frac) * deltaX - frac * deltaY);
+						    float point_y_3 = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - (float) ((1 - frac) * deltaY + frac * deltaX);						    
+						   
+
+						    Path path = new Path();
+						    path.setFillType(Path.FillType.EVEN_ODD);
+
+						    path.moveTo(point_x_1, point_y_1);
+						    path.lineTo(point_x_2, point_y_2);
+						    path.lineTo(point_x_3, point_y_3);
+						    path.lineTo(point_x_1, point_y_1);
+						    path.lineTo(point_x_1, point_y_1);
+						    path.close();
+
+						    canvas.drawPath(path, paint);
+							
 						
 						
 
@@ -267,11 +303,11 @@ public class ImageController extends Controller {
 					bufferX = (float) tagList.get(0).getX_pos();
 					bufferY = (float) tagList.get(0).getY_pos();					
 
-					this.logInfo("ViewImageVertex: " + vertex.toString());
+					this.logMessage("INFO", "ViewImageVertex: " + vertex.toString());
 				}
 
 			} catch (SQLException e) {
-				this.logError(e.getMessage());
+				this.logMessage("ERROR", e.getMessage());
 			}
 			File folder = new File(Environment.getExternalStorageDirectory() + ROOT_DIR);
 			if (!folder.exists())
@@ -288,11 +324,11 @@ public class ImageController extends Controller {
 				bitmapOut = null;
 				this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outputFile)));
 
-				this.logInfo("WRITE IMAGE CHECK");
+				this.logMessage("INFO", "WRITE IMAGE CHECK");
 			} catch (FileNotFoundException e) {
-				this.logError(e.getMessage());
+				this.logMessage("ERROR", e.getMessage());
 			} catch (IOException e) {
-				this.logError(e.getMessage());
+				this.logMessage("ERROR", e.getMessage());
 			}
 		}
 	}
@@ -362,21 +398,6 @@ public class ImageController extends Controller {
 	}
 	
 	private Float determineDrawingAngle(Float x1, Float y1, Float x2, Float y2) {
-		
-		Integer quadrant;
-		
-		// Bestimmen Quadrant
-		if(x2 > x1 && y2 < y1) {
-			quadrant = 1;
-		} else if(x2 > x1 && y2 > y2) {
-			quadrant = 2;
-		} else if(x2 < x1 && y2 > y1) {
-			quadrant = 3;
-		} else if(x2 < x1 && y2 < y1) {
-			quadrant = 4;
-		}
-		
-		
-		return null;
+		return 0.0f;
 	}
 }

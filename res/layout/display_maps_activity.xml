@@ -36,8 +36,26 @@
             android:layout_marginBottom="5dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:alpha="0.5"
+            android:alpha="1"
             android:background="@drawable/arrow_left_256" />
+        
+        <TextView 
+            android:id="@+id/textViewBottomleft"
+            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true"            
+            android:layout_centerHorizontal="true"
+            android:layout_toRightOf="@+id/btnleft"
+            android:text="TEST" />
+        
+         <TextView 
+            android:id="@+id/textViewBottomright"
+            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true"            
+            android:layout_centerHorizontal="true"
+            android:layout_toLeftOf="@+id/btnright"
+            android:text="TEST" />
 
         <Button
             android:id="@+id/btnright"
@@ -47,7 +65,7 @@
             android:layout_marginBottom="5dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:alpha="0.5"
+            android:alpha="1"
             android:background="@drawable/arrow_right_256" />
         
     </RelativeLayout>

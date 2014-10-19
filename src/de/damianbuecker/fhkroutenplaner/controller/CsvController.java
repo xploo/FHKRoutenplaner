@@ -105,7 +105,7 @@ public class CsvController extends Controller {
 					String[] row = line.split(CSVSPLITBY);
 
 					for (String s : row) {
-						this.logInfo("Row elements: " + s + " \n");
+						this.logMessage("INFO", "Row elements: " + s + " \n");
 					}
 
 					if (tableName.equals(EDGE_CSV)) {
@@ -211,6 +211,6 @@ public class CsvController extends Controller {
 		}
 
 		this.endTime = DateTimeController.getTime();
-		this.logInfo(DateTimeController.getRuntime(startTime, endTime));
+		this.logMessage("INFO", DateTimeController.getRuntime(startTime, endTime));
 	}
 }

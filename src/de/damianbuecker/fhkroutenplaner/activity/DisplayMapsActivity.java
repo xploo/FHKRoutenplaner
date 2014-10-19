@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import de.damianbuecker.fhkroutenplaner.controller.FileController;
 import de.damianbuecker.fhkroutenplaner.controller.ImageController;
 import de.damianbuecker.fhkroutenplaner.controller.NfcController;
@@ -35,6 +36,12 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/** The m drawer list. */
 	@InjectView(R.id.left_drawer)
 	private ListView mDrawerList;
+	
+	@InjectView(R.id.textViewBottomleft)
+	private TextView mTextViewBottomLeft;
+	
+	@InjectView(R.id.textViewBottomright)
+	private TextView mTextViewBottomRight;
 
 	/** The btn toggle drawer. */
 	@InjectView(R.id.btntoggledrawer)
@@ -55,7 +62,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/** The m web view. */
 	@InjectView(R.id.webView)
 	private WebView mWebView;
-
+	
 	/** The m nfc adapter. */
 	private NfcAdapter mNfcAdapter;
 
@@ -132,16 +139,18 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 				this.startFloor = Integer.parseInt(this.getIntent().getExtras().getString(INTENT_EXTRA_START_FLOOR));
 
-				this.logInfo("Was steht im ENDID " + endID.toString());
+				this.logMessage("INFO", "Was steht im ENDID " + endID.toString());
 
 			}
 		}
 
 		this.endFloor = mImageController.getEndFloor(endID);
-		mImageController.testAlgorithm(this.startFloor, this.startID, this.endID, this.endFloor);
+		mImageController.testAlgorithm(this.startFloor, this.startID, this.endID, this.endFloor);	
+		
 
 		// WebView Settings hier
 		this.mWebView.getSettings().setBuiltInZoomControls(true);
+		this.mWebView.getSettings().setDisplayZoomControls(false);
 		this.mWebView.getSettings().setLoadWithOverviewMode(true);
 		this.mWebView.getSettings().setUseWideViewPort(true);
 		this.mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -152,9 +161,16 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		if (startFloor == endFloor) {
 			this.btnLeft.setVisibility(View.INVISIBLE);
 			this.btnRight.setVisibility(View.INVISIBLE);
+			this.mTextViewBottomLeft.setVisibility(View.INVISIBLE);
+			this.mTextViewBottomRight.setVisibility(View.INVISIBLE);
 		}
 
 		btnLeft.setVisibility(View.INVISIBLE);
+		mTextViewBottomLeft.setVisibility(View.INVISIBLE);
+		
+		mTextViewBottomLeft.setText("Zur Startetage: "+startFloor);
+		mTextViewBottomRight.setText("Zur Zieletage: "+endFloor);
+		
 		this.mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY +"TestIMG-" + startFloor + startID + PNG);
 	}	
 
@@ -299,6 +315,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				DisplayMapsActivity.this.btnLeft.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				DisplayMapsActivity.this.btnLeft.setVisibility(View.INVISIBLE);
 				DisplayMapsActivity.this.btnRight.setVisibility(View.VISIBLE);
+				DisplayMapsActivity.this.mTextViewBottomLeft.setVisibility(View.INVISIBLE);
+				DisplayMapsActivity.this.mTextViewBottomRight.setVisibility(View.VISIBLE);				
 
 				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
 			} else if (v.getId() == R.id.btnright) {
@@ -306,6 +324,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				DisplayMapsActivity.this.btnRight.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				DisplayMapsActivity.this.btnRight.setVisibility(View.INVISIBLE);
 				DisplayMapsActivity.this.btnLeft.setVisibility(View.VISIBLE);
+				DisplayMapsActivity.this.mTextViewBottomLeft.setVisibility(View.VISIBLE);
+				DisplayMapsActivity.this.mTextViewBottomRight.setVisibility(View.INVISIBLE);
 
 				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + endFloor + endID + PNG);
 			}
