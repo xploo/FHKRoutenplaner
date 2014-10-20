@@ -46,16 +46,19 @@
             android:layout_alignParentBottom="true"            
             android:layout_centerHorizontal="true"
             android:layout_toRightOf="@+id/btnleft"
+            android:alpha="1"
             android:text="TEST" />
         
-         <TextView 
-            android:id="@+id/textViewBottomright"
-            android:layout_height="50dp"
-            android:layout_width="wrap_content"
-            android:layout_alignParentBottom="true"            
-            android:layout_centerHorizontal="true"
-            android:layout_toLeftOf="@+id/btnright"
-            android:text="TEST" />
+         <TextView
+             android:id="@+id/textViewBottomright"
+             android:layout_width="wrap_content"
+             android:layout_height="50dp"
+             android:layout_alignParentBottom="true"
+             android:layout_alignTop="@+id/textViewBottomleft"
+             android:layout_centerHorizontal="true"
+             android:layout_toLeftOf="@+id/btnright"
+             android:alpha="1"             
+             android:text="TEST" />
 
         <Button
             android:id="@+id/btnright"

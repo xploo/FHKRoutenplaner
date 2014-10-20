@@ -19,6 +19,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.net.Uri;
@@ -259,26 +260,64 @@ public class ImageController extends Controller {
 						canvas.drawLine(bufferX, bufferY, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), this.myPaint);
 						
-						//Hier vektorRechnung für Dreiecke						
+						//Hier vektorRechnung für Dreiecke		
+						
+						/*
+						Float angle;
+						
+						angle = determineDrawingAngle(Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
+								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())),bufferX,bufferY);		
+						
+						
+						
+						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.triangle_32, options);
+						
+						 Bitmap postRotateBitmap = RotateBitmap(mBitmap,angle);
+						 
+						 canvas.drawBitmap(postRotateBitmap, bufferX-postRotateBitmap.getWidth()/2,
+									bufferY- postRotateBitmap.getHeight()/2, null);
+						
+						
+						*/
 						
 							Paint paint = new Paint();
-							paint.setStyle(Paint.Style.FILL);
-
+							paint.setStyle(Paint.Style.FILL);					
+							
+							
 						    float deltaX = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - bufferX;
 						    float deltaY = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - bufferY;
-						    float frac = (float) 0.05;
+						    this.logMessage("DeltaX", String.valueOf(deltaX));
+						    this.logMessage("DeltaY", String.valueOf(deltaY));
+						    float frac = (float) 0.1;
+						    if(Math.abs(deltaX) >= 100)
+						    {
+						    	frac = (float) 0.03;
+						    }
+						    if(Math.abs(deltaY) >= 100){
+						    	frac = (float) 0.03;
+						    }
+						    if(Math.abs(deltaX) <= 120 && Math.abs(deltaY)<= 30)
+						    {
+						    	frac = (float) 0.1;
+						    }
+						    if(Math.abs(deltaY) <= 120 && Math.abs(deltaX) <=30){
+						    	frac = (float) 0.1;
+						    }
+						    
 
 						    float point_x_1 = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - (float) ((1 - frac) * deltaX + frac * deltaY);
-						    float point_y_1 = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - (float) ((1 - frac) * deltaY - frac * deltaX);						    
+						    float point_y_1 = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - (float) ((1 - frac) * deltaY - frac * deltaX);
+						    
 						   
 
 						    float point_x_2 = bufferX;
 						    float point_y_2 = bufferY;
-
+						    
 						    float point_x_3 = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - (float) ((1 - frac) * deltaX - frac * deltaY);
 						    float point_y_3 = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - (float) ((1 - frac) * deltaY + frac * deltaX);						    
 						   
-
+						  
+						    						  
 						    Path path = new Path();
 						    path.setFillType(Path.FillType.EVEN_ODD);
 
@@ -398,6 +437,44 @@ public class ImageController extends Controller {
 	}
 	
 	private Float determineDrawingAngle(Float x1, Float y1, Float x2, Float y2) {
-		return 0.0f;
+		Integer quadrant = 0;
+		double phi = 0.0f;
+		double PI = 3.1415;
+		
+		// Bestimmen Quadrant
+		if(x2 > x1 && y2 <= y1) {
+			quadrant = 1;
+		} else if(x2 > x1 && y2 >= y2) {
+			quadrant = 2;
+		} else if(x2 <= x1 && y2 > y1) {
+			quadrant = 3;
+		} else if(x2 <= x1 && y2 < y1) {
+			quadrant = 4;
+		}
+		this.logMessage("Quadrant", String.valueOf(quadrant));
+		if(quadrant == 1 || quadrant == 4){
+			
+			phi = Math.atan2(y1, x1);
+			
+		}else if(quadrant == 2){
+			
+			phi = (Math.atan2(y1, x1))+PI;
+			
+		}else if(quadrant == 3){
+			
+			phi = (Math.atan2(y1,x1))-PI;
+			
+		}
+		
+		phi = (360/(2*PI))*(phi);		
+		this.logMessage("test", String.valueOf((float)phi));
+		return (float)phi;
+	}
+	
+	public static Bitmap RotateBitmap(Bitmap source, float angle)
+	{
+	      Matrix matrix = new Matrix();
+	      matrix.postRotate(angle);
+	      return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
 	}
 }
