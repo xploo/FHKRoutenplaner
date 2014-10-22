@@ -52,6 +52,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	/** The tag location all. */
 	private Dao<Tag, Integer> tagLocationAll;
+	
+	private Dao<Room, Integer> roomAll;
 
 	/** The edges all. */
 	private Dao<Edges, Integer> edgesAll;
@@ -78,6 +80,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	/** The Tagresult. */
 	private List<Tag> Tagresult = null;
+	
+	private List<Room> roomResult = null;
 
 	/** The edges result. */
 	private List<Edges> edgesResult = null;
@@ -491,6 +495,35 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 		return edgeResultRemain;
 
+	}
+	
+	public List<Room> getRoomById(String ID) throws SQLException{
+		
+		if (this.roomAll == null) {
+			this.roomAll = this.getRoomDataDao();
+		}
+		QueryBuilder<Room, Integer> queryBuilderRoom = null;
+
+		queryBuilderRoom = roomAll.queryBuilder();
+		queryBuilderRoom.where().eq(Room.ROOM_ID, ID);
+		PreparedQuery<Room> preparedQueryRoom = queryBuilderRoom.prepare();
+		roomResult = roomAll.query(preparedQueryRoom);
+		
+		return roomResult;
+	}
+	
+	public List<Roomtype> getRoomtypeById(String ID) throws SQLException{
+		Dao<Roomtype, Integer> roomTypeAll = this.getRoomtypeDataDao();
+		
+		QueryBuilder<Roomtype, Integer> queryBuilderRoomType = null;
+		
+		queryBuilderRoomType = roomTypeAll.queryBuilder();
+		queryBuilderRoomType.where().eq(Roomtype.ROOMTYPE_ID, ID);
+		PreparedQuery<Roomtype> preparedQueryRoomType = queryBuilderRoomType.prepare();
+		List<Roomtype> roomTypeResult = roomTypeAll.query(preparedQueryRoomType);	
+		
+		
+		return roomTypeResult;
 	}
 
 	/**

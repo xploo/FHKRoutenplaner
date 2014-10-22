@@ -32,6 +32,8 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import de.damianbuecker.fhkroutenplaner.controller.NfcController;
 import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Room;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Roomtype;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
@@ -47,13 +49,13 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 	@InjectView(R.id.btn_nfc_route)
 	private Button btnGo;
-	
+
 	@InjectView(R.id.mTvDescriptionFinish)
 	private TextView mTvDescriptionFinish;
 
 	@InjectView(R.id.mTvDescriptionGoButton)
 	private TextView mTvDescriptionGoButton;
-	
+
 	/** The m text view floor. */
 	@InjectView(R.id.txtV_nfc_floor_out)
 	private TextView mTextViewFloor;
@@ -179,6 +181,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 						// <-----
 						addRoomtypeSpinner();
 						// ----->
+						
 
 					}
 				} catch (SQLException e) {
@@ -204,9 +207,10 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 			this.mNfcController.handleIntent(getIntent(), this);
 
+			
 		}
 	}
-
+	@SuppressWarnings("rawtypes")
 	public void setRoomtypeSpinner(){
 		
 		if(!(this.getIntent().getExtras() == null)){
@@ -215,13 +219,33 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			
 			try {
 				List<Tag> listTag = this.databaseHelper.getTagById(splitResult[0]);
-			} catch (SQLException e) {
+				
+				Integer roomID = listTag.get(0).getRoom_ID();
+				List<Room> listRoom = this.databaseHelper.getRoomById(String.valueOf(roomID));
+				
+				Integer roomTypeId = listRoom.get(0).getRoomtype_ID();
+				List<Roomtype> listRoomType = this.databaseHelper.getRoomtypeById(String.valueOf(roomTypeId));
+				
+				String SpinnerInput = String.valueOf(roomTypeId) +" "+listRoomType.get(0).getDescription();
+				this.logMessage("INFO", "SpinnerInput: " + SpinnerInput);
+				
+				if(this.mSpinnerRoomtype.getAdapter()== null){
+					
+					this.logMessage("INFO","ADAPTER IS NULL");
+				}
+				
+				ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoomtype.getAdapter();
+				int SpinnerPosition = myAdap.getPosition(SpinnerInput);
+				
+				mSpinnerRoomtype.setSelection(SpinnerPosition);
+						} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 		}
 	}
+
 	@SuppressWarnings("rawtypes")
 	public void setSpinner() {
 
@@ -231,8 +255,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 				Log.v("dnjsandjnaskdn", endID);
 			}
 
-			ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoom.getAdapter(); 
-																			
+			ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoom.getAdapter();
+
 			int spinnerPosition = myAdap.getPosition(endID);
 			// set the default according to value
 			mSpinnerRoom.setSelection(spinnerPosition);
@@ -322,26 +346,31 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 		Spinner spinner = (Spinner) parent;
 		if (spinner.getId() == R.id.nfc_spinner_roomtype) {
+			
 			this.mSpinnerRoomtype.setSelection(position);
+			setRoomtypeSpinner();
+			
 			if (String.valueOf(this.mSpinnerRoomtype.getSelectedItem()).equals("Bitte den Raumtyp des Zielortes wählen!")) {
-
-			} else {
-
+				
+			} else {				
+				
 				String selState = (String) this.mSpinnerRoomtype.getSelectedItem();
+				
 
 				String[] splitResult = selState.split(" ");
 				addRoomSpinner(Integer.parseInt(splitResult[0]));
+				
 				setSpinner();
 				this.mTvDescriptionFinish.setVisibility(View.VISIBLE);
 				this.mSpinnerRoom.setVisibility(View.VISIBLE);
 			}
 		} else if (spinner.getId() == R.id.nfc_spinner_room) {
-			if(this.mSpinnerRoom.getSelectedItem().equals("Bitte Ziel Raum wählen!")){
-				
-			}else{
-			this.mSpinnerRoom.setSelection(position);
-			this.mTvDescriptionGoButton.setVisibility(View.VISIBLE);
-			this.btnGo.setVisibility(View.VISIBLE);
+			if (this.mSpinnerRoom.getSelectedItem().equals("Bitte Ziel Raum wählen!")) {
+
+			} else {
+				this.mSpinnerRoom.setSelection(position);
+				this.mTvDescriptionGoButton.setVisibility(View.VISIBLE);
+				this.btnGo.setVisibility(View.VISIBLE);
 			}
 		}
 	}
@@ -385,7 +414,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	protected void onResume() {
 		super.onResume();
 
-		 NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);
+		NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);
 
 		/**
 		 * It's important, that the activity is in the foreground (resumed).
