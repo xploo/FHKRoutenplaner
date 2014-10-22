@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/txtV_nfc_floor_out"
         android:layout_below="@+id/txtV_nfc_floor_out"
-        android:text="Medium Text"
+        android:text=" "
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -70,16 +70,16 @@
         android:layout_marginLeft="42dp"
         android:layout_marginTop="36dp"
         android:layout_toRightOf="@+id/txtV_nfc_description"
-        android:text="Medium Text"
+        android:text=" "
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/mTvDescriptionRoomtype"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:text="1. Raumkategorie auswählen."
+        android:text="@string/descriptionRoomtype"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <Spinner
@@ -87,15 +87,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView1" />
+        android:layout_below="@+id/mTvDescriptionRoomtype" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/mTvDescriptionFinish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/nfc_spinner_roomtype"
-        android:text="2. Genaues Routenziel anwählen."
+        android:text="@string/descriptionRoom"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <Spinner
@@ -103,15 +103,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView2" />
+        android:layout_below="@+id/mTvDescriptionFinish" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/mTvDescriptionGoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/nfc_spinner_room"
-        android:text="3. Routenanfrage abschicken"
+        android:text="@string/descriptionGoButton"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <Button
@@ -119,7 +119,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/mTvDescriptionGoButton"
         android:onClick="onClick_GO"
         android:text="@string/nfc_route" />
 

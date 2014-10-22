@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.TooManyListenersException;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -43,10 +44,16 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	/** The m text view. */
 	@InjectView(R.id.txtV_nfc_hidden)
 	private TextView mTextView;
-	
+
 	@InjectView(R.id.btn_nfc_route)
 	private Button btnGo;
+	
+	@InjectView(R.id.mTvDescriptionFinish)
+	private TextView mTvDescriptionFinish;
 
+	@InjectView(R.id.mTvDescriptionGoButton)
+	private TextView mTvDescriptionGoButton;
+	
 	/** The m text view floor. */
 	@InjectView(R.id.txtV_nfc_floor_out)
 	private TextView mTextViewFloor;
@@ -54,10 +61,10 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	/** The m text view description. */
 	@InjectView(R.id.txtV_nfc_description_out)
 	private TextView mTextViewDescription;
-	
+
 	@InjectView(R.id.nfc_spinner_roomtype)
 	private Spinner mSpinnerRoomtype;
-	
+
 	@InjectView(R.id.nfc_spinner_room)
 	private Spinner mSpinnerRoom;
 
@@ -103,7 +110,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 	/** The Constant HISTORY_ITEM_NAME_PREFIX. */
 	private static final String HISTORY_ITEM_NAME_PREFIX = "Navigation ";
-	
+
 	private String endID;
 
 	/*
@@ -117,19 +124,21 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 		this.mSharedPreferencesController = new SharedPreferencesController(this);
 		this.mTextView.setText("");
-		
-		
+
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, false);
-		NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);		
-		
+		this.btnGo.setVisibility(View.INVISIBLE);
+		this.mSpinnerRoom.setVisibility(View.INVISIBLE);
+		this.mTvDescriptionFinish.setVisibility(View.INVISIBLE);
+		this.mTvDescriptionGoButton.setVisibility(View.INVISIBLE);
+
 		if (this.mTextView.getText().equals("")) {
 
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 			alertDialogBuilder.setTitle(ALERT_DIALOG_TITLE);
 			alertDialogBuilder.setMessage(ALERT_DIALOG_MESSAGE).setCancelable(false);
-			
+
 			// <<< For testing purposes only
-			alertDialogBuilder.setNeutralButton("Magic Beans", new DialogInterface.OnClickListener(){
+			alertDialogBuilder.setNeutralButton("Magic Beans", new DialogInterface.OnClickListener() {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -137,6 +146,16 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 				}
 			});
 			// End >>>
+
+			alertDialogBuilder.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					finish();
+
+				}
+			});
 			this.alertDialog = alertDialogBuilder.create();
 			this.alertDialog.show();
 
@@ -159,16 +178,14 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 						alertDialog.dismiss();
 						// <-----
 						addRoomtypeSpinner();
-						// ----->			
-					
-					
+						// ----->
+
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
-		});		
-		
+		});
 
 		if (this.databaseHelper == null) {
 			this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
@@ -181,28 +198,43 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			}
 			if (!this.mNfcAdapter.isEnabled()) {
 				Toast.makeText(this, ERROR_MESSAGE_NFC_DISABLED, Toast.LENGTH_LONG).show();
-			} else {				
+			} else {
 			}
 			this.mNfcController = new NfcController(this.mTextView);
 
 			this.mNfcController.handleIntent(getIntent(), this);
 
-		}		
+		}
 	}
-	
-	@SuppressWarnings("rawtypes")
-	public void setSpinner(){
+
+	public void setRoomtypeSpinner(){
 		
-		if (!(this.getIntent().getExtras() == null)) {
-			this.endID = this.getIntent().getExtras().getString("endID");			
-			if(this.mSpinnerRoom.getAdapter() == null) {
-				Log.v("dnjsandjnaskdn",endID);	
+		if(!(this.getIntent().getExtras() == null)){
+			this.endID = this.getIntent().getExtras().getString("endID");
+			String[] splitResult = endID.split(" ");
+			
+			try {
+				List<Tag> listTag = this.databaseHelper.getTagById(splitResult[0]);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
-			
-			ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoom.getAdapter(); //cast to an ArrayAdapter
+		}
+	}
+	@SuppressWarnings("rawtypes")
+	public void setSpinner() {
+
+		if (!(this.getIntent().getExtras() == null)) {
+			this.endID = this.getIntent().getExtras().getString("endID");
+			if (this.mSpinnerRoom.getAdapter() == null) {
+				Log.v("dnjsandjnaskdn", endID);
+			}
+
+			ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoom.getAdapter(); 
+																			
 			int spinnerPosition = myAdap.getPosition(endID);
-			//set the default according to value
+			// set the default according to value
 			mSpinnerRoom.setSelection(spinnerPosition);
 		}
 	}
@@ -223,7 +255,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			this.mTextViewDescription.setText(tagList.get(0).getDescription());
 		}
 	}
-	
 
 	/**
 	 * Adds the roomtype spinner.
@@ -233,6 +264,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		try {
 			if (this.roomtypeSpinnerData == null) {
 				this.roomtypeSpinnerData = new ArrayList<Integer>();
+				roomtypeSpinnerData.add("Bitte den Raumtyp des Zielortes wählen!");
 				for (int i = 0; i < databaseHelper.getRoomtypeSpinner().size(); i++) {
 					roomtypeSpinnerData.add(databaseHelper.getRoomtypeSpinner().get(i));
 				}
@@ -261,6 +293,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			// <------ TV neu
 			Integer buffer = databaseHelper.getRoomSpinner(roomtypeID, this.mTextView.getText().toString()).size();
 			this.roomSpinnerData = new ArrayList<Integer>();
+			this.roomSpinnerData.add("Bitte Ziel Raum wählen!");
 			for (int i = 0; i < buffer; i++) {
 				// <---------- TV neu
 				roomSpinnerData.add(databaseHelper.getRoomSpinner(roomtypeID, this.mTextView.getText().toString()).get(i));
@@ -269,8 +302,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			ArrayAdapter<String> RoomAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roomSpinnerData);
 			RoomAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			this.mSpinnerRoom.setAdapter(RoomAdapter);
-			this.mSpinnerRoom.setOnItemSelectedListener(this);		
-			
+			this.mSpinnerRoom.setOnItemSelectedListener(this);
+
 			roomSpinnerData = null;
 		} catch (SQLException e) {
 			// tv.setText(e.toString());
@@ -290,12 +323,26 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		Spinner spinner = (Spinner) parent;
 		if (spinner.getId() == R.id.nfc_spinner_roomtype) {
 			this.mSpinnerRoomtype.setSelection(position);
-			String selState = (String) this.mSpinnerRoomtype.getSelectedItem();
-			String[] splitResult = selState.split(" ");
-			addRoomSpinner(Integer.parseInt(splitResult[0]));
-			setSpinner();
+			if (String.valueOf(this.mSpinnerRoomtype.getSelectedItem()).equals("Bitte den Raumtyp des Zielortes wählen!")) {
+
+			} else {
+
+				String selState = (String) this.mSpinnerRoomtype.getSelectedItem();
+
+				String[] splitResult = selState.split(" ");
+				addRoomSpinner(Integer.parseInt(splitResult[0]));
+				setSpinner();
+				this.mTvDescriptionFinish.setVisibility(View.VISIBLE);
+				this.mSpinnerRoom.setVisibility(View.VISIBLE);
+			}
 		} else if (spinner.getId() == R.id.nfc_spinner_room) {
+			if(this.mSpinnerRoom.getSelectedItem().equals("Bitte Ziel Raum wählen!")){
+				
+			}else{
 			this.mSpinnerRoom.setSelection(position);
+			this.mTvDescriptionGoButton.setVisibility(View.VISIBLE);
+			this.btnGo.setVisibility(View.VISIBLE);
+			}
 		}
 	}
 
@@ -337,10 +384,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);
-		
-		
+
+		 NavigationActivity.this.btnGo.setVisibility(View.VISIBLE);
+
 		/**
 		 * It's important, that the activity is in the foreground (resumed).
 		 * Otherwise an IllegalStateException is thrown.
@@ -394,7 +440,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	 *            the v
 	 */
 	public void onClick_GO(View v) {
-		
+
 		NavigationActivity.this.btnGo.setVisibility(View.INVISIBLE);
 
 		Intent intent = new Intent(this, DisplayMapsActivity.class);
@@ -446,7 +492,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		// TODO: DatumsController
 		startActivity(intent);
 		Toast.makeText(this, "Route wird berechnet.", Toast.LENGTH_LONG).show();
-		
-		
+
 	}
 }

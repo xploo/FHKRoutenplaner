@@ -3,6 +3,8 @@ package de.damianbuecker.fhkroutenplaner.activity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Picture;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.webkit.WebView;
+import android.webkit.WebView.PictureListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -36,10 +39,10 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/** The m drawer list. */
 	@InjectView(R.id.left_drawer)
 	private ListView mDrawerList;
-	
+
 	@InjectView(R.id.textViewBottomleft)
 	private TextView mTextViewBottomLeft;
-	
+
 	@InjectView(R.id.textViewBottomright)
 	private TextView mTextViewBottomRight;
 
@@ -62,7 +65,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	/** The m web view. */
 	@InjectView(R.id.webView)
 	private WebView mWebView;
-	
+
 	/** The m nfc adapter. */
 	private NfcAdapter mNfcAdapter;
 
@@ -94,6 +97,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	 * 
 	 * @see roboguice.activity.RoboActivity#onCreate(android.os.Bundle)
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -104,6 +108,9 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		this.btnToggleDrawer.setOnClickListener(new ButtonDrawerToggleListener());
 		this.btnLeft.setOnClickListener(new ButtonLeftRightListener());
 		this.btnRight.setOnClickListener(new ButtonLeftRightListener());
+		
+		this.mDrawerLayout.setScrimColor(Color.TRANSPARENT);
+		
 
 		this.mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		this.mSharedPreferencesController = new SharedPreferencesController(this);
@@ -145,18 +152,16 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		}
 
 		this.endFloor = mImageController.getEndFloor(endID);
-		mImageController.testAlgorithm(this.startFloor, this.startID, this.endID, this.endFloor);	
-		
+		mImageController.testAlgorithm(this.startFloor, this.startID, this.endID, this.endFloor);
 
 		// WebView Settings hier
+		this.mWebView.setInitialScale(85);	
 		this.mWebView.getSettings().setBuiltInZoomControls(true);
 		this.mWebView.getSettings().setDisplayZoomControls(false);
-		this.mWebView.getSettings().setLoadWithOverviewMode(true);
+		this.mWebView.getSettings().setLoadWithOverviewMode(false);
 		this.mWebView.getSettings().setUseWideViewPort(true);
-		this.mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+//		this.mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
 		this.mWebView.setScrollbarFadingEnabled(false);
-		this.mWebView.scrollTo(0, 50);
-		
 
 		if (startFloor == endFloor) {
 			this.btnLeft.setVisibility(View.INVISIBLE);
@@ -167,12 +172,24 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		btnLeft.setVisibility(View.INVISIBLE);
 		mTextViewBottomLeft.setVisibility(View.INVISIBLE);
-		
-		mTextViewBottomLeft.setText("Zur Startetage: "+startFloor);
-		mTextViewBottomRight.setText("Zur Zieletage: "+endFloor);
-		
-		this.mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY +"TestIMG-" + startFloor + startID + PNG);
-	}	
+
+		mTextViewBottomLeft.setText("Zur Startetage: " + startFloor);
+		mTextViewBottomRight.setText("Zur Zieletage: " + endFloor);
+
+		this.mWebView
+				.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
+
+		mWebView.setPictureListener(new PictureListener() {
+
+			@Override			
+			public void onNewPicture(WebView view, Picture picture) {
+				// TODO Auto-generated method stub
+				mWebView.scrollBy(200, 200);
+				
+
+			}
+		});
+	}
 
 	/**
 	 * Select item.
@@ -181,21 +198,23 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	 *            the position
 	 */
 	private void selectItem(int position) {
-		if(position == 0){
-		Intent intent = new Intent(this, NavigationActivity.class);
-		startActivity(intent);
-		}else if(position == 1){
+		if (position == 0) {
+			Intent intent = new Intent(this, NavigationActivity.class);
+			startActivity(intent);
+		} else if (position == 1) {
 			Intent intent = new Intent(this, StartUpActivity.class);
 			startActivity(intent);
 			finish();
 		}
-		
+
 		/**
 		 * Cleanup here
 		 */
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.app.Activity#onResume()
 	 */
 	@SuppressWarnings("static-access")
@@ -210,7 +229,9 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		this.mNFCController.setupForegroundDispatch(this, mNfcAdapter);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.app.Activity#onPause()
 	 */
 	@SuppressWarnings("static-access")
@@ -224,10 +245,11 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		this.mNFCController = new NfcController(this);
 		this.mNFCController.stopForegroundDispatch(this, mNfcAdapter);
 
-
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.app.Activity#onNewIntent(android.content.Intent)
 	 */
 	protected void onNewIntent(Intent intent) {
@@ -316,9 +338,10 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				DisplayMapsActivity.this.btnLeft.setVisibility(View.INVISIBLE);
 				DisplayMapsActivity.this.btnRight.setVisibility(View.VISIBLE);
 				DisplayMapsActivity.this.mTextViewBottomLeft.setVisibility(View.INVISIBLE);
-				DisplayMapsActivity.this.mTextViewBottomRight.setVisibility(View.VISIBLE);				
+				DisplayMapsActivity.this.mTextViewBottomRight.setVisibility(View.VISIBLE);
 
-				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
+				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID
+						+ PNG);
 			} else if (v.getId() == R.id.btnright) {
 				DisplayMapsActivity.this.btnRight.setHapticFeedbackEnabled(true);
 				DisplayMapsActivity.this.btnRight.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);

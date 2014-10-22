@@ -8,6 +8,7 @@ import roboguice.inject.InjectView;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -102,38 +103,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 
 			mStartupController = new StartupContoller(this);
 		}
-
-		if(this.mStartupController.isWifiConnected() == true) {
-
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-			alertDialogBuilder.setTitle("Datenbankupdate verfügbar!");
-			alertDialogBuilder
-					.setMessage(
-							"Möchten Sie das Update herrunterladen und installieren?")
-					.setCancelable(false)
-					.setPositiveButton("Ja",
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-//									new getExternalDatabase()
-								}
-							})
-					.setNegativeButton("Nein",
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-
-									dialog.cancel();
-								}
-							});
-
-			AlertDialog alertDialog = alertDialogBuilder.create();
-			alertDialog.show();
-		}
+		
 
 		
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
@@ -144,6 +114,64 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 			this.mSharedPreferencesController.putInSharedPreference(
 					SHARED_PREFERENCE_DATABASE_VERSION, 1);
 		}
+		
+		new CheckForUpdate(this).execute((String)null);
+		
+		
+	}
+	
+	
+	private class CheckForUpdate extends AsyncTask<String,String,String>{
+		Context context;
+
+		
+		public CheckForUpdate(Context context){
+			this.context = context;
+		}
+		@Override
+		protected String doInBackground(String... args) {
+			// TODO Auto-generated method stub
+			mStartupController.getDatabaseVersion();
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String values){
+			
+			if(/*mStartupController.isWifiConnected() == true &&*/ mStartupController.checkForUpdate() == 2 ){
+
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+				alertDialogBuilder.setTitle("Datenbankupdate verfügbar!");
+				alertDialogBuilder
+						.setMessage(
+								"Möchten Sie das Update herrunterladen und installieren?")
+						.setCancelable(false)
+						.setPositiveButton("Ja",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										new getExternalDatabase().execute((String)null);
+									}
+								})
+						.setNegativeButton("Nein",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+
+										dialog.cancel();
+									}
+								});
+
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
+			}
+			
+		}
+		
 	}
 
 	/* (non-Javadoc)
@@ -154,10 +182,8 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		switch (id) {
 		case progress_bar_type:
 			prgDialog = new ProgressDialog(this);
-			prgDialog.setMessage("Downloading Mp3 file. Please wait...");
-			prgDialog.setIndeterminate(false);
-			prgDialog.setMax(100);
-			prgDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			prgDialog.setMessage("Downloading Databasefiles. Please wait...");
+			prgDialog.setIndeterminate(true);
 			prgDialog.setCancelable(false);
 			prgDialog.show();
 			return prgDialog;

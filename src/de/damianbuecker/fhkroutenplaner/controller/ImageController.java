@@ -253,7 +253,7 @@ public class ImageController extends Controller {
 					// Auf null prüfen
 
 					canvas.drawCircle(Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
-							Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), 5.0f, this.myPaint);
+							Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), 2.0f, this.myPaint);
 
 					if (bufferX != 0 && bufferY != 0) {
 
@@ -281,7 +281,8 @@ public class ImageController extends Controller {
 						*/
 						
 							Paint paint = new Paint();
-							paint.setStyle(Paint.Style.FILL);					
+							paint.setStyle(Paint.Style.FILL);
+							paint.setColor(Color.RED);
 							
 							
 						    float deltaX = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - bufferX;

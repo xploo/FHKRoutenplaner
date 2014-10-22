@@ -38,7 +38,7 @@ public class StartupContoller extends Controller {
 	private NetworkInfo mWifi;
 
 	/** The Constant tables. */
-	private static final String[] tables = { "edge", "tag", "room", "dozent", "raumart" };
+	private static final String[] tables = { "edges", "tag", "room", "docent", "roomtype" };
 
 	/** The j parser. */
 	private JSONParser jParser = new JSONParser();
@@ -133,6 +133,16 @@ public class StartupContoller extends Controller {
 
 	/** The Constant EDGES_TXT. */
 	private static final String EDGES_TXT = "/sdcard/FMS/edges.txt";
+
+	private Integer externalDatabaseVersion;
+	
+	public Integer getExternalDatabaseVersion() {
+		return externalDatabaseVersion;
+	}
+
+	public void setExternalDatabaseVersion(Integer externalDatabaseVersion) {
+		this.externalDatabaseVersion = externalDatabaseVersion;
+	}
 
 	/**
 	 * Instantiates a new startup contoller.
@@ -315,11 +325,11 @@ public class StartupContoller extends Controller {
 	 * 
 	 * @return the database version
 	 */
-	public String getDatabaseVersion() {
+	public void getDatabaseVersion() {
 
-		new Thread(new Runnable() {
+//		new Thread(new Runnable() {
 
-			public void run() {
+//			public void run() {
 
 				params = new ArrayList<NameValuePair>();
 
@@ -348,17 +358,23 @@ public class StartupContoller extends Controller {
 							Log.v("VERSIONSTEST", version);
 
 						}
+						
+						// Methodenaufruf für SetVersion
+						
+						setExternalDatabaseVersion(Integer.parseInt(version));
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
+				
+				
 			}
 
-		}).start();
+//		}).start();
 
-		return version;
+//		return null;
 
-	}
+//	}
 
 	/**
 	 * Check for update.
@@ -369,11 +385,11 @@ public class StartupContoller extends Controller {
 
 		this.mSharedPreferencesController = new SharedPreferencesController(
 				this.getContext());
-		String externalVersion = getDatabaseVersion();
+		String externalVersion = String.valueOf(this.getExternalDatabaseVersion());
 		Integer internalVersion = this.mSharedPreferencesController
 				.getInteger(SHARED_PREFERENCE_DATABASE_VERSION);
 
-		Log.v("SharedPrefCHECK", internalVersion.toString());
+		this.logMessage("INFO", "externalDatabaseVersion : "+externalVersion);
 		this.logMessage("INFO", "SharedPrefCheck " + internalVersion.toString());
 
 		if (externalVersion != "0" || internalVersion != 0) {
