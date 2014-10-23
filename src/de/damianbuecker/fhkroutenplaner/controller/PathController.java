@@ -27,6 +27,8 @@ public class PathController extends Controller {
 	/** The edges end. */
 	private List<Edges> edgesEnd;
 
+	private Dao<Edges, Integer> daoEdge;
+
 	/** The edges remaining. */
 	private List<Edges> edgesRemaining;
 
@@ -62,11 +64,11 @@ public class PathController extends Controller {
 	public LinkedList<Vertex> testExcute(Integer startID, Integer endID) {
 		this.nodes = new ArrayList<Vertex>();
 		this.edges = new ArrayList<Edge>();
-	
+
 		try {
 			Dao<Tag, Integer> TagListlooper = this.getDatabaseHelper(this.getContext()).getTagDataDao();
 
-			for (Tag t : TagListlooper) {			
+			for (Tag t : TagListlooper) {
 				Vertex location = new Vertex(String.valueOf(t.getTag_id()), t.getDescription(), t.getFloor());
 				this.nodes.add(location);
 			}
@@ -78,31 +80,15 @@ public class PathController extends Controller {
 
 		try {
 
-			this.edgesStart = this.getDatabaseHelper(this.getContext()).getEdgesBySource(startID.toString());
-			StringBuilder sb = new StringBuilder();
-			for (Edges s : edgesStart) {
-				sb.append(s.getKante_id());
-				addLane(sb.toString(), s.getSource(), s.getDestination(), s.getCost());
-				
+			this.daoEdge = this.getDatabaseHelper(this.getContext()).getEdgesDataDao();
+			for (Edges s : daoEdge) {
 
+				addLane(String.valueOf(s.getKante_id()), s.getSource(), s.getDestination(), s.getCost());
 			}
-
-			this.edgesRemaining = this.getDatabaseHelper(this.getContext()).getRemainingEdges(startID.toString(), endID.toString());
-
-			for (Edges v : edgesRemaining) {
-				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(), v.getCost());				
-
-			}
-
-			this.edgesEnd = this.getDatabaseHelper(this.getContext()).getEdgesByDestination(endID.toString());
-			for (Edges w : edgesEnd) {
-				addLane(String.valueOf(w.getKante_id()), w.getSource(), w.getDestination(), w.getCost());
-			}
-
 		} catch (SQLException e) {
 			this.logMessage("ERROR", e.toString());
 		}
-		
+
 		Graph graph = new Graph(nodes, edges);
 		Dijkstra dijkstra = new Dijkstra(graph);
 
