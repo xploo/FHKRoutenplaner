@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import de.damianbuecker.fhkroutenplaner.controller.DateTimeController;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
 /**
@@ -63,6 +64,7 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 	@InjectView(R.id.startNavigationButton)
 	private Button startNavigationButton;
 
+	private DateTimeController mDateTimeController;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -71,15 +73,20 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		if(this.mDateTimeController==null){
+			mDateTimeController = new DateTimeController(this);
+		}
+		
 
+		
 		if (this.getIntent().getStringExtra("selectedItem") != null) {
 			this.mHistoryItem = new HistoryItem();
 			this.mHistoryItem = this.mHistoryItem.fromJson(this.getIntent().getStringExtra("selectedItem"));
 		}
-
 		this.editName.setText(this.mHistoryItem.getName());
-		this.editDate.setText(String.valueOf(this.mHistoryItem.getDate()));
-		this.editTime.setText(String.valueOf(this.mHistoryItem.getTimestamp()));
+		this.editDate.setText(String.valueOf(this.mDateTimeController.toDate(this.mHistoryItem.getDate())));
+		this.editTime.setText(String.valueOf(this.mDateTimeController.toDate(this.mHistoryItem.getTimestamp())));
 		this.editStart.setText(this.mHistoryItem.getStart());
 		this.editDestination.setText(this.mHistoryItem.getDestination());
 		this.startNavigationButton.setOnClickListener(new ButtonListener());

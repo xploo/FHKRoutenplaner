@@ -181,7 +181,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 						// <-----
 						addRoomtypeSpinner();
 						// ----->
-						
 
 					}
 				} catch (SQLException e) {
@@ -207,42 +206,47 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 			this.mNfcController.handleIntent(getIntent(), this);
 
-			
 		}
 	}
+
 	@SuppressWarnings("rawtypes")
-	public void setRoomtypeSpinner(){
-		
-		if(!(this.getIntent().getExtras() == null)){
+	public void setRoomtypeSpinner() {
+
+		if (!(this.getIntent().getExtras() == null)) {
 			this.endID = this.getIntent().getExtras().getString("endID");
 			String[] splitResult = endID.split(" ");
-			
+
 			try {
 				List<Tag> listTag = this.databaseHelper.getTagById(splitResult[0]);
-				
+
 				Integer roomID = listTag.get(0).getRoom_ID();
 				List<Room> listRoom = this.databaseHelper.getRoomById(String.valueOf(roomID));
-				
+
 				Integer roomTypeId = listRoom.get(0).getRoomtype_ID();
 				List<Roomtype> listRoomType = this.databaseHelper.getRoomtypeById(String.valueOf(roomTypeId));
+
+				String SpinnerInput = String.valueOf(roomTypeId) + " " + listRoomType.get(0).getDescription();
 				
-				String SpinnerInput = String.valueOf(roomTypeId) +" "+listRoomType.get(0).getDescription();
-				this.logMessage("INFO", "SpinnerInput: " + SpinnerInput);
-				
-				if(this.mSpinnerRoomtype.getAdapter()== null){
-					
-					this.logMessage("INFO","ADAPTER IS NULL");
+				if (this.mSpinnerRoomtype.getAdapter() == null) {
+
+					this.logMessage("INFO", "ADAPTER IS NULL");
 				}
-				
+
 				ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoomtype.getAdapter();
-				int SpinnerPosition = myAdap.getPosition(SpinnerInput);
-				
-				mSpinnerRoomtype.setSelection(SpinnerPosition);
-						} catch (SQLException e) {
+
+				int index = 0;
+				for (int i = 0; i < myAdap.getCount(); i++) {					
+					if (myAdap.getItem(i).equals(SpinnerInput)) {
+						index = i;
+					}
+				}
+
+				mSpinnerRoomtype.setSelection(index);
+			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
 
@@ -251,15 +255,37 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 		if (!(this.getIntent().getExtras() == null)) {
 			this.endID = this.getIntent().getExtras().getString("endID");
-			if (this.mSpinnerRoom.getAdapter() == null) {
-				Log.v("dnjsandjnaskdn", endID);
+			
+			try {
+				List<Tag> listTag = this.databaseHelper.getTagById(endID);
+				Integer roomID = listTag.get(0).getRoom_ID();
+				List<Room> listRoom = this.databaseHelper.getRoomById(String.valueOf(roomID));
+				
+				
+				
+				if (this.mSpinnerRoom.getAdapter() == null) {
+					Log.v("dnjsandjnaskdn", endID);
+				}
+
+				ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoom.getAdapter();
+				
+				int index = 0;
+				for (int i = 0; i < myAdap.getCount(); i++) {					
+					if (myAdap.getItem(i).equals(endID+" "+listRoom.get(0).getDescription())) {
+						index = i;
+					}
+				}
+				
+
+				
+				this.logMessage("INFO", endID+" "+listRoom.get(0).getDescription());				
+				// set the default according to value
+				mSpinnerRoom.setSelection(index);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-
-			ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoom.getAdapter();
-
-			int spinnerPosition = myAdap.getPosition(endID);
-			// set the default according to value
-			mSpinnerRoom.setSelection(spinnerPosition);
+			
 		}
 	}
 
@@ -346,20 +372,17 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 		Spinner spinner = (Spinner) parent;
 		if (spinner.getId() == R.id.nfc_spinner_roomtype) {
-			
+
 			this.mSpinnerRoomtype.setSelection(position);
 			setRoomtypeSpinner();
-			
-			if (String.valueOf(this.mSpinnerRoomtype.getSelectedItem()).equals("Bitte den Raumtyp des Zielortes wählen!")) {
-				
-			} else {				
-				
-				String selState = (String) this.mSpinnerRoomtype.getSelectedItem();
-				
 
+			if (String.valueOf(this.mSpinnerRoomtype.getSelectedItem()).equals("Bitte den Raumtyp des Zielortes wählen!")) {
+
+			} else {
+
+				String selState = (String) this.mSpinnerRoomtype.getSelectedItem();
 				String[] splitResult = selState.split(" ");
 				addRoomSpinner(Integer.parseInt(splitResult[0]));
-				
 				setSpinner();
 				this.mTvDescriptionFinish.setVisibility(View.VISIBLE);
 				this.mSpinnerRoom.setVisibility(View.VISIBLE);
@@ -368,6 +391,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			if (this.mSpinnerRoom.getSelectedItem().equals("Bitte Ziel Raum wählen!")) {
 
 			} else {
+				
 				this.mSpinnerRoom.setSelection(position);
 				this.mTvDescriptionGoButton.setVisibility(View.VISIBLE);
 				this.btnGo.setVisibility(View.VISIBLE);
@@ -499,7 +523,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		long time = now.getMilliseconds(TimeZone.getDefault());
 
 		StringBuffer name = new StringBuffer("");
-		name.append(HISTORY_ITEM_NAME_PREFIX).append(today.toString());
+		name.append(HISTORY_ITEM_NAME_PREFIX).append("nach"+ this.mSpinnerRoom.getSelectedItem());
 
 		StringBuffer start = new StringBuffer("");
 		start.append(this.mTextViewDescription.getText());
