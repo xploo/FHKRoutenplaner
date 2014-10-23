@@ -102,7 +102,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Import listItems here
+		
 		this.mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, listItems));
 		this.mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		this.btnToggleDrawer.setOnClickListener(new ButtonDrawerToggleListener());
@@ -145,22 +145,18 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				this.startID = Integer.parseInt(this.getIntent().getExtras().getString(INTENT_EXTRA_START_ID));
 
 				this.startFloor = Integer.parseInt(this.getIntent().getExtras().getString(INTENT_EXTRA_START_FLOOR));
-
-				this.logMessage("INFO", "Was steht im ENDID " + endID.toString());
-
 			}
 		}
 
 		this.endFloor = mImageController.getEndFloor(endID);
 		mImageController.testAlgorithm(this.startFloor, this.startID, this.endID, this.endFloor);
 
-		// WebView Settings hier
+		
 		this.mWebView.setInitialScale(85);	
 		this.mWebView.getSettings().setBuiltInZoomControls(true);
 		this.mWebView.getSettings().setDisplayZoomControls(false);
 		this.mWebView.getSettings().setLoadWithOverviewMode(false);
 		this.mWebView.getSettings().setUseWideViewPort(true);
-//		this.mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
 		this.mWebView.setScrollbarFadingEnabled(false);
 
 		if (startFloor == endFloor) {
@@ -182,8 +178,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		mWebView.setPictureListener(new PictureListener() {
 
 			@Override			
-			public void onNewPicture(WebView view, Picture picture) {
-				// TODO Auto-generated method stub
+			public void onNewPicture(WebView view, Picture picture) {				
 				mWebView.scrollBy(0, 200);
 				
 

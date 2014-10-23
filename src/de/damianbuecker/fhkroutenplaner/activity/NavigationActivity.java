@@ -152,8 +152,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			alertDialogBuilder.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
 
 				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
+				public void onClick(DialogInterface dialog, int which) {					
 					finish();
 
 				}
@@ -177,10 +176,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 				try {
 					if (s.length() > 0) {
 						NavigationActivity.this.start(s.toString());
-						alertDialog.dismiss();
-						// <-----
-						addRoomtypeSpinner();
-						// ----->
+						alertDialog.dismiss();						
+						addRoomtypeSpinner();					
 
 					}
 				} catch (SQLException e) {
@@ -227,9 +224,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 				String SpinnerInput = String.valueOf(roomTypeId) + " " + listRoomType.get(0).getDescription();
 				
-				if (this.mSpinnerRoomtype.getAdapter() == null) {
-
-					this.logMessage("INFO", "ADAPTER IS NULL");
+				if (this.mSpinnerRoomtype.getAdapter() == null) {				
 				}
 
 				ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoomtype.getAdapter();
@@ -242,8 +237,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 				}
 
 				mSpinnerRoomtype.setSelection(index);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+			} catch (SQLException e) {				
 				e.printStackTrace();
 			}
 
@@ -259,12 +253,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			try {
 				List<Tag> listTag = this.databaseHelper.getTagById(endID);
 				Integer roomID = listTag.get(0).getRoom_ID();
-				List<Room> listRoom = this.databaseHelper.getRoomById(String.valueOf(roomID));
+				List<Room> listRoom = this.databaseHelper.getRoomById(String.valueOf(roomID));		
 				
-				
-				
-				if (this.mSpinnerRoom.getAdapter() == null) {
-					Log.v("dnjsandjnaskdn", endID);
+				if (this.mSpinnerRoom.getAdapter() == null) {					
 				}
 
 				ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoom.getAdapter();
@@ -274,12 +265,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 					if (myAdap.getItem(i).equals(endID+" "+listRoom.get(0).getDescription())) {
 						index = i;
 					}
-				}
+				}						
 				
-
-				
-				this.logMessage("INFO", endID+" "+listRoom.get(0).getDescription());				
-				// set the default according to value
 				mSpinnerRoom.setSelection(index);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -506,15 +493,13 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
 				intent.putExtra("End_ID", splitResult[0]);
 			}
-		}
-
-		this.logMessage("INFO", "ROOMSPINNER AUSGABE - " + String.valueOf(this.mSpinnerRoom.getSelectedItem()));
-		this.logMessage("INFO", "ROOMSPINNER NACH SPLIT - " + splitResult[0]);
+		}		
 
 		intent.putExtra(INTENT_EXTRA_START_ID, String.valueOf(this.mTextView.getText().toString()));
 		intent.putExtra(INTENT_EXTRA_START_FLOOR, String.valueOf(this.mTextViewFloor.getText().toString()));
 
-		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_LAST_DESTINATION, splitResult[0]);
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_LAST_DESTINATION, splitResult[0]);	
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, false);
 
 		DateTime today = DateTime.today(TimeZone.getDefault());
 		long date = today.getMilliseconds(TimeZone.getDefault());
@@ -537,12 +522,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		item.setTimestamp(time);
 		item.setStart(start.toString());
 		item.setDestination(destination.toString());
-		item.writeToDatabase(this);
-
-		this.logMessage("INFO", "item: " + item.getName() + " " + item.getDate() + " " + item.getTimestamp() + " " + item.getStart() + " "
-				+ item.getDestination());
-
-		// TODO: DatumsController
+		item.writeToDatabase(this);	
+		
 		startActivity(intent);
 		Toast.makeText(this, "Route wird berechnet.", Toast.LENGTH_LONG).show();
 

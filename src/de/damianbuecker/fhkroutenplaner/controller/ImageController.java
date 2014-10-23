@@ -19,17 +19,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
-
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
-
 import de.damianbuecker.fhkroutenplaner.activity.R;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 import de.damianbuecker.fhkroutenplaner.model.Vertex;
@@ -95,10 +91,7 @@ public class ImageController extends Controller {
 		this.end_ID = end_ID;
 	}
 
-	private Integer end_ID;
-	
-	private Paint mPaint;                 // paint object
-	 private Path mPathGrid;                   // path object
+	private Integer end_ID;              
 
 	/**
 	 * Instantiates a new image controller.
@@ -116,8 +109,7 @@ public class ImageController extends Controller {
 	 * @param endID
 	 *            the end id
 	 * @return the end floor
-	 */
-	// ----------> In databaseHelper?
+	 */	
 	public Integer getEndFloor(Integer endID) {
 
 		try {
@@ -144,13 +136,10 @@ public class ImageController extends Controller {
 	 * @param endFloor
 	 *            the end floor
 	 */
-	public void testAlgorithm(Integer startFloor, Integer startID, Integer endID, Integer endFloor) {
-
-		this.logMessage("INFO", "OnDraw Check");
+	public void testAlgorithm(Integer startFloor, Integer startID, Integer endID, Integer endFloor) {		
 
 		setEnd_ID(endID);
-		setStart_ID(startID);
-		
+		setStart_ID(startID);	
 		
 		this.myPaint = new Paint();
 		this.myPaint.setAntiAlias(true);
@@ -162,11 +151,9 @@ public class ImageController extends Controller {
 		LinkedList<Vertex> list = this.mPathController.testExcute(startID, endID);
 		this.splitVertexList(list, startFloor, endFloor);
 
-		if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 2) {
-			Log.v("Wieviele Listen sinds?IF1", String.valueOf(this.vertexHashmap.size()));
+		if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 2) {			
 			this.saveFinalImage(this.vertexHashmap.get(0), startID);
-		} else if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 3) {
-			Log.v("Wieviele Listen sindsIF2?", String.valueOf(this.vertexHashmap.size()));
+		} else if (this.vertexHashmap.size() > 0 && this.vertexHashmap.size() < 3) {			
 			this.saveFinalImage(this.vertexHashmap.get(0), startID); // anfang
 			this.saveFinalImage(this.vertexHashmap.get(1), endID); // ende
 		}
@@ -191,16 +178,12 @@ public class ImageController extends Controller {
 			Options options = new Options();
 			options.inJustDecodeBounds = true;
 			Bitmap b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId, options);
-			this.logMessage("INFO", WIDTH_OPTIONS + options.outWidth);
-			this.logMessage("INFO", HEIGHT_OPTIONS + options.outHeight);
 			Bitmap.Config config = Config.ARGB_8888;
 			options.inScaled = false;
 			options.inJustDecodeBounds = false;
 			Bitmap bitmapOut = Bitmap.createBitmap(options.outWidth, options.outHeight, config);
 			b = BitmapFactory.decodeResource(this.getContext().getResources(), ressourceId, options);
 			bitmapOut.setDensity(b.getDensity());
-			this.logMessage("INFO", WIDTH_OPTIONS + b.getWidth());
-			this.logMessage("INFO", HEIGHT_OPTIONS + b.getHeight());
 			for (int x = 0; x < options.outWidth; x++) {
 				for (int y = 0; y < options.outHeight; y++) {
 					int pixel = b.getPixel(x, y);
@@ -227,30 +210,24 @@ public class ImageController extends Controller {
 				
 				
 				for (Vertex vertex : list) {
-
+					
 					queryBuilder.where().eq(Tag.DESCRIPTION, vertex);
 					PreparedQuery<Tag> preparedQuery = queryBuilder.prepare();
 					List<Tag> tagList = this.tagDao.query(preparedQuery);
 					
-					
-
-					// Start und Ziel Markierungen setzen
 					if (tagList.get(0).getTag_id() == ID && ID == startID) {
-						// StartMarkierung einfügen
+						
 						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.ziel, options);
 						canvas.drawBitmap(mBitmap, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - 32, null);
 
 					}
-					if (tagList.get(0).getTag_id() == ID && ID == endID) {
-						// Zielmarkierung setzten
+					if (tagList.get(0).getTag_id() == ID && ID == endID) {			
 
 						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.start, options);
 						canvas.drawBitmap(mBitmap, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - 32, null);
-					}
-
-					// Auf null prüfen
+					}					
 
 					canvas.drawCircle(Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 							Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), 2.0f, this.myPaint);
@@ -258,27 +235,7 @@ public class ImageController extends Controller {
 					if (bufferX != 0 && bufferY != 0) {
 
 						canvas.drawLine(bufferX, bufferY, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
-								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), this.myPaint);
-						
-						//Hier vektorRechnung für Dreiecke		
-						
-						/*
-						Float angle;
-						
-						angle = determineDrawingAngle(Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
-								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())),bufferX,bufferY);		
-						
-						
-						
-						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.triangle_32, options);
-						
-						 Bitmap postRotateBitmap = RotateBitmap(mBitmap,angle);
-						 
-						 canvas.drawBitmap(postRotateBitmap, bufferX-postRotateBitmap.getWidth()/2,
-									bufferY- postRotateBitmap.getHeight()/2, null);
-						
-						
-						*/
+								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())), this.myPaint);	
 						
 							Paint paint = new Paint();
 							paint.setStyle(Paint.Style.FILL);
@@ -286,9 +243,7 @@ public class ImageController extends Controller {
 							
 							
 						    float deltaX = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - bufferX;
-						    float deltaY = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - bufferY;
-						    this.logMessage("DeltaX", String.valueOf(deltaX));
-						    this.logMessage("DeltaY", String.valueOf(deltaY));
+						    float deltaY = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - bufferY;						  
 						    float frac = (float) 0.1;
 						    if(Math.abs(deltaX) >= 100)
 						    {
@@ -309,16 +264,12 @@ public class ImageController extends Controller {
 						    float point_x_1 = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - (float) ((1 - frac) * deltaX + frac * deltaY);
 						    float point_y_1 = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - (float) ((1 - frac) * deltaY - frac * deltaX);
 						    
-						   
-
 						    float point_x_2 = bufferX;
 						    float point_y_2 = bufferY;
 						    
 						    float point_x_3 = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - (float) ((1 - frac) * deltaX - frac * deltaY);
 						    float point_y_3 = Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - (float) ((1 - frac) * deltaY + frac * deltaX);						    
-						   
-						  
-						    						  
+						   						    						  
 						    Path path = new Path();
 						    path.setFillType(Path.FillType.EVEN_ODD);
 
@@ -330,20 +281,10 @@ public class ImageController extends Controller {
 						    path.close();
 
 						    canvas.drawPath(path, paint);
-							
-						
-						
-
-						// canvas.drawVertices(Canvas.VertexMode, vertexCount,
-						// verts, vertOffset, texs, texOffset, colors,
-						// colorOffset, indices, indexOffset, indexCount, paint)
-
 					}
 
 					bufferX = (float) tagList.get(0).getX_pos();
-					bufferY = (float) tagList.get(0).getY_pos();					
-
-					this.logMessage("INFO", "ViewImageVertex: " + vertex.toString());
+					bufferY = (float) tagList.get(0).getY_pos();
 				}
 
 			} catch (SQLException e) {
@@ -362,9 +303,7 @@ public class ImageController extends Controller {
 				fos.close();
 				bitmapOut.recycle();
 				bitmapOut = null;
-				this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outputFile)));
-
-				this.logMessage("INFO", "WRITE IMAGE CHECK");
+				this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outputFile)));				
 			} catch (FileNotFoundException e) {
 				this.logMessage("ERROR", e.getMessage());
 			} catch (IOException e) {
@@ -391,11 +330,9 @@ public class ImageController extends Controller {
 		for (Vertex v : list) {
 			if (startFloor != endFloor) {
 				if ((startFloor == v.getFloor())) {
-					listeVertexStartEtage.add(v);
-					Log.v("Was steht in StartEtageListe", v.getName());
+					listeVertexStartEtage.add(v);					
 				} else if (endFloor == v.getFloor()) {
-					listeVertexZielEtage.add(v);
-					Log.v("Was steht in ZielEtageListe", v.getName());
+					listeVertexZielEtage.add(v);					
 				}
 			} else {
 				listeVertexStartEtage.add(v);
@@ -435,47 +372,5 @@ public class ImageController extends Controller {
 		} else {
 			return null;
 		}
-	}
-	
-	private Float determineDrawingAngle(Float x1, Float y1, Float x2, Float y2) {
-		Integer quadrant = 0;
-		double phi = 0.0f;
-		double PI = 3.1415;
-		
-		// Bestimmen Quadrant
-		if(x2 > x1 && y2 <= y1) {
-			quadrant = 1;
-		} else if(x2 > x1 && y2 >= y2) {
-			quadrant = 2;
-		} else if(x2 <= x1 && y2 > y1) {
-			quadrant = 3;
-		} else if(x2 <= x1 && y2 < y1) {
-			quadrant = 4;
-		}
-		this.logMessage("Quadrant", String.valueOf(quadrant));
-		if(quadrant == 1 || quadrant == 4){
-			
-			phi = Math.atan2(y1, x1);
-			
-		}else if(quadrant == 2){
-			
-			phi = (Math.atan2(y1, x1))+PI;
-			
-		}else if(quadrant == 3){
-			
-			phi = (Math.atan2(y1,x1))-PI;
-			
-		}
-		
-		phi = (360/(2*PI))*(phi);		
-		this.logMessage("test", String.valueOf((float)phi));
-		return (float)phi;
-	}
-	
-	public static Bitmap RotateBitmap(Bitmap source, float angle)
-	{
-	      Matrix matrix = new Matrix();
-	      matrix.postRotate(angle);
-	      return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
 	}
 }

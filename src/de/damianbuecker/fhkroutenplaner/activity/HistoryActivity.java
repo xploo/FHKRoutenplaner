@@ -48,8 +48,7 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (this.getIntent().getStringArrayListExtra(INTENT_EXTRA_HISTORY) != null) {
-			if (this.getIntent().getStringArrayListExtra(INTENT_EXTRA_HISTORY).size() == 0) {
-				// Abfangen
+			if (this.getIntent().getStringArrayListExtra(INTENT_EXTRA_HISTORY).size() == 0) {				
 			} else {
 				ArrayList<String> jsonArray = this.getIntent().getStringArrayListExtra(INTENT_EXTRA_HISTORY);
 				ArrayList<HistoryItem> historyItemsList = new ArrayList<HistoryItem>();

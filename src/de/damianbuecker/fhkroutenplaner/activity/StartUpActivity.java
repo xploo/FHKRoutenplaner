@@ -79,22 +79,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
 		this.btnStartSearch.setOnClickListener(new ButtonListener());
-		this.btnOpenHistory.setOnClickListener(new ButtonListener());
-
-		/*
-		 * // Testdaten HistoryItem h1 = new HistoryItem(); h1.setName("H1");
-		 * h1.setDate(System.currentTimeMillis()); h1.setDestination("H1");
-		 * h1.setStart("H1"); h1.setTimestamp(System.currentTimeMillis());
-		 * HistoryItem h2 = new HistoryItem(); h2.setName("H2");
-		 * h2.setDate(System.currentTimeMillis()); h2.setDestination("H2");
-		 * h2.setStart("H2"); h2.setTimestamp(System.currentTimeMillis());
-		 * HistoryItem h3 = new HistoryItem(); h3.setName("H3");
-		 * h3.setDate(System.currentTimeMillis()); h3.setDestination("H3");
-		 * h3.setStart("H3"); h3.setTimestamp(System.currentTimeMillis());
-		 * 
-		 * h1.writeToDatabase(this); h2.writeToDatabase(this);
-		 * h3.writeToDatabase(this); // Testdaten Ende
-		 */
+		this.btnOpenHistory.setOnClickListener(new ButtonListener());		
 
 		/**
 		 * Abfrage ob Updateverfügbar und WIfi-Connected
@@ -103,8 +88,6 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 
 			mStartupController = new StartupContoller(this);
 		}
-		
-
 		
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
 		if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
@@ -115,9 +98,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 					SHARED_PREFERENCE_DATABASE_VERSION, 1);
 		}
 		
-		new CheckForUpdate(this).execute((String)null);
-		
-		
+		new CheckForUpdate(this).execute((String)null);		
 	}
 	
 	
@@ -129,8 +110,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 			this.context = context;
 		}
 		@Override
-		protected String doInBackground(String... args) {
-			// TODO Auto-generated method stub
+		protected String doInBackground(String... args) {			
 			mStartupController.getDatabaseVersion();
 			return null;
 		}
@@ -138,7 +118,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		@Override
 		protected void onPostExecute(String values){
 			
-			if(/*mStartupController.isWifiConnected() == true &&*/ mStartupController.checkForUpdate() == 2 ){
+			if(mStartupController.isWifiConnected() == true && mStartupController.checkForUpdate() == 2 ){
 
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 				alertDialogBuilder.setTitle("Datenbankupdate verfügbar!");
@@ -182,7 +162,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		switch (id) {
 		case progress_bar_type:
 			prgDialog = new ProgressDialog(this);
-			prgDialog.setMessage("Downloading Databasefiles. Please wait...");
+			prgDialog.setMessage("Lade Datenbankeinträge herunter. Bitte warten...");
 			prgDialog.setIndeterminate(true);
 			prgDialog.setCancelable(false);
 			prgDialog.show();
@@ -204,8 +184,7 @@ class getExternalDatabase extends AsyncTask<String,String,String>{
 		@SuppressWarnings("deprecation")
 		@Override		
         protected void onPreExecute() {
-            super.onPreExecute();
-            // Shows Progress Bar Dialog and then call doInBackground method
+            super.onPreExecute();            
             showDialog(progress_bar_type);
         }
 		
@@ -225,6 +204,7 @@ class getExternalDatabase extends AsyncTask<String,String,String>{
  		 */
  		protected void onProgressUpdate(String... progress) {
 			 
+ 			// Evtl überflüssig
 			 prgDialog.setProgress(Integer.parseInt(progress[0]));
 			 
 		 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
@@ -114,10 +114,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
 		try {
-			/**
-			 * Dropping table in order to clean up db on restart. Normally you
-			 * wouldn't drop the table every time you run the onCreate.
-			 */
 			TableUtils.dropTable(connectionSource, Tag.class, true);
 			TableUtils.dropTable(connectionSource, Room.class, true);
 			TableUtils.dropTable(connectionSource, Docent.class, true);
@@ -125,9 +121,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Edges.class, true);
 			TableUtils.dropTable(connectionSource, HistoryItem.class, true);
 
-			/**
-			 * Creates the table.
-			 */
 			TableUtils.createTable(connectionSource, Tag.class);
 			TableUtils.createTable(connectionSource, Room.class);
 			TableUtils.createTable(connectionSource, Docent.class);
@@ -151,9 +144,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 		try {
-			/**
-			 * In case of an update.
-			 */
 			TableUtils.dropTable(connectionSource, Tag.class, true);
 			TableUtils.dropTable(connectionSource, Room.class, true);
 			TableUtils.dropTable(connectionSource, Docent.class, true);
@@ -181,7 +171,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public void deleteRoom() {
 		try {
-
 			Dao<Room, Integer> roomDao = getRoomDataDao();
 			List<Room> listRoom = roomDao.queryForAll();
 			roomDao.delete(listRoom);
@@ -194,7 +183,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public void deleteRoomtype() {
 		try {
-
 			Dao<Roomtype, Integer> roomtypeDao = getRoomtypeDataDao();
 			List<Roomtype> roomtypeList = roomtypeDao.queryForAll();
 			roomtypeDao.delete(roomtypeList);
@@ -207,7 +195,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public void deleteDocent() {
 		try {
-
 			Dao<Docent, Integer> docentDao = getDocentDataDao();
 			List<Docent> listDocent = docentDao.queryForAll();
 			docentDao.delete(listDocent);
@@ -219,7 +206,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	public void deleteEdges() {
 		try {
-
 			Dao<Edges, Integer> edgesDao = getEdgesDataDao();
 			List<Edges> listEdges = edgesDao.queryForAll();
 			edgesDao.delete(listEdges);
@@ -367,16 +353,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 *             the SQL exception
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List getRoomSpinner(Integer roomid, String startID) throws SQLException {
-		Log.v("LOL", "BIN IN DATABASEHANDLER");
+	public List getRoomSpinner(Integer roomid, String startID) throws SQLException {		
 		if (this.roomSpinner == null) {
 			this.roomSpinner = this.getRoomDataDao();
 		}
-		// <------- QueryBuilder + RoomID von StartTag
-		// Dazu da um ausgelesenden Standort aus den Spinner zu entfernen
+
 		List<Tag> startTagList = this.getTagById(startID);
 		Integer bufferRoomIdFromStartTag = startTagList.get(0).getRoom_ID();
-		// ------------------->
+
 		this.spinnerRoomList = null;
 		this.spinnerRoomList = new ArrayList<Integer>();
 		this.queryBuilder = roomSpinner.queryBuilder();
@@ -386,7 +370,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		for (Room v : RoomList) {
 
 			spinnerRoomList.add(String.valueOf(v.getRoom_id()) + " " + String.valueOf(v.getDescription()));
-			Log.v("LOL", String.valueOf(v.getRoom_id()));
 		}
 		RoomList = null;
 		roomSpinner = null;

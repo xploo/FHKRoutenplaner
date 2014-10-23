@@ -91,8 +91,7 @@ public class NfcController extends Controller {
 				this.logMessage("ERROR", "Wrong mime type: " + type);
 			}
 		} else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
-
-			// In case we would still use the Tech Discovered Intent
+			
 			Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 			String[] techList = tag.getTechList();
 			String searchedTech = Ndef.class.getName();
@@ -126,9 +125,7 @@ public class NfcController extends Controller {
 		final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
 
 		IntentFilter[] filters = new IntentFilter[1];
-		String[][] techList = new String[][] {};
-
-		// Notice that this is the same filter as in our manifest.
+		String[][] techList = new String[][] {};		
 		filters[0] = new IntentFilter();
 		filters[0].addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
 		filters[0].addCategory(Intent.CATEGORY_DEFAULT);
@@ -209,22 +206,9 @@ public class NfcController extends Controller {
 		public NdefReaderTask(Context context) {
 			this.mContext = context;
 			this.mSharedPreferencesController = new SharedPreferencesController(this.mContext);
-			this.textViewReference = null;
-
-			if (mContext == null) {
-
-				NfcController.this.logMessage("INFI", "Constructor Context - null");
-			} else
-				NfcController.this.logMessage("INFO", "Constructor Context nicht null");
+			this.textViewReference = null;		
 
 			running = this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_ROUTE_RUNNING);
-
-			if (running == true) {
-				NfcController.this.logMessage("INFO", "Constructor - yes");
-			} else {
-				NfcController.this.logMessage("INFO", "Constructor - no");
-			}
-
 		}
 
 		/*
@@ -238,8 +222,7 @@ public class NfcController extends Controller {
 			Tag tag = params[0];
 
 			Ndef ndef = Ndef.get(tag);
-			if (ndef == null) {
-				// NDEF is not supported by this Tag.
+			if (ndef == null) {				
 				return null;
 			}
 
@@ -313,8 +296,7 @@ public class NfcController extends Controller {
 				if (tv != null) {
 					tv.setText(result);
 				}
-			}
-			NfcController.this.logMessage("INFO", result);
+			}			
 		}
 	}
 }

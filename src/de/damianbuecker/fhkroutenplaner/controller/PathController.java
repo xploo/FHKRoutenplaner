@@ -62,18 +62,13 @@ public class PathController extends Controller {
 	public LinkedList<Vertex> testExcute(Integer startID, Integer endID) {
 		this.nodes = new ArrayList<Vertex>();
 		this.edges = new ArrayList<Edge>();
-
-		// Datenbank auslesen for schleife solange wie Punkte sind
+	
 		try {
 			Dao<Tag, Integer> TagListlooper = this.getDatabaseHelper(this.getContext()).getTagDataDao();
 
-			for (Tag t : TagListlooper) {
-
-				// in die location die Punkte schreiben
+			for (Tag t : TagListlooper) {			
 				Vertex location = new Vertex(String.valueOf(t.getTag_id()), t.getDescription(), t.getFloor());
-
 				this.nodes.add(location);
-
 			}
 
 			TAGSIZE = this.nodes.size() - 1;
@@ -88,50 +83,41 @@ public class PathController extends Controller {
 			for (Edges s : edgesStart) {
 				sb.append(s.getKante_id());
 				addLane(sb.toString(), s.getSource(), s.getDestination(), s.getCost());
-				this.logMessage("INFO", "Edge Start: " + sb.toString() + " " + s.getSource() + " " + s.getDestination() + " " + s.getCost());
+				
 
 			}
 
 			this.edgesRemaining = this.getDatabaseHelper(this.getContext()).getRemainingEdges(startID.toString(), endID.toString());
 
 			for (Edges v : edgesRemaining) {
-				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(), v.getCost());
-				this.logMessage("INFO", "Edge Remaining: " + v.getKante_id() + " " + v.getSource() + " " + v.getDestination() + " " + v.getCost());
+				addLane(String.valueOf(v.getKante_id()), v.getSource(), v.getDestination(), v.getCost());				
 
 			}
 
 			this.edgesEnd = this.getDatabaseHelper(this.getContext()).getEdgesByDestination(endID.toString());
 			for (Edges w : edgesEnd) {
 				addLane(String.valueOf(w.getKante_id()), w.getSource(), w.getDestination(), w.getCost());
-				this.logMessage("INFO", "Edge End: " + w.getKante_id() + " " + w.getSource() + " " + w.getDestination() + " " + w.getCost());
-
 			}
 
 		} catch (SQLException e) {
 			this.logMessage("ERROR", e.toString());
 		}
-
-		// Lets check from location Loc_1 to Loc_10
+		
 		Graph graph = new Graph(nodes, edges);
 		Dijkstra dijkstra = new Dijkstra(graph);
 
-		int nase = 0;
-		int arsch = 0;
+		int checkStart = 0;
+		int checkEnd = 0;
 		for (Vertex v : nodes) {
 			if (Integer.parseInt(v.getId()) == startID) {
-				nase = nodes.indexOf(v);
+				checkStart = nodes.indexOf(v);
 			} else if (Integer.parseInt(v.getId()) == endID) {
-				arsch = nodes.indexOf(v);
+				checkEnd = nodes.indexOf(v);
 			}
 		}
 
-		dijkstra.execute(nodes.get(arsch));
-		LinkedList<Vertex> path = dijkstra.getPath(nodes.get(nase));
-
-		for (Vertex vertex : path) {
-			this.logMessage("INFO", "ENDPATH : " + vertex.toString());
-		}
-
+		dijkstra.execute(nodes.get(checkEnd));
+		LinkedList<Vertex> path = dijkstra.getPath(nodes.get(checkStart));
 		return path;
 	}
 

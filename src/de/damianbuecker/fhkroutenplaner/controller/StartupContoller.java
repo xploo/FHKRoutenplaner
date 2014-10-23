@@ -135,7 +135,7 @@ public class StartupContoller extends Controller {
 	private static final String EDGES_TXT = "/sdcard/FMS/edges.txt";
 
 	private Integer externalDatabaseVersion;
-	
+
 	public Integer getExternalDatabaseVersion() {
 		return externalDatabaseVersion;
 	}
@@ -162,8 +162,7 @@ public class StartupContoller extends Controller {
 	@SuppressWarnings("static-access")
 	public boolean isWifiConnected() {
 
-		this.connManager = (ConnectivityManager) this.getContext()
-				.getSystemService(this.getContext().CONNECTIVITY_SERVICE);
+		this.connManager = (ConnectivityManager) this.getContext().getSystemService(this.getContext().CONNECTIVITY_SERVICE);
 		this.mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
 		return (mWifi.isConnected()) ? true : false;
@@ -184,46 +183,32 @@ public class StartupContoller extends Controller {
 
 		for (String tblnames : tables) {
 
-			// Übergabeparameter festlegen für http-Request
 			params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("tablename", tblnames));
 			try {
-				// JSON objekte per http-Request holen
-						JSONObject json = jParser.makeHttpRequest(
-								url_getDatabase, "GET", params);
-
-				// Ausgabe der geholten Daten in der Log cat
-				Log.d("Kompletter Inhalt extern: ", json.toString());
+				JSONObject json = jParser.makeHttpRequest(url_getDatabase, "GET", params);
 
 				try {
-					// Überprüfen ob HTTP-Request erfolgreich
 					int success = json.getInt(TAG_SUCCESS);
 
 					if (success == 1) {
-						// Abfrage erfolgreich.
-						// Abgefragte Daten in einem JSON-Array
-						// speichern
-
 						externalData = json.getJSONArray(tblnames);
 
-						// Per Schleife durch alle Klausuren
 						for (int i = 0; i < externalData.length(); i++) {
-									JSONObject c = externalData
-											.getJSONObject(i);
+							JSONObject c = externalData.getJSONObject(i);
 
 							if (tblnames.equals("room")) {
 								try {
 									if (roomDao == null) {
-										roomDao = databaseHelper
-												.getRoomDataDao();
+										roomDao = databaseHelper.getRoomDataDao();
 									}
 
 									Room room = new Room();
-											room.setRoom_id(Integer.parseInt(c.getString(TAG_ROOMID)));
-											room.setFloor(Integer.parseInt(c.getString(TAG_FLOOR)));
-											room.setRoomtype_ID(Integer.parseInt(c.getString(TAG_ROOMTYPEID)));
-											room.setDocent_ID(Integer.parseInt(c.getString(TAG_DOCENTID)));
-											room.setDescription(c.getString(TAG_DESCRIPTION));
+									room.setRoom_id(Integer.parseInt(c.getString(TAG_ROOMID)));
+									room.setFloor(Integer.parseInt(c.getString(TAG_FLOOR)));
+									room.setRoomtype_ID(Integer.parseInt(c.getString(TAG_ROOMTYPEID)));
+									room.setDocent_ID(Integer.parseInt(c.getString(TAG_DOCENTID)));
+									room.setDescription(c.getString(TAG_DESCRIPTION));
 
 									roomDao.create(room);
 
@@ -240,12 +225,12 @@ public class StartupContoller extends Controller {
 
 									Tag tag = new Tag();
 
-											tag.setTag_id(Integer.parseInt(c.getString(TAG_TAGID)));
-											tag.setRoom_ID(Integer.parseInt(c.getString(TAG_ROOMID)));
-											tag.setX_pos(Double.parseDouble(c.getString(TAG_XOS)));
-											tag.setY_pos(Double.parseDouble(c.getString(TAG_YPOS)));
-											tag.setDescription(c.getString(TAG_DESCRIPTION));
-											tag.setFloor(Integer.parseInt(c.getString(TAG_FLOOR)));
+									tag.setTag_id(Integer.parseInt(c.getString(TAG_TAGID)));
+									tag.setRoom_ID(Integer.parseInt(c.getString(TAG_ROOMID)));
+									tag.setX_pos(Double.parseDouble(c.getString(TAG_XOS)));
+									tag.setY_pos(Double.parseDouble(c.getString(TAG_YPOS)));
+									tag.setDescription(c.getString(TAG_DESCRIPTION));
+									tag.setFloor(Integer.parseInt(c.getString(TAG_FLOOR)));
 									tagDao.create(tag);
 
 								} catch (Exception e) {
@@ -256,13 +241,13 @@ public class StartupContoller extends Controller {
 
 								try {
 									if (roomtypeDao == null) {
-												roomtypeDao  = databaseHelper.getRoomtypeDataDao();
+										roomtypeDao = databaseHelper.getRoomtypeDataDao();
 									}
 
 									Roomtype roomtype = new Roomtype();
 
-											roomtype.setRoomtype_id(Integer.parseInt(c.getString(TAG_ROOMTYPEID)));
-											roomtype.setDescription(c.getString(TAG_DESCRIPTION));
+									roomtype.setRoomtype_id(Integer.parseInt(c.getString(TAG_ROOMTYPEID)));
+									roomtype.setDescription(c.getString(TAG_DESCRIPTION));
 
 									roomtypeDao.create(roomtype);
 
@@ -274,14 +259,14 @@ public class StartupContoller extends Controller {
 								try {
 									if (docentDao == null) {
 
-												docentDao = databaseHelper.getDocentDataDao();
+										docentDao = databaseHelper.getDocentDataDao();
 									}
 
 									Docent docent = new Docent();
 
-											docent.setDozent_id(Integer.parseInt(c.getString(TAG_DOCENTID)));
+									docent.setDozent_id(Integer.parseInt(c.getString(TAG_DOCENTID)));
 									docent.setD_name(c.getString(TAG_NAME));
-											docent.setD_lastname(c.getString(TAG_LASTNAME));
+									docent.setD_lastname(c.getString(TAG_LASTNAME));
 
 									docentDao.create(docent);
 
@@ -292,17 +277,16 @@ public class StartupContoller extends Controller {
 							} else if (tblnames.equals("edges")) {
 
 								try {
-											if(edgesDao == null)
-											{
-												edgesDao = databaseHelper.getEdgesDataDao();
+									if (edgesDao == null) {
+										edgesDao = databaseHelper.getEdgesDataDao();
 									}
 
 									Edges edge = new Edges();
 
-											edge.setKante_id(Integer.parseInt(c.getString(TAG_EDGESID)));
-											edge.setSource(Integer.parseInt(c.getString(TAG_SOURCE)));
-											edge.setDestination(Integer.parseInt(c.getString(TAG_DESTINATION)));
-											edge.setCost(Integer.parseInt(c.getString(TAG_COST)));
+									edge.setKante_id(Integer.parseInt(c.getString(TAG_EDGESID)));
+									edge.setSource(Integer.parseInt(c.getString(TAG_SOURCE)));
+									edge.setDestination(Integer.parseInt(c.getString(TAG_DESTINATION)));
+									edge.setCost(Integer.parseInt(c.getString(TAG_COST)));
 
 									edgesDao.create(edge);
 
@@ -326,55 +310,29 @@ public class StartupContoller extends Controller {
 	 * @return the database version
 	 */
 	public void getDatabaseVersion() {
+		params = new ArrayList<NameValuePair>();
 
-//		new Thread(new Runnable() {
+		try {
+			JSONObject json = jParser.makeHttpRequest(url_getVersion, "GET", params);
 
-//			public void run() {
+			int success = json.getInt(TAG_SUCCESS);
 
-				params = new ArrayList<NameValuePair>();
+			if (success == 1) {
+				externalData = json.getJSONArray("version");
 
-				try {
-					// JSON objekte per http-Request holen
-					JSONObject json = jParser.makeHttpRequest(url_getVersion,
-							"GET", params);
+				for (int i = 0; i < externalData.length(); i++) {
+					JSONObject c = externalData.getJSONObject(i);
 
-					// Ausgabe der geholten Daten in der Log cat
-					Log.d("Kompletter Inhalt extern: ", json.toString());
-
-					// Überprüfen ob HTTP-Request erfolgreich
-					int success = json.getInt(TAG_SUCCESS);
-
-					if (success == 1) {
-						// Abfrage erfolgreich.
-						// Abgefragte Daten in einem JSON-Array
-						// speichern
-						externalData = json.getJSONArray("version");
-
-						// Per Schleife durch alle Klausuren
-						for (int i = 0; i < externalData.length(); i++) {
-							JSONObject c = externalData.getJSONObject(i);
-
-							version = c.getString(TAG_VERSION);
-							Log.v("VERSIONSTEST", version);
-
-						}
-						
-						// Methodenaufruf für SetVersion
-						
-						setExternalDatabaseVersion(Integer.parseInt(version));
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
+					version = c.getString(TAG_VERSION);
 				}
-				
-				
+
+				setExternalDatabaseVersion(Integer.parseInt(version));
 			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
-//		}).start();
-
-//		return null;
-
-//	}
+	}
 
 	/**
 	 * Check for update.
@@ -383,32 +341,17 @@ public class StartupContoller extends Controller {
 	 */
 	public Integer checkForUpdate() {
 
-		this.mSharedPreferencesController = new SharedPreferencesController(
-				this.getContext());
+		this.mSharedPreferencesController = new SharedPreferencesController(this.getContext());
 		String externalVersion = String.valueOf(this.getExternalDatabaseVersion());
-		Integer internalVersion = this.mSharedPreferencesController
-				.getInteger(SHARED_PREFERENCE_DATABASE_VERSION);
-
-		this.logMessage("INFO", "externalDatabaseVersion : "+externalVersion);
-		this.logMessage("INFO", "SharedPrefCheck " + internalVersion.toString());
+		Integer internalVersion = this.mSharedPreferencesController.getInteger(SHARED_PREFERENCE_DATABASE_VERSION);
 
 		if (externalVersion != "0" || internalVersion != 0) {
-			if (Integer.parseInt(externalVersion) == internalVersion) {
+			if (Integer.parseInt(externalVersion) > internalVersion) {
 
-				// No Update available
-				return 1;
-			} else if (Integer.parseInt(externalVersion) > internalVersion) {
-				// Update
 				return 2;
-			} else {
-				// error
-				return 3;
 			}
-		} else {
-
-			// error
-			return 3;
 		}
-	}
+		return -1;
 
+	}
 }

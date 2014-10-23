@@ -80,6 +80,7 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 	 * 
 	 * @see roboguice.activity.RoboActivity#onCreate(android.os.Bundle)
 	 */
+	@SuppressWarnings("static-access")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

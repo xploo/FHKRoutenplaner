@@ -100,12 +100,10 @@ public class CsvController extends Controller {
 				br = new BufferedReader(new InputStreamReader(ims));
 
 				while ((line = br.readLine()) != null) {
-
-					// use comma as separator
+					
 					String[] row = line.split(CSVSPLITBY);
 
-					for (String s : row) {
-						this.logMessage("INFO", "Row elements: " + s + " \n");
+					for (String s : row) {					
 					}
 
 					if (tableName.equals(EDGE_CSV)) {
@@ -210,7 +208,6 @@ public class CsvController extends Controller {
 
 		}
 
-		this.endTime = DateTimeController.getTime();
-		this.logMessage("INFO", DateTimeController.getRuntime(startTime, endTime));
+		this.endTime = DateTimeController.getTime();		
 	}
 }
