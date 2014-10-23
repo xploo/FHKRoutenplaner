@@ -28,7 +28,7 @@
         android:id="@+id/editName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignRight="@+id/name"
         android:layout_below="@+id/name"
         android:hint="@string/enterName"
         android:inputType="text"
@@ -63,6 +63,8 @@
         android:layout_below="@+id/date"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:clickable="false"
+         android:focusable="false" 
         android:inputType="date"
         android:hint="@string/enterDate"
         android:textSize="14sp"
@@ -94,6 +96,8 @@
 	<EditText 
         android:id="@+id/editTime"
         android:layout_below="@+id/time"
+        android:clickable="false"
+         android:focusable="false" 
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:inputType="time"
@@ -127,6 +131,8 @@
 	<EditText 
         android:id="@+id/editStart"
         android:layout_below="@+id/start"
+        android:clickable="false"
+         android:focusable="false" 
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:inputType="text"
@@ -159,6 +165,8 @@
     
 	<EditText 
         android:id="@+id/editDestination"
+        android:clickable="false"
+         android:focusable="false"
         android:layout_below="@+id/destination"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -195,7 +203,6 @@
 	    android:layout_height="wrap_content"
 	    android:layout_alignParentRight="true"
 	    android:layout_alignParentTop="true"
-	    android:layout_toRightOf="@+id/name"
 	    android:text="@string/saveName" />
 
 </RelativeLayout>
