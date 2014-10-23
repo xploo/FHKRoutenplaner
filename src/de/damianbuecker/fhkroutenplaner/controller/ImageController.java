@@ -237,7 +237,7 @@ public class ImageController extends Controller {
 					// Start und Ziel Markierungen setzen
 					if (tagList.get(0).getTag_id() == ID && ID == startID) {
 						// StartMarkierung einfügen
-						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.turn7, options);
+						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.ziel, options);
 						canvas.drawBitmap(mBitmap, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - 32, null);
 
@@ -245,7 +245,7 @@ public class ImageController extends Controller {
 					if (tagList.get(0).getTag_id() == ID && ID == endID) {
 						// Zielmarkierung setzten
 
-						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.turn7, options);
+						Bitmap mBitmap = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.start, options);
 						canvas.drawBitmap(mBitmap, Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())),
 								Float.parseFloat(String.valueOf(tagList.get(0).getY_pos())) - 32, null);
 					}

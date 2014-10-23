@@ -12,6 +12,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
@@ -52,7 +53,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	/** The tag location all. */
 	private Dao<Tag, Integer> tagLocationAll;
-	
+
 	private Dao<Room, Integer> roomAll;
 
 	/** The edges all. */
@@ -80,7 +81,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	/** The Tagresult. */
 	private List<Tag> Tagresult = null;
-	
+
 	private List<Room> roomResult = null;
 
 	/** The edges result. */
@@ -165,79 +166,77 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			e.printStackTrace();
 		}
 	}
-	
-	public void deleteTag(){
+
+	public void deleteTag() {
 		try {
-		
-		Dao<Tag, Integer> tagDao = getTagDataDao();
-		List<Tag> listTag = tagDao.queryForAll();
-		tagDao.delete(listTag);
-			
-		}catch(SQLException e){
+
+			Dao<Tag, Integer> tagDao = getTagDataDao();
+			List<Tag> listTag = tagDao.queryForAll();
+			tagDao.delete(listTag);
+
+		} catch (SQLException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
-	
-	public void deleteRoom(){
+
+	public void deleteRoom() {
 		try {
-		
-		Dao<Room, Integer> roomDao = getRoomDataDao();
-		List<Room> listRoom = roomDao.queryForAll();
-		roomDao.delete(listRoom);
-			
-		}catch(SQLException e){
+
+			Dao<Room, Integer> roomDao = getRoomDataDao();
+			List<Room> listRoom = roomDao.queryForAll();
+			roomDao.delete(listRoom);
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public void deleteRoomtype(){
+
+	public void deleteRoomtype() {
 		try {
-		
-		Dao<Roomtype, Integer> roomtypeDao = getRoomtypeDataDao();
-		List<Roomtype> roomtypeList = roomtypeDao.queryForAll();
-		roomtypeDao.delete(roomtypeList);
-			
-		}catch(SQLException e){
+
+			Dao<Roomtype, Integer> roomtypeDao = getRoomtypeDataDao();
+			List<Roomtype> roomtypeList = roomtypeDao.queryForAll();
+			roomtypeDao.delete(roomtypeList);
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public void deleteDocent(){
+
+	public void deleteDocent() {
 		try {
-		
-		Dao<Docent, Integer> docentDao = getDocentDataDao();
-		List<Docent> listDocent = docentDao.queryForAll();
-		docentDao.delete(listDocent);
-			
-		}catch(SQLException e){
+
+			Dao<Docent, Integer> docentDao = getDocentDataDao();
+			List<Docent> listDocent = docentDao.queryForAll();
+			docentDao.delete(listDocent);
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		}
-		
-		public void deleteEdges(){
-			try {
-			
+	}
+
+	public void deleteEdges() {
+		try {
+
 			Dao<Edges, Integer> edgesDao = getEdgesDataDao();
 			List<Edges> listEdges = edgesDao.queryForAll();
 			edgesDao.delete(listEdges);
-				
-			}catch(SQLException e){
-				e.printStackTrace();
-			}
-			
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		
-		public void deleteCompleteDatabase(){
-			deleteEdges();
-			deleteTag();
-			deleteRoom();
-			deleteRoomtype();
-			deleteDocent();
-		}
-		
-	
+
+	}
+
+	public void deleteCompleteDatabase() {
+		deleteEdges();
+		deleteTag();
+		deleteRoom();
+		deleteRoomtype();
+		deleteDocent();
+	}
 
 	/**
 	 * Gets the tag data dao.
@@ -327,13 +326,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return this.historyItemDataDao;
 	}
-	
-	public void deleteTagDao() throws SQLException{
-		if(this.tagDataDao == null){
+
+	public void deleteTagDao() throws SQLException {
+		if (this.tagDataDao == null) {
 			tagDataDao = getDao(Tag.class);
 		}
-		
-		
+
 	}
 
 	/**
@@ -496,9 +494,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return edgeResultRemain;
 
 	}
-	
-	public List<Room> getRoomById(String ID) throws SQLException{
-		
+
+	public List<Room> getRoomById(String ID) throws SQLException {
+
 		if (this.roomAll == null) {
 			this.roomAll = this.getRoomDataDao();
 		}
@@ -508,22 +506,37 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		queryBuilderRoom.where().eq(Room.ROOM_ID, ID);
 		PreparedQuery<Room> preparedQueryRoom = queryBuilderRoom.prepare();
 		roomResult = roomAll.query(preparedQueryRoom);
-		
+
 		return roomResult;
 	}
-	
-	public List<Roomtype> getRoomtypeById(String ID) throws SQLException{
+
+	public List<Roomtype> getRoomtypeById(String ID) throws SQLException {
 		Dao<Roomtype, Integer> roomTypeAll = this.getRoomtypeDataDao();
-		
+
 		QueryBuilder<Roomtype, Integer> queryBuilderRoomType = null;
-		
+
 		queryBuilderRoomType = roomTypeAll.queryBuilder();
 		queryBuilderRoomType.where().eq(Roomtype.ROOMTYPE_ID, ID);
 		PreparedQuery<Roomtype> preparedQueryRoomType = queryBuilderRoomType.prepare();
-		List<Roomtype> roomTypeResult = roomTypeAll.query(preparedQueryRoomType);	
-		
-		
+		List<Roomtype> roomTypeResult = roomTypeAll.query(preparedQueryRoomType);
+
 		return roomTypeResult;
+	}
+
+	public void updateHistoryItemName(Integer ID, String newName) {
+
+		try {
+			Dao<HistoryItem, Integer> hisDao = this.getHistoryItemDataDao();
+			UpdateBuilder<HistoryItem, Integer> updateBuilder = hisDao.updateBuilder();
+			updateBuilder.where().eq(HistoryItem.ID, ID);
+			updateBuilder.updateColumnValue(HistoryItem.NAME, newName);
+			updateBuilder.update();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	/**

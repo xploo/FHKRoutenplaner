@@ -175,16 +175,16 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		mTextViewBottomLeft.setText("Zur Startetage: " + startFloor);
 		mTextViewBottomRight.setText("Zur Zieletage: " + endFloor);
-
-		this.mWebView
-				.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
+		
+		
+		this.mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
 
 		mWebView.setPictureListener(new PictureListener() {
 
 			@Override			
 			public void onNewPicture(WebView view, Picture picture) {
 				// TODO Auto-generated method stub
-				mWebView.scrollBy(200, 200);
+				mWebView.scrollBy(0, 200);
 				
 
 			}
@@ -201,6 +201,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		if (position == 0) {
 			Intent intent = new Intent(this, NavigationActivity.class);
 			startActivity(intent);
+			finish();
+			
 		} else if (position == 1) {
 			Intent intent = new Intent(this, StartUpActivity.class);
 			startActivity(intent);

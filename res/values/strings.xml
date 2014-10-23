@@ -30,5 +30,6 @@
     <string name="descriptionRoomtype">1. Bitte die Raumkategorie auswählen, die Ihr Ziel hat.</string>
     <string name="descriptionRoom">2. Bitte wählen Sie Ihr genaues Ziel aus.</string>
     <string name="descriptionGoButton">3. Schicken Sie die Routenanfrage ab.</string>
+    <string name="saveName">Name Speichern</string>
 
 </resources>

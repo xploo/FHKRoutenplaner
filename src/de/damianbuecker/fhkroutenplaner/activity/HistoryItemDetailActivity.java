@@ -1,5 +1,7 @@
 package de.damianbuecker.fhkroutenplaner.activity;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.content.Intent;
@@ -10,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.damianbuecker.fhkroutenplaner.controller.DateTimeController;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
 /**
@@ -63,8 +66,15 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 	
 	@InjectView(R.id.startNavigationButton)
 	private Button startNavigationButton;
+	
+	@InjectView(R.id.btnSaveName)
+	private Button btnSaveName;
 
 	private DateTimeController mDateTimeController;
+	
+	private DatabaseHelper mDatabaseHelper;
+	
+	private Integer historyId; 
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -77,19 +87,23 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 		if(this.mDateTimeController==null){
 			mDateTimeController = new DateTimeController(this);
 		}
-		
+		if(this.mDatabaseHelper == null){
+			mDatabaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);;
+		}		
 
 		
 		if (this.getIntent().getStringExtra("selectedItem") != null) {
 			this.mHistoryItem = new HistoryItem();
 			this.mHistoryItem = this.mHistoryItem.fromJson(this.getIntent().getStringExtra("selectedItem"));
 		}
+		this.historyId = this.mHistoryItem.getId();
 		this.editName.setText(this.mHistoryItem.getName());
 		this.editDate.setText(String.valueOf(this.mDateTimeController.toDate(this.mHistoryItem.getDate())));
 		this.editTime.setText(String.valueOf(this.mDateTimeController.toDate(this.mHistoryItem.getTimestamp())));
 		this.editStart.setText(this.mHistoryItem.getStart());
 		this.editDestination.setText(this.mHistoryItem.getDestination());
 		this.startNavigationButton.setOnClickListener(new ButtonListener());
+		this.btnSaveName.setOnClickListener(new ButtonListener());
 	}
 	
 
@@ -102,6 +116,13 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 				String[] splitResult = String.valueOf(HistoryItemDetailActivity.this.editDestination.getText()).split(" ");
 				intent.putExtra("endID", splitResult[0]);
 				startActivity(intent);
+			}
+			else if(v.getId() == R.id.btnSaveName){
+				HistoryItemDetailActivity.this.logMessage("INFO", "HistoryItemID : "+historyId);
+				HistoryItemDetailActivity.this.logMessage("INFO", "HistoryItemNewName : "+HistoryItemDetailActivity.this.editName.getText().toString());
+				HistoryItemDetailActivity.this.mDatabaseHelper.updateHistoryItemName(historyId,HistoryItemDetailActivity.this.editName.getText().toString());
+				
+				
 			}
 		}
 	}

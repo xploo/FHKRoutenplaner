@@ -10,31 +10,33 @@
         android:layout_height="1dp"
         android:background="@android:color/darker_gray" />
     
-    <TextView 
+    <TextView
         android:id="@+id/name"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_height="wrap_content"
         android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/startNavigationButton"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
         android:text="@string/name"
         android:textColor="#ffffee"
-        android:textStyle="italic"
         android:textSize="20sp"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp" />
+        android:textStyle="italic" />
     
-    <EditText 
+    <EditText
         android:id="@+id/editName"
-        android:layout_below="@+id/name"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:inputType="text"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/name"
         android:hint="@string/enterName"
-        android:textSize="14sp"
-        android:textColor="#ffffff"
-        android:singleLine="true"
+        android:inputType="text"
+        android:paddingLeft="10dp"
         android:selectAllOnFocus="true"
-        android:paddingLeft="10dp" />
+        android:singleLine="true"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
     
 	<View
     	android:layout_below="@+id/editName"
@@ -186,5 +188,14 @@
 	    android:textColor="#1FFF09"
 	    android:textStyle="italic"
 	    android:paddingLeft="10dp" />
+
+	<Button
+	    android:id="@+id/btnSaveName"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentTop="true"
+	    android:layout_toRightOf="@+id/name"
+	    android:text="@string/saveName" />
 
 </RelativeLayout>
