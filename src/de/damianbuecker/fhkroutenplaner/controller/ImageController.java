@@ -259,6 +259,9 @@ public class ImageController extends Controller {
 						    if(Math.abs(deltaY) <= 120 && Math.abs(deltaX) <=30){
 						    	frac = (float) 0.1;
 						    }
+						    if(Math.abs(deltaX) >= 40 && Math.abs(deltaX) <= 55 && Math.abs(deltaY) >= 40 && Math.abs(deltaY) <= 50){
+						    	frac = (float) 0.15;
+						    }
 						    
 
 						    float point_x_1 = Float.parseFloat(String.valueOf(tagList.get(0).getX_pos())) - (float) ((1 - frac) * deltaX + frac * deltaY);

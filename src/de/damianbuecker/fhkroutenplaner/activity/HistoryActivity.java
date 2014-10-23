@@ -172,8 +172,8 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 			} else {
 				linearLayout = (LinearLayout) convertView;
 			}
-			TextView text = (TextView) linearLayout.findViewById(R.id.label);
-			text.setText(historyItem.getName() + historyItem.getId());
+			TextView text = (TextView) linearLayout.findViewById(R.id.label);			
+			text.setText(historyItem.getName());
 
 			return linearLayout;
 		}
