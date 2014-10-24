@@ -93,10 +93,10 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	private NfcController mNfcController;
 
 	/** The Constant ALERT_DIALOG_TITLE. */
-	private static final String ALERT_DIALOG_TITLE = "Position";
+	private static final String ALERT_DIALOG_TITLE = "Startpunkt benötigt.";
 
 	/** The Constant ALERT_DIALOG_MESSAGE. */
-	private static final String ALERT_DIALOG_MESSAGE = "Please attach your Phone to RFID-Tag";
+	private static final String ALERT_DIALOG_MESSAGE = "Bitte halte dein Smartphone an ein RFID-Tag";
 
 	/** The Constant ERROR_MESSAGE_NFC_UNSUPPORTED. */
 	private static final String ERROR_MESSAGE_NFC_UNSUPPORTED = "This device doesn't support NFC.";
@@ -425,15 +425,13 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	protected void onResume() {
 		super.onResume();
 
-		
 		/**
 		 * It's important, that the activity is in the foreground (resumed).
 		 * Otherwise an IllegalStateException is thrown.
 		 */
 		this.mNfcController = new NfcController(this.mTextView);
 		this.mNfcController.setupForegroundDispatch(this, mNfcAdapter);
-		
-		
+
 	}
 
 	/*
@@ -483,7 +481,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	public void onClick_GO(View v) {
 
 		NavigationActivity.this.btnGo.setVisibility(View.INVISIBLE);
-		Toast.makeText(this, "Route wird berechnet.", Toast.LENGTH_LONG).show();
+		
 
 		Intent intent = new Intent(this, DisplayMapsActivity.class);
 		String[] splitResult = String.valueOf(this.mSpinnerRoom.getSelectedItem()).split(" ");
@@ -528,8 +526,13 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		item.writeToDatabase(this);
 
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, true);
-		
-		startActivity(intent);
-		finish();
+		if (this.mSpinnerRoom.getSelectedItemPosition() == 0 || this.mSpinnerRoomtype.getSelectedItemPosition() == 0) {
+			
+			Toast.makeText(this, "Bitte eine gültige Auswahl treffen!", Toast.LENGTH_LONG).show();
+
+		} else {
+			startActivity(intent);
+			finish();
+		}
 	}
 }
