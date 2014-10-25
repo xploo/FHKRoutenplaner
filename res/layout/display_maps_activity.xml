@@ -46,8 +46,9 @@
             android:layout_alignBottom="@+id/btnleft"
             android:layout_centerHorizontal="true"
             android:layout_toRightOf="@+id/btnleft"
+            android:layout_marginLeft="10dp"
             android:alpha="1"
-            android:background="#ffffff"
+            android:background="#09000000"
             android:paddingTop="15dp"
             android:text=" "
             android:textColor="#000000"
@@ -61,8 +62,9 @@
              android:layout_alignTop="@+id/textViewBottomleft"
              android:layout_centerHorizontal="true"
              android:layout_toLeftOf="@+id/btnright"
+             android:layout_marginRight="10dp"
              android:alpha="1"
-             android:background="#ffffff"
+             android:background="#09000000"
              android:paddingTop="15dp"
              android:text=" "
              android:textColor="#000000"
@@ -87,9 +89,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"        
-        android:dividerHeight="0dp"
-        android:background="#111"/>
+        android:divider="@android:color/darker_gray"        
+        android:dividerHeight="1dp"
+        android:background="#616161"/>
 	
 	
 </android.support.v4.widget.DrawerLayout>

@@ -1,15 +1,15 @@
 package de.damianbuecker.fhkroutenplaner.activity;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Picture;
 import android.graphics.Point;
@@ -20,104 +20,122 @@ import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebView.PictureListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+
+import de.damianbuecker.fhkroutenplaner.adapter.NavigationDrawerListAdapter;
 import de.damianbuecker.fhkroutenplaner.controller.FileController;
 import de.damianbuecker.fhkroutenplaner.controller.ImageController;
 import de.damianbuecker.fhkroutenplaner.controller.NfcController;
 import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
+import de.damianbuecker.fhkroutenplaner.model.NavigationDrawerItem;
 
 /**
  * The Class DisplayMapsActivity.
  */
+@SuppressWarnings("deprecation")
 @ContentView(R.layout.display_maps_activity)
 public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 	/** The list items. */
-	private String[] listItems = { "Neue Route", "Route beenden" };
+	private String[] listItems;/** = {NEW_ROUTE, QUIT_ROUTE};*/
+	
+	private TypedArray mNavigationMenuIcons;
+	private ArrayList<NavigationDrawerItem> mNavigationDrawerItems;
+	private NavigationDrawerListAdapter mNavigationDrawerListAdapter;
 
-	/** The m drawer layout. */
+	/** The local drawer layout. */
 	@InjectView(R.id.drawer_layout)
 	private DrawerLayout mDrawerLayout;
 
-	/** The m drawer list. */
+	/** The local drawer list. */
 	@InjectView(R.id.left_drawer)
 	private ListView mDrawerList;
 
+	/** The local text view bottom left. */
 	@InjectView(R.id.textViewBottomleft)
 	private TextView mTextViewBottomLeft;
 
+	/** The local text view bottom right. */
 	@InjectView(R.id.textViewBottomright)
 	private TextView mTextViewBottomRight;
 
-	/** The btn toggle drawer. */
+	/** The button toggle drawer. */
 	@InjectView(R.id.btntoggledrawer)
 	private Button btnToggleDrawer;
 
-	/** The m list view drawer. */
+	/** The local list view drawer. */
 	@InjectView(R.id.left_drawer)
 	private ListView mListViewDrawer;
 
-	/** The btn left. */
+	/** The button left. */
 	@InjectView(R.id.btnleft)
 	private Button btnLeft;
 
-	/** The btn right. */
+	/** The button right. */
 	@InjectView(R.id.btnright)
 	private Button btnRight;
 
-	/** The m web view. */
+	/** The local web view. */
 	@InjectView(R.id.webView)
 	private WebView mWebView;
 
-	/** The m nfc adapter. */
+	/** The local nfc adapter. */
 	private NfcAdapter mNfcAdapter;
 
-	/** The m nfc controller. */
+	/** The local nfc controller. */
 	private NfcController mNFCController;
 
-	/** The m image controller. */
+	/** The local image controller. */
 	private ImageController mImageController;
 	
+	/** The local databasehelper. */
 	private DatabaseHelper mDatabasehelper;
 
-	/** The m file controller. */
+	/** The local file controller. */
 	private FileController mFileController;
 
-	/** The m shared preferences controller. */
+	/** The local shared preferences controller. */
 	private SharedPreferencesController mSharedPreferencesController;
 
-	/** The Constant INTENT_EXTRA_START_ID. */
-	private static final String INTENT_EXTRA_START_ID = "Start_ID";
-
-	/** The Constant INTENT_EXTRA_START_FLOOR. */
-	private static final String INTENT_EXTRA_START_FLOOR = "Start_floor";
-	
-	/** The prg dialog. */
-	private ProgressDialog prgDialog;
+	/** The progress dialog. */
+	private ProgressDialog mProgressDialog;
 	
 	/** The Constant progress_bar_type. */
 	public static final int progress_bar_type = 0;
 	
+	/** The x pos_start. */
 	private Double xPos_start;
+	
+	/** The y pos_start. */
 	private Double yPos_start;
 
+	/** The x pos. */
 	private Double xPos;
+	
+	/** The y pos. */
 	private Double yPos;
 
+	/** The end id. */
 	private Integer endID;
+	
+	/** The start id. */
 	private Integer startID;
+	
+	/** The start floor. */
 	private Integer startFloor;
+	
+	/** The end floor. */
 	private Integer endFloor;
 
 	/*
@@ -125,14 +143,25 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	 * 
 	 * @see roboguice.activity.RoboActivity#onCreate(android.os.Bundle)
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		Toast.makeText(this, "Route wird berechnet.", Toast.LENGTH_LONG).show();
+		/** Creating the navigation drawer design. */
+		this.listItems = getResources().getStringArray(R.array.nav_drawer_items);
+		this.mNavigationMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
+		this.mNavigationDrawerItems = new ArrayList<NavigationDrawerItem>();
+		this.mNavigationDrawerItems.add(new NavigationDrawerItem(this.listItems[0], this.mNavigationMenuIcons.getResourceId(0, -1)));
+		this.mNavigationDrawerItems.add(new NavigationDrawerItem(this.listItems[1], this.mNavigationMenuIcons.getResourceId(1, -1)));
+		this.mNavigationMenuIcons.recycle();
 		
-		this.mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, listItems));
+		this.mNavigationDrawerListAdapter = new NavigationDrawerListAdapter(this, this.mNavigationDrawerItems);
+		this.mDrawerList.setAdapter(this.mNavigationDrawerListAdapter);
+		
+		Toast.makeText(this, ROUTE_IS_BEING_CALCULATED, Toast.LENGTH_LONG).show();
+		
+//		this.mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, listItems));
+		
 		this.mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		this.btnToggleDrawer.setOnClickListener(new ButtonDrawerToggleListener());
 		this.btnLeft.setOnClickListener(new ButtonLeftRightListener());
@@ -170,7 +199,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			if (!(this.getIntent().getExtras() == null)) {
 
 				if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
-					this.endID = Integer.parseInt(this.getIntent().getExtras().getString("End_ID"));
+					this.endID = Integer.parseInt(this.getIntent().getExtras().getString(END_ID));
 				} else {
 					this.endID = Integer.parseInt(this.mSharedPreferencesController.getString(SHARED_PREFERENCE_LAST_DESTINATION));
 				}
@@ -181,7 +210,6 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		}
 
 		this.endFloor = mImageController.getEndFloor(endID);
-//		mImageController.testAlgorithm(this.startFloor, this.startID, this.endID, this.endFloor);
 		new calculateRoute().execute((String)null);
 
 		try {			
@@ -196,8 +224,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		
 			 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.logMessage(ERROR, e.getLocalizedMessage());
 		}		
 		
 
@@ -211,8 +238,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		btnLeft.setVisibility(View.INVISIBLE);
 		mTextViewBottomLeft.setVisibility(View.INVISIBLE);
 
-		mTextViewBottomLeft.setText("Zur Startetage: " + startFloor);
-		mTextViewBottomRight.setText("Zur Zieletage: " + endFloor);
+		mTextViewBottomLeft.setText(TO_STARTING_FLOOR + WHITESPACE + startFloor);
+		mTextViewBottomRight.setText(TO_DESTINATION_FLOOR + WHITESPACE + endFloor);
 		
 		
 		//this.mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
@@ -233,40 +260,56 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	}	
 		
 	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreateDialog(int)
+	 */
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case progress_bar_type:
-			prgDialog = new ProgressDialog(this);
-			prgDialog.setMessage("Route wird berechnet, bitte warte....");
-			prgDialog.setIndeterminate(true);
-			prgDialog.setCancelable(false);
-			prgDialog.show();
-			return prgDialog;
+			mProgressDialog = new ProgressDialog(this);
+			mProgressDialog.setMessage(ROUTE_IS_BEING_CALCULATED);
+			mProgressDialog.setIndeterminate(true);
+			mProgressDialog.setCancelable(false);
+			mProgressDialog.show();
+			return mProgressDialog;
 		default:
 			return null;
 		}
 	}
 	
 	
+	/**
+	 * The Class calculateRoute.
+	 */
 	private class calculateRoute extends AsyncTask<String,String,String>{
 		
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#onPreExecute()
+		 */
 		protected void onPreExecute() {
             super.onPreExecute();            
             showDialog(progress_bar_type);
         }
 
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
 		@Override
 		protected String doInBackground(String... params) {
 			mImageController.testAlgorithm(startFloor, startID, endID, endFloor);
 			// TODO Auto-generated method stub
 			return null;
 		}
+		
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(String values){
 			
 			dismissDialog(progress_bar_type);
-			mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
+			mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + FILENAME + startFloor + startID + PNG);
 		}
 	}
 
@@ -424,7 +467,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				DisplayMapsActivity.this.mTextViewBottomLeft.setVisibility(View.INVISIBLE);
 				DisplayMapsActivity.this.mTextViewBottomRight.setVisibility(View.VISIBLE);
 
-				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID
+				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + FILENAME + startFloor + startID
 						+ PNG);
 			} else if (v.getId() == R.id.btnright) {				
 				DisplayMapsActivity.this.xPos = (double) mWebView.getScrollX();
@@ -436,7 +479,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				DisplayMapsActivity.this.mTextViewBottomLeft.setVisibility(View.VISIBLE);
 				DisplayMapsActivity.this.mTextViewBottomRight.setVisibility(View.INVISIBLE);
 
-				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + endFloor + endID + PNG);
+				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + FILENAME + endFloor + endID + PNG);
 			}
 		}
 

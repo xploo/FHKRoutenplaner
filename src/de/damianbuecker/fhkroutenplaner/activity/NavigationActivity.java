@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.TooManyListenersException;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -17,7 +16,6 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -43,30 +41,35 @@ import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 @ContentView(R.layout.nfcconnector_activity)
 public class NavigationActivity extends ModifiedViewActivityImpl implements OnItemSelectedListener {
 
-	/** The m text view. */
+	/** The local text view. */
 	@InjectView(R.id.txtV_nfc_hidden)
 	private TextView mTextView;
 
+	/** The button go. */
 	@InjectView(R.id.btn_nfc_route)
 	private Button btnGo;
 
+	/** The local text view description finish. */
 	@InjectView(R.id.mTvDescriptionFinish)
 	private TextView mTvDescriptionFinish;
 
+	/** The local text view description go button. */
 	@InjectView(R.id.mTvDescriptionGoButton)
 	private TextView mTvDescriptionGoButton;
 
-	/** The m text view floor. */
+	/** The local text view floor. */
 	@InjectView(R.id.txtV_nfc_floor_out)
 	private TextView mTextViewFloor;
 
-	/** The m text view description. */
+	/** The local text view description. */
 	@InjectView(R.id.txtV_nfc_description_out)
 	private TextView mTextViewDescription;
 
+	/** The local spinner roomtype. */
 	@InjectView(R.id.nfc_spinner_roomtype)
 	private Spinner mSpinnerRoomtype;
 
+	/** The local spinner room. */
 	@InjectView(R.id.nfc_spinner_room)
 	private Spinner mSpinnerRoom;
 
@@ -77,7 +80,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	/** The database helper. */
 	private DatabaseHelper databaseHelper;
 
-	/** The m nfc adapter. */
+	/** The local nfc adapter. */
 	private NfcAdapter mNfcAdapter;
 
 	/** The tag list. */
@@ -92,18 +95,6 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	/** The m nfc controller. */
 	private NfcController mNfcController;
 
-	/** The Constant ALERT_DIALOG_TITLE. */
-	private static final String ALERT_DIALOG_TITLE = "Startpunkt benötigt.";
-
-	/** The Constant ALERT_DIALOG_MESSAGE. */
-	private static final String ALERT_DIALOG_MESSAGE = "Bitte halte dein Smartphone an ein RFID-Tag";
-
-	/** The Constant ERROR_MESSAGE_NFC_UNSUPPORTED. */
-	private static final String ERROR_MESSAGE_NFC_UNSUPPORTED = "This device doesn't support NFC.";
-
-	/** The Constant ERROR_MESSAGE_NFC_DISABLED. */
-	private static final String ERROR_MESSAGE_NFC_DISABLED = "NFC is disabled.";
-
 	/** The Constant INTENT_EXTRA_START_ID. */
 	private static final String INTENT_EXTRA_START_ID = "Start_ID";
 
@@ -113,6 +104,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	/** The Constant HISTORY_ITEM_NAME_PREFIX. */
 	private static final String HISTORY_ITEM_NAME_PREFIX = "Navigation ";
 
+	private static final String SET_DEFAULT_START = "SetDefaultStart";
+
+	/** The end id. */
 	private String endID;
 
 	/*
@@ -140,21 +134,19 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			alertDialogBuilder.setMessage(ALERT_DIALOG_MESSAGE).setCancelable(false);
 
 			// <<< For testing purposes only
-			alertDialogBuilder.setNeutralButton("SetDefaultStart", new DialogInterface.OnClickListener() {
+			alertDialogBuilder.setNeutralButton(SET_DEFAULT_START, new DialogInterface.OnClickListener() {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					NavigationActivity.this.mTextView.setText("1");
 				}
 			});
-			// End >>>
 
-			alertDialogBuilder.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
+			alertDialogBuilder.setNegativeButton(R.string.back, new DialogInterface.OnClickListener() {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					finish();
-
 				}
 			});
 			this.alertDialog = alertDialogBuilder.create();
@@ -181,7 +173,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					NavigationActivity.this.logMessage(ERROR, e.getLocalizedMessage());
 				}
 			}
 		});
@@ -206,11 +198,14 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		}
 	}
 
+	/**
+	 * Sets the roomtype spinner.
+	 */
 	@SuppressWarnings("rawtypes")
 	public void setRoomtypeSpinner() {
 
 		if (!(this.getIntent().getExtras() == null)) {
-			this.endID = this.getIntent().getExtras().getString("endID");
+			this.endID = this.getIntent().getExtras().getString(END_ID);
 			String[] splitResult = endID.split(" ");
 
 			try {
@@ -238,17 +233,20 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 				mSpinnerRoomtype.setSelection(index);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				this.logMessage(ERROR, e.getLocalizedMessage());
 			}
 
 		}
 	}
 
+	/**
+	 * Sets the spinner.
+	 */
 	@SuppressWarnings("rawtypes")
 	public void setSpinner() {
 
 		if (!(this.getIntent().getExtras() == null)) {
-			this.endID = this.getIntent().getExtras().getString("endID");
+			this.endID = this.getIntent().getExtras().getString(END_ID);
 
 			try {
 				List<Tag> listTag = this.databaseHelper.getTagById(endID);
@@ -262,15 +260,14 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 				int index = 0;
 				for (int i = 0; i < myAdap.getCount(); i++) {
-					if (myAdap.getItem(i).equals(endID + " " + listRoom.get(0).getDescription())) {
+					if (myAdap.getItem(i).equals(endID + WHITESPACE + listRoom.get(0).getDescription())) {
 						index = i;
 					}
 				}
 
 				mSpinnerRoom.setSelection(index);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				this.logMessage(ERROR, e.getLocalizedMessage());
 			}
 
 		}
@@ -312,7 +309,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			this.mSpinnerRoomtype.setAdapter(RoomtypeAdapter);
 			this.mSpinnerRoomtype.setOnItemSelectedListener(this);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			this.logMessage(ERROR, e.getLocalizedMessage());
 		}
 	}
 
@@ -343,8 +340,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 			roomSpinnerData = null;
 		} catch (SQLException e) {
-			// tv.setText(e.toString());
-			e.printStackTrace();
+			this.logMessage("ERROR", e.getLocalizedMessage());
 		}
 	}
 
@@ -363,19 +359,19 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			this.mSpinnerRoomtype.setSelection(position);
 			setRoomtypeSpinner();
 
-			if (String.valueOf(this.mSpinnerRoomtype.getSelectedItem()).equals("Bitte den Raumtyp des Zielortes wählen!")) {
+			if (String.valueOf(this.mSpinnerRoomtype.getSelectedItem()).equals(SELECT_ROOM_TYPE_DESTINATION)) {
 
 			} else {
 
 				String selState = (String) this.mSpinnerRoomtype.getSelectedItem();
-				String[] splitResult = selState.split(" ");
+				String[] splitResult = selState.split(WHITESPACE);
 				addRoomSpinner(Integer.parseInt(splitResult[0]));
 				setSpinner();
 				this.mTvDescriptionFinish.setVisibility(View.VISIBLE);
 				this.mSpinnerRoom.setVisibility(View.VISIBLE);
 			}
 		} else if (spinner.getId() == R.id.nfc_spinner_room) {
-			if (this.mSpinnerRoom.getSelectedItem().equals("Bitte Ziel Raum wählen!")) {
+			if (this.mSpinnerRoom.getSelectedItem().equals(SELECT_DESTINATION_ROOM)) {
 
 			} else {
 
@@ -481,17 +477,16 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	public void onClick_GO(View v) {
 
 		NavigationActivity.this.btnGo.setVisibility(View.INVISIBLE);
-		
 
 		Intent intent = new Intent(this, DisplayMapsActivity.class);
-		String[] splitResult = String.valueOf(this.mSpinnerRoom.getSelectedItem()).split(" ");
+		String[] splitResult = String.valueOf(this.mSpinnerRoom.getSelectedItem()).split(WHITESPACE);
 
 		if (this.mSharedPreferencesController == null) {
 			this.mSharedPreferencesController = new SharedPreferencesController(this);
 		}
 		if (this.mSharedPreferencesController.hasSharedPreference(SHARED_PREFERENCE_FIRST_RUN)) {
 			if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
-				intent.putExtra("End_ID", splitResult[0]);
+				intent.putExtra(END_ID, splitResult[0]);
 			}
 		}
 
@@ -507,9 +502,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		DateTime now = DateTime.now(TimeZone.getDefault());
 		long time = now.getMilliseconds(TimeZone.getDefault());
 
-		String[] sr = String.valueOf(this.mSpinnerRoom.getSelectedItem()).split(" ");
+		String[] sr = String.valueOf(this.mSpinnerRoom.getSelectedItem()).split(WHITESPACE);
 		StringBuffer name = new StringBuffer("");
-		name.append(HISTORY_ITEM_NAME_PREFIX).append("nach " + sr[1]);
+		name.append(HISTORY_ITEM_NAME_PREFIX).append(AFTER + WHITESPACE + sr[1]);
 
 		StringBuffer start = new StringBuffer("");
 		start.append(this.mTextViewDescription.getText());
@@ -527,8 +522,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, true);
 		if (this.mSpinnerRoom.getSelectedItemPosition() == 0 || this.mSpinnerRoomtype.getSelectedItemPosition() == 0) {
-			
-			Toast.makeText(this, "Bitte eine gültige Auswahl treffen!", Toast.LENGTH_LONG).show();
+
+			Toast.makeText(this, INVALID_SELECTION, Toast.LENGTH_LONG).show();
 
 		} else {
 			startActivity(intent);

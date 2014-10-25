@@ -17,7 +17,6 @@ import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.widget.TextView;
-import de.damianbuecker.fhkroutenplaner.activity.DeprecatedDisplayMapsActivity;
 import de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity;
 
 /**
