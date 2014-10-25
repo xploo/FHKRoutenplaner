@@ -93,10 +93,10 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	private NfcController mNfcController;
 
 	/** The Constant ALERT_DIALOG_TITLE. */
-	private static final String ALERT_DIALOG_TITLE = "Position";
+	private static final String ALERT_DIALOG_TITLE = "Startpunkt benötigt.";
 
 	/** The Constant ALERT_DIALOG_MESSAGE. */
-	private static final String ALERT_DIALOG_MESSAGE = "Please attach your Phone to RFID-Tag";
+	private static final String ALERT_DIALOG_MESSAGE = "Bitte halte dein Smartphone an ein RFID-Tag";
 
 	/** The Constant ERROR_MESSAGE_NFC_UNSUPPORTED. */
 	private static final String ERROR_MESSAGE_NFC_UNSUPPORTED = "This device doesn't support NFC.";
@@ -140,7 +140,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			alertDialogBuilder.setMessage(ALERT_DIALOG_MESSAGE).setCancelable(false);
 
 			// <<< For testing purposes only
-			alertDialogBuilder.setNeutralButton("Magic Beans", new DialogInterface.OnClickListener() {
+			alertDialogBuilder.setNeutralButton("SetDefaultStart", new DialogInterface.OnClickListener() {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -152,7 +152,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			alertDialogBuilder.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
 
 				@Override
-				public void onClick(DialogInterface dialog, int which) {					
+				public void onClick(DialogInterface dialog, int which) {
 					finish();
 
 				}
@@ -176,8 +176,8 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 				try {
 					if (s.length() > 0) {
 						NavigationActivity.this.start(s.toString());
-						alertDialog.dismiss();						
-						addRoomtypeSpinner();					
+						alertDialog.dismiss();
+						addRoomtypeSpinner();
 
 					}
 				} catch (SQLException e) {
@@ -223,21 +223,21 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 				List<Roomtype> listRoomType = this.databaseHelper.getRoomtypeById(String.valueOf(roomTypeId));
 
 				String SpinnerInput = String.valueOf(roomTypeId) + " " + listRoomType.get(0).getDescription();
-				
-				if (this.mSpinnerRoomtype.getAdapter() == null) {				
+
+				if (this.mSpinnerRoomtype.getAdapter() == null) {
 				}
 
 				ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoomtype.getAdapter();
 
 				int index = 0;
-				for (int i = 0; i < myAdap.getCount(); i++) {					
+				for (int i = 0; i < myAdap.getCount(); i++) {
 					if (myAdap.getItem(i).equals(SpinnerInput)) {
 						index = i;
 					}
 				}
 
 				mSpinnerRoomtype.setSelection(index);
-			} catch (SQLException e) {				
+			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 
@@ -249,30 +249,30 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 		if (!(this.getIntent().getExtras() == null)) {
 			this.endID = this.getIntent().getExtras().getString("endID");
-			
+
 			try {
 				List<Tag> listTag = this.databaseHelper.getTagById(endID);
 				Integer roomID = listTag.get(0).getRoom_ID();
-				List<Room> listRoom = this.databaseHelper.getRoomById(String.valueOf(roomID));		
-				
-				if (this.mSpinnerRoom.getAdapter() == null) {					
+				List<Room> listRoom = this.databaseHelper.getRoomById(String.valueOf(roomID));
+
+				if (this.mSpinnerRoom.getAdapter() == null) {
 				}
 
 				ArrayAdapter myAdap = (ArrayAdapter) mSpinnerRoom.getAdapter();
-				
+
 				int index = 0;
-				for (int i = 0; i < myAdap.getCount(); i++) {					
-					if (myAdap.getItem(i).equals(endID+" "+listRoom.get(0).getDescription())) {
+				for (int i = 0; i < myAdap.getCount(); i++) {
+					if (myAdap.getItem(i).equals(endID + " " + listRoom.get(0).getDescription())) {
 						index = i;
 					}
-				}						
-				
+				}
+
 				mSpinnerRoom.setSelection(index);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
 
@@ -378,7 +378,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			if (this.mSpinnerRoom.getSelectedItem().equals("Bitte Ziel Raum wählen!")) {
 
 			} else {
-				
+
 				this.mSpinnerRoom.setSelection(position);
 				this.mTvDescriptionGoButton.setVisibility(View.VISIBLE);
 				this.btnGo.setVisibility(View.VISIBLE);
@@ -425,14 +425,13 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	protected void onResume() {
 		super.onResume();
 
-		NavigationActivity.this.btnGo.setVisibility(View.INVISIBLE);
-
 		/**
 		 * It's important, that the activity is in the foreground (resumed).
 		 * Otherwise an IllegalStateException is thrown.
 		 */
 		this.mNfcController = new NfcController(this.mTextView);
 		this.mNfcController.setupForegroundDispatch(this, mNfcAdapter);
+
 	}
 
 	/*
@@ -482,6 +481,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	public void onClick_GO(View v) {
 
 		NavigationActivity.this.btnGo.setVisibility(View.INVISIBLE);
+		
 
 		Intent intent = new Intent(this, DisplayMapsActivity.class);
 		String[] splitResult = String.valueOf(this.mSpinnerRoom.getSelectedItem()).split(" ");
@@ -493,12 +493,12 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 			if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
 				intent.putExtra("End_ID", splitResult[0]);
 			}
-		}		
+		}
 
 		intent.putExtra(INTENT_EXTRA_START_ID, String.valueOf(this.mTextView.getText().toString()));
 		intent.putExtra(INTENT_EXTRA_START_FLOOR, String.valueOf(this.mTextViewFloor.getText().toString()));
 
-		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_LAST_DESTINATION, splitResult[0]);	
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_LAST_DESTINATION, splitResult[0]);
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, false);
 
 		DateTime today = DateTime.today(TimeZone.getDefault());
@@ -507,8 +507,9 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		DateTime now = DateTime.now(TimeZone.getDefault());
 		long time = now.getMilliseconds(TimeZone.getDefault());
 
+		String[] sr = String.valueOf(this.mSpinnerRoom.getSelectedItem()).split(" ");
 		StringBuffer name = new StringBuffer("");
-		name.append(HISTORY_ITEM_NAME_PREFIX).append("nach"+ this.mSpinnerRoom.getSelectedItem());
+		name.append(HISTORY_ITEM_NAME_PREFIX).append("nach " + sr[1]);
 
 		StringBuffer start = new StringBuffer("");
 		start.append(this.mTextViewDescription.getText());
@@ -522,10 +523,16 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		item.setTimestamp(time);
 		item.setStart(start.toString());
 		item.setDestination(destination.toString());
-		item.writeToDatabase(this);	
-		
-		startActivity(intent);
-		Toast.makeText(this, "Route wird berechnet.", Toast.LENGTH_LONG).show();
+		item.writeToDatabase(this);
 
+		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_ROUTE_RUNNING, true);
+		if (this.mSpinnerRoom.getSelectedItemPosition() == 0 || this.mSpinnerRoomtype.getSelectedItemPosition() == 0) {
+			
+			Toast.makeText(this, "Bitte eine gültige Auswahl treffen!", Toast.LENGTH_LONG).show();
+
+		} else {
+			startActivity(intent);
+			finish();
+		}
 	}
 }

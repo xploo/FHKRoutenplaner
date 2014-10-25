@@ -98,7 +98,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 					SHARED_PREFERENCE_DATABASE_VERSION, 1);
 		}
 		
-		new CheckForUpdate(this).execute((String)null);		
+		//new CheckForUpdate(this).execute((String)null);		
 	}
 	
 	

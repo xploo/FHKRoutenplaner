@@ -99,8 +99,8 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 		}
 		this.historyId = this.mHistoryItem.getId();
 		this.editName.setText(this.mHistoryItem.getName());
-		this.editDate.setText(String.valueOf(this.mDateTimeController.toDate(this.mHistoryItem.getDate())));
-		this.editTime.setText(String.valueOf(this.mDateTimeController.toDate(this.mHistoryItem.getTimestamp())));
+		this.editDate.setText(String.valueOf(this.mDateTimeController.toDate(this.mHistoryItem.getDate()).format("DD.MM.YYYY")));
+		this.editTime.setText(String.valueOf(this.mDateTimeController.toDate(this.mHistoryItem.getTimestamp()).format("hh:mm:ss")));
 		this.editStart.setText(this.mHistoryItem.getStart());
 		this.editDestination.setText(this.mHistoryItem.getDestination());
 		this.startNavigationButton.setOnClickListener(new ButtonListener());

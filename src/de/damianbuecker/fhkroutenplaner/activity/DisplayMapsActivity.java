@@ -1,15 +1,26 @@
 package de.damianbuecker.fhkroutenplaner.activity;
 
+import java.sql.SQLException;
+import java.util.List;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Picture;
+import android.graphics.Point;
 import android.nfc.NfcAdapter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Display;
 import android.view.HapticFeedbackConstants;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebView.PictureListener;
@@ -18,10 +29,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import de.damianbuecker.fhkroutenplaner.controller.FileController;
 import de.damianbuecker.fhkroutenplaner.controller.ImageController;
 import de.damianbuecker.fhkroutenplaner.controller.NfcController;
 import de.damianbuecker.fhkroutenplaner.controller.SharedPreferencesController;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 
 /**
  * The Class DisplayMapsActivity.
@@ -74,6 +88,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 	/** The m image controller. */
 	private ImageController mImageController;
+	
+	private DatabaseHelper mDatabasehelper;
 
 	/** The m file controller. */
 	private FileController mFileController;
@@ -86,6 +102,18 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 	/** The Constant INTENT_EXTRA_START_FLOOR. */
 	private static final String INTENT_EXTRA_START_FLOOR = "Start_floor";
+	
+	/** The prg dialog. */
+	private ProgressDialog prgDialog;
+	
+	/** The Constant progress_bar_type. */
+	public static final int progress_bar_type = 0;
+	
+	private Double xPos_start;
+	private Double yPos_start;
+
+	private Double xPos;
+	private Double yPos;
 
 	private Integer endID;
 	private Integer startID;
@@ -101,7 +129,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
+		Toast.makeText(this, "Route wird berechnet.", Toast.LENGTH_LONG).show();
 		
 		this.mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, listItems));
 		this.mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -126,6 +155,9 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			this.mNFCController = new NfcController(this);
 			this.mNFCController.handleIntent(getIntent(), this);
 		}
+		if(this.mDatabasehelper == null){
+			this.mDatabasehelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+		}
 
 		if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_ROUTE_RUNNING)) {
 
@@ -149,15 +181,25 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		}
 
 		this.endFloor = mImageController.getEndFloor(endID);
-		mImageController.testAlgorithm(this.startFloor, this.startID, this.endID, this.endFloor);
+//		mImageController.testAlgorithm(this.startFloor, this.startID, this.endID, this.endFloor);
+		new calculateRoute().execute((String)null);
 
+		try {			
+			List<Tag> listTag = this.mDatabasehelper.getTagById(String.valueOf(startID));			
+			Display display = getWindowManager().getDefaultDisplay();
+			Point size = new Point();
+			display.getSize(size);
+			int width = size.x;
+			int height = size.y;
+			this.xPos = this.xPos_start = (listTag.get(0).getX_pos()*2) - (width/2);
+			this.yPos = this.yPos_start = (listTag.get(0).getY_pos()*2) - (height/2);
 		
-		this.mWebView.setInitialScale(85);	
-		this.mWebView.getSettings().setBuiltInZoomControls(true);
-		this.mWebView.getSettings().setDisplayZoomControls(false);
-		this.mWebView.getSettings().setLoadWithOverviewMode(false);
-		this.mWebView.getSettings().setUseWideViewPort(true);
-		this.mWebView.setScrollbarFadingEnabled(false);
+			 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
 
 		if (startFloor == endFloor) {
 			this.btnLeft.setVisibility(View.INVISIBLE);
@@ -173,17 +215,59 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		mTextViewBottomRight.setText("Zur Zieletage: " + endFloor);
 		
 		
-		this.mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
+		//this.mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
 
-		mWebView.setPictureListener(new PictureListener() {
+		mWebView.setPictureListener(new PictureListener() {			
 
 			@Override			
 			public void onNewPicture(WebView view, Picture picture) {				
-				mWebView.scrollBy(0, 200);
-				
-
+				//mWebView.setInitialScale(85);	
+				mWebView.getSettings().setBuiltInZoomControls(true);
+				mWebView.getSettings().setDisplayZoomControls(false);
+				mWebView.getSettings().setLoadWithOverviewMode(false);
+				mWebView.getSettings().setUseWideViewPort(true);
+				mWebView.setScrollbarFadingEnabled(true);				
+				mWebView.scrollBy(xPos.intValue(), yPos.intValue());
 			}
 		});
+	}	
+		
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case progress_bar_type:
+			prgDialog = new ProgressDialog(this);
+			prgDialog.setMessage("Route wird berechnet, bitte warte....");
+			prgDialog.setIndeterminate(true);
+			prgDialog.setCancelable(false);
+			prgDialog.show();
+			return prgDialog;
+		default:
+			return null;
+		}
+	}
+	
+	
+	private class calculateRoute extends AsyncTask<String,String,String>{
+		
+		protected void onPreExecute() {
+            super.onPreExecute();            
+            showDialog(progress_bar_type);
+        }
+
+		@Override
+		protected String doInBackground(String... params) {
+			mImageController.testAlgorithm(startFloor, startID, endID, endFloor);
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		protected void onPostExecute(String values){
+			
+			dismissDialog(progress_bar_type);
+			mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
+		}
 	}
 
 	/**
@@ -193,7 +277,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	 *            the position
 	 */
 	private void selectItem(int position) {
-		if (position == 0) {
+		
+		if (position == 0) {			
 			Intent intent = new Intent(this, NavigationActivity.class);
 			startActivity(intent);
 			finish();
@@ -330,6 +415,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		public void onClick(View v) {
 
 			if (v.getId() == R.id.btnleft) {
+				DisplayMapsActivity.this.xPos = DisplayMapsActivity.this.xPos_start;
+				DisplayMapsActivity.this.yPos = DisplayMapsActivity.this.yPos_start;				
 				DisplayMapsActivity.this.btnLeft.setHapticFeedbackEnabled(true);
 				DisplayMapsActivity.this.btnLeft.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				DisplayMapsActivity.this.btnLeft.setVisibility(View.INVISIBLE);
@@ -339,7 +426,9 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID
 						+ PNG);
-			} else if (v.getId() == R.id.btnright) {
+			} else if (v.getId() == R.id.btnright) {				
+				DisplayMapsActivity.this.xPos = (double) mWebView.getScrollX();
+				DisplayMapsActivity.this.yPos = (double) mWebView.getScrollY();	
 				DisplayMapsActivity.this.btnRight.setHapticFeedbackEnabled(true);
 				DisplayMapsActivity.this.btnRight.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				DisplayMapsActivity.this.btnRight.setVisibility(View.INVISIBLE);

@@ -18,6 +18,7 @@ import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.widget.TextView;
 import de.damianbuecker.fhkroutenplaner.activity.DeprecatedDisplayMapsActivity;
+import de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity;
 
 /**
  * The Class NFCController.
@@ -284,15 +285,21 @@ public class NfcController extends Controller {
 		 */
 		@Override
 		protected void onPostExecute(String result) {
+			
+			if(running == false){
+				NfcController.this.logMessage("RUNNING ","False");
+			}
 
 			if (running == true) {
-				Intent i = new Intent(mContext, DeprecatedDisplayMapsActivity.class);
+				Intent i = new Intent(mContext, DisplayMapsActivity.class);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				i.putExtra(INTENT_EXTRA_START_ID, result);
 				mContext.startActivity(i);
+				NfcController.this.logMessage("INFO",result);
 
 			} else if (this.textViewReference != null && result != null) {
 				final TextView tv = this.textViewReference.get();
+				NfcController.this.logMessage("INFO",result);
 				if (tv != null) {
 					tv.setText(result);
 				}
