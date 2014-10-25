@@ -24,6 +24,7 @@ import de.damianbuecker.fhkroutenplaner.controller.StartupContoller;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class StartUpActivity.
  */
@@ -86,9 +87,10 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 		 */
 		if (this.mStartupController == null) {
 
-			mStartupController = new StartupContoller(this);
+			this.mStartupController = new StartupContoller(this);
 		}
-
+		this.mStartupController.deleteOldImages();
+		
 		this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_FIRST_RUN, true);
 		if (this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_FIRST_RUN)) {
 			this.mCsvController = new CsvController(this);
@@ -97,23 +99,39 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 			this.mSharedPreferencesController.putInSharedPreference(SHARED_PREFERENCE_DATABASE_VERSION, 1);
 		}
 
-		// new CheckForUpdate(this).execute((String)null);
+		// new CheckForUpdate(this).execute("");
 	}
 
+	/**
+	 * The Class CheckForUpdate gets the MySQL databaseversion
+	 * 
+	 */
 	private class CheckForUpdate extends AsyncTask<String, String, String> {
 
+		/** The context. */
 		private Context context;
 
+		/**
+		 * Instantiates a new check for update.
+		 *
+		 * @param context the context
+		 */
 		public CheckForUpdate(Context context) {
 			this.context = context;
 		}
 
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
 		@Override
 		protected String doInBackground(String... args) {
 			mStartupController.getDatabaseVersion();
 			return null;
 		}
 
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(String values) {
 
@@ -164,7 +182,8 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 	}
 
 	/**
-	 * The Class getExternalDatabase.
+	 * The Class getExternalDatabase gets the external database items.
+	 * 
 	 */
 	@SuppressWarnings("deprecation")
 	class getExternalDatabase extends AsyncTask<String, String, String> {
@@ -264,7 +283,7 @@ public class StartUpActivity extends ModifiedViewActivityImpl {
 				listHistoryItems = this.databaseHelper.getHistoryItems();
 				ArrayList<String> jsonList = new ArrayList<String>();
 				for (HistoryItem h : listHistoryItems) {
-					jsonList.add(h.toJson(h));
+					jsonList.add(h.toJson(h));					
 				}
 
 				Intent intent = new Intent(v.getContext(), HistoryActivity.class);

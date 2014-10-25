@@ -19,6 +19,7 @@ import de.damianbuecker.fhkroutenplaner.databaseaccess.Room;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Roomtype;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class CSVReader.
  */
@@ -77,10 +78,10 @@ public class CsvController extends Controller {
 	}
 
 	/**
-	 * Read csv.
+	 * Read csv files from asset folder and stores data in database.
 	 * 
 	 * @param databaseHelper
-	 *            the database helper
+	 *             database helper object
 	 */
 	public void readCSV(DatabaseHelper databaseHelper) {
 

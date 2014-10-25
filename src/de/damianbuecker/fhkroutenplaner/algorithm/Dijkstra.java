@@ -13,6 +13,7 @@ import de.damianbuecker.fhkroutenplaner.model.Edge;
 import de.damianbuecker.fhkroutenplaner.model.Graph;
 import de.damianbuecker.fhkroutenplaner.model.Vertex;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Dijkstra.
  */
@@ -41,7 +42,7 @@ public class Dijkstra {
 	 * Instantiates a new dijkstra.
 	 * 
 	 * @param graph
-	 *            the graph
+	 *             graph with existing nodes and edges
 	 */
 	public Dijkstra(Graph graph) {
 		// create a copy of the array so that we can operate on this array
@@ -50,10 +51,10 @@ public class Dijkstra {
 	}
 
 	/**
-	 * Execute.
+	 * This method finds the shortest path within an graph with a given startnode
 	 * 
 	 * @param source
-	 *            the source
+	 *            the start node
 	 */
 	public void execute(Vertex source) {
 		settledNodes = new HashSet<Vertex>();
@@ -74,7 +75,7 @@ public class Dijkstra {
 	 * Find minimal distances.
 	 * 
 	 * @param node
-	 *            the node
+	 *             current node
 	 */
 	private void findMinimalDistances(Vertex node) {
 		List<Vertex> adjacentNodes = getNeighbors(node);
@@ -89,12 +90,12 @@ public class Dijkstra {
 	}
 
 	/**
-	 * Gets the distance.
+	 * Gets the distance between two nodes.
 	 * 
 	 * @param node
-	 *            the node
+	 *            current node
 	 * @param target
-	 *            the target
+	 *             target node
 	 * @return the distance
 	 */
 	private int getDistance(Vertex node, Vertex target) {
@@ -107,11 +108,11 @@ public class Dijkstra {
 	}
 
 	/**
-	 * Gets the neighbors.
+	 * Gets the neighbors from a specific node.
 	 * 
 	 * @param node
-	 *            the node
-	 * @return the neighbors
+	 *            current node
+	 * @return the neighbors from the current node
 	 */
 	private List<Vertex> getNeighbors(Vertex node) {
 		List<Vertex> neighbors = new ArrayList<Vertex>();
@@ -124,11 +125,11 @@ public class Dijkstra {
 	}
 
 	/**
-	 * Gets the minimum.
+	 * Gets the minimum distance.
 	 * 
 	 * @param vertexes
-	 *            the vertexes
-	 * @return the minimum
+	 *              Unsettled nodes
+	 * @return node with minimal distance
 	 */
 	private Vertex getMinimum(Set<Vertex> vertexes) {
 		Vertex minimum = null;
@@ -148,7 +149,7 @@ public class Dijkstra {
 	 * Checks if is settled.
 	 * 
 	 * @param vertex
-	 *            the vertex
+	 *            Currentt node
 	 * @return true, if is settled
 	 */
 	private boolean isSettled(Vertex vertex) {
@@ -159,7 +160,7 @@ public class Dijkstra {
 	 * Gets the shortest distance.
 	 * 
 	 * @param destination
-	 *            the destination
+	 *             destination node
 	 * @return the shortest distance
 	 */
 	private int getShortestDistance(Vertex destination) {
@@ -171,13 +172,10 @@ public class Dijkstra {
 		}
 	}
 
-	/*
+	
+	/**
 	 * This method returns the path from the source to the selected target and
 	 * NULL if no path exists
-	 */
-	/**
-	 * Gets the path.
-	 * 
 	 * @param target
 	 *            the target
 	 * @return the path

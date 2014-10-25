@@ -16,6 +16,7 @@ import de.damianbuecker.fhkroutenplaner.model.Edge;
 import de.damianbuecker.fhkroutenplaner.model.Graph;
 import de.damianbuecker.fhkroutenplaner.model.Vertex;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class PathController.
  */
@@ -27,6 +28,7 @@ public class PathController extends Controller {
 	/** The edges end. */
 	private List<Edges> edgesEnd;
 
+	/** The dao edge. */
 	private Dao<Edges, Integer> daoEdge;
 
 	/** The edges remaining. */
@@ -53,13 +55,13 @@ public class PathController extends Controller {
 	}
 
 	/**
-	 * Test excute.
+	 * the method provides all nodes and edges to initiate a new navigation 
 	 * 
 	 * @param startID
-	 *            the start id
+	 *            the starting node
 	 * @param endID
-	 *            the end id
-	 * @return the linked list
+	 *            the end node
+	 * @return the calculated path
 	 */
 	public LinkedList<Vertex> testExcute(Integer startID, Integer endID) {
 		this.nodes = new ArrayList<Vertex>();
@@ -108,16 +110,16 @@ public class PathController extends Controller {
 	}
 
 	/**
-	 * Adds the lane.
+	 * defines all edges between nodes
 	 * 
 	 * @param laneId
 	 *            the lane id
 	 * @param sourceLocNo
-	 *            the source loc no
+	 *            the source node no
 	 * @param destLocNo
-	 *            the dest loc no
+	 *            the destination node no
 	 * @param duration
-	 *            the duration
+	 *            the cost between two nodes
 	 */
 	private void addLane(String laneId, int sourceLocNo, int destLocNo, int duration) {
 		Integer sourceLocNoIndex, destLocNoIndex;

@@ -40,6 +40,7 @@ import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 import de.damianbuecker.fhkroutenplaner.model.NavigationDrawerItem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class DisplayMapsActivity.
  */
@@ -48,10 +49,15 @@ import de.damianbuecker.fhkroutenplaner.model.NavigationDrawerItem;
 public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 	/** The list items. */
-	private String[] listItems;/** = {NEW_ROUTE, QUIT_ROUTE};*/
-	
+	private String[] listItems;
+	/** = {NEW_ROUTE, QUIT_ROUTE};. */
+
 	private TypedArray mNavigationMenuIcons;
+
+	/** The m navigation drawer items. */
 	private ArrayList<NavigationDrawerItem> mNavigationDrawerItems;
+
+	/** The m navigation drawer list adapter. */
 	private NavigationDrawerListAdapter mNavigationDrawerListAdapter;
 
 	/** The local drawer layout. */
@@ -98,7 +104,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 	/** The local image controller. */
 	private ImageController mImageController;
-	
+
 	/** The local databasehelper. */
 	private DatabaseHelper mDatabasehelper;
 
@@ -110,31 +116,31 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 	/** The progress dialog. */
 	private ProgressDialog mProgressDialog;
-	
+
 	/** The Constant progress_bar_type. */
 	public static final int progress_bar_type = 0;
-	
+
 	/** The x pos_start. */
 	private Double xPos_start;
-	
+
 	/** The y pos_start. */
 	private Double yPos_start;
 
 	/** The x pos. */
 	private Double xPos;
-	
+
 	/** The y pos. */
 	private Double yPos;
 
 	/** The end id. */
 	private Integer endID;
-	
+
 	/** The start id. */
 	private Integer startID;
-	
+
 	/** The start floor. */
 	private Integer startFloor;
-	
+
 	/** The end floor. */
 	private Integer endFloor;
 
@@ -146,7 +152,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		/** Creating the navigation drawer design. */
 		this.listItems = getResources().getStringArray(R.array.nav_drawer_items);
 		this.mNavigationMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
@@ -154,21 +160,21 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		this.mNavigationDrawerItems.add(new NavigationDrawerItem(this.listItems[0], this.mNavigationMenuIcons.getResourceId(0, -1)));
 		this.mNavigationDrawerItems.add(new NavigationDrawerItem(this.listItems[1], this.mNavigationMenuIcons.getResourceId(1, -1)));
 		this.mNavigationMenuIcons.recycle();
-		
+
 		this.mNavigationDrawerListAdapter = new NavigationDrawerListAdapter(this, this.mNavigationDrawerItems);
 		this.mDrawerList.setAdapter(this.mNavigationDrawerListAdapter);
-		
+
 		Toast.makeText(this, ROUTE_IS_BEING_CALCULATED, Toast.LENGTH_LONG).show();
-		
-//		this.mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, listItems));
-		
+
+		// this.mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+		// R.layout.drawer_list_item, listItems));
+
 		this.mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		this.btnToggleDrawer.setOnClickListener(new ButtonDrawerToggleListener());
 		this.btnLeft.setOnClickListener(new ButtonLeftRightListener());
 		this.btnRight.setOnClickListener(new ButtonLeftRightListener());
-		
+
 		this.mDrawerLayout.setScrimColor(Color.TRANSPARENT);
-		
 
 		this.mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		this.mSharedPreferencesController = new SharedPreferencesController(this);
@@ -184,7 +190,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			this.mNFCController = new NfcController(this);
 			this.mNFCController.handleIntent(getIntent(), this);
 		}
-		if(this.mDatabasehelper == null){
+		if (this.mDatabasehelper == null) {
 			this.mDatabasehelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
 		}
 
@@ -210,23 +216,21 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 		}
 
 		this.endFloor = mImageController.getEndFloor(endID);
-		new calculateRoute().execute((String)null);
+		new calculateRoute().execute((String) null);
 
-		try {			
-			List<Tag> listTag = this.mDatabasehelper.getTagById(String.valueOf(startID));			
+		try {
+			List<Tag> listTag = this.mDatabasehelper.getTagById(String.valueOf(startID));
 			Display display = getWindowManager().getDefaultDisplay();
 			Point size = new Point();
 			display.getSize(size);
 			int width = size.x;
 			int height = size.y;
-			this.xPos = this.xPos_start = (listTag.get(0).getX_pos()*2) - (width/2);
-			this.yPos = this.yPos_start = (listTag.get(0).getY_pos()*2) - (height/2);
-		
-			 
+			this.xPos = this.xPos_start = (listTag.get(0).getX_pos() * 2) - (width / 2);
+			this.yPos = this.yPos_start = (listTag.get(0).getY_pos() * 2) - (height / 2);
+
 		} catch (SQLException e) {
 			this.logMessage(ERROR, e.getLocalizedMessage());
-		}		
-		
+		}
 
 		if (startFloor == endFloor) {
 			this.btnLeft.setVisibility(View.INVISIBLE);
@@ -240,27 +244,29 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 		mTextViewBottomLeft.setText(TO_STARTING_FLOOR + WHITESPACE + startFloor);
 		mTextViewBottomRight.setText(TO_DESTINATION_FLOOR + WHITESPACE + endFloor);
-		
-		
-		//this.mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" + startFloor + startID + PNG);
 
-		mWebView.setPictureListener(new PictureListener() {			
+		// this.mWebView.loadUrl(FILE_PREFIX +
+		// Environment.getExternalStorageDirectory() + DIRECTORY + "TestIMG-" +
+		// startFloor + startID + PNG);
 
-			@Override			
-			public void onNewPicture(WebView view, Picture picture) {				
-				//mWebView.setInitialScale(85);	
+		mWebView.setPictureListener(new PictureListener() {
+
+			@Override
+			public void onNewPicture(WebView view, Picture picture) {
+				// mWebView.setInitialScale(85);
 				mWebView.getSettings().setBuiltInZoomControls(true);
 				mWebView.getSettings().setDisplayZoomControls(false);
 				mWebView.getSettings().setLoadWithOverviewMode(false);
 				mWebView.getSettings().setUseWideViewPort(true);
-				mWebView.setScrollbarFadingEnabled(true);				
+				mWebView.setScrollbarFadingEnabled(true);
 				mWebView.scrollBy(xPos.intValue(), yPos.intValue());
 			}
 		});
-	}	
-		
-	
-	/* (non-Javadoc)
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.app.Activity#onCreateDialog(int)
 	 */
 	@Override
@@ -277,22 +283,26 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			return null;
 		}
 	}
-	
-	
+
 	/**
-	 * The Class calculateRoute.
+	 * 
+	 * This Class starts a Route calculation
 	 */
-	private class calculateRoute extends AsyncTask<String,String,String>{
-		
-		/* (non-Javadoc)
+	private class calculateRoute extends AsyncTask<String, String, String> {
+
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see android.os.AsyncTask#onPreExecute()
 		 */
 		protected void onPreExecute() {
-            super.onPreExecute();            
-            showDialog(progress_bar_type);
-        }
+			super.onPreExecute();
+			showDialog(progress_bar_type);
+		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
 		@Override
@@ -301,15 +311,18 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
-		/* (non-Javadoc)
+
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
-		protected void onPostExecute(String values){
-			
+		protected void onPostExecute(String values) {
+
 			dismissDialog(progress_bar_type);
-			mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + FILENAME + startFloor + startID + PNG);
+			mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory()
+					+ DisplayMapsActivity.this.getString(R.string.workingDirectory) + FILENAME + startFloor + startID + PNG);
 		}
 	}
 
@@ -320,21 +333,17 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 	 *            the position
 	 */
 	private void selectItem(int position) {
-		
-		if (position == 0) {			
+
+		if (position == 0) {
 			Intent intent = new Intent(this, NavigationActivity.class);
 			startActivity(intent);
 			finish();
-			
+
 		} else if (position == 1) {
 			Intent intent = new Intent(this, StartUpActivity.class);
 			startActivity(intent);
 			finish();
 		}
-
-		/**
-		 * Cleanup here
-		 */
 	}
 
 	/*
@@ -459,7 +468,7 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 
 			if (v.getId() == R.id.btnleft) {
 				DisplayMapsActivity.this.xPos = DisplayMapsActivity.this.xPos_start;
-				DisplayMapsActivity.this.yPos = DisplayMapsActivity.this.yPos_start;				
+				DisplayMapsActivity.this.yPos = DisplayMapsActivity.this.yPos_start;
 				DisplayMapsActivity.this.btnLeft.setHapticFeedbackEnabled(true);
 				DisplayMapsActivity.this.btnLeft.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				DisplayMapsActivity.this.btnLeft.setVisibility(View.INVISIBLE);
@@ -467,11 +476,11 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				DisplayMapsActivity.this.mTextViewBottomLeft.setVisibility(View.INVISIBLE);
 				DisplayMapsActivity.this.mTextViewBottomRight.setVisibility(View.VISIBLE);
 
-				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + FILENAME + startFloor + startID
-						+ PNG);
-			} else if (v.getId() == R.id.btnright) {				
+				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory()
+						+ DisplayMapsActivity.this.getString(R.string.workingDirectory) + FILENAME + startFloor + startID + PNG);
+			} else if (v.getId() == R.id.btnright) {
 				DisplayMapsActivity.this.xPos = (double) mWebView.getScrollX();
-				DisplayMapsActivity.this.yPos = (double) mWebView.getScrollY();	
+				DisplayMapsActivity.this.yPos = (double) mWebView.getScrollY();
 				DisplayMapsActivity.this.btnRight.setHapticFeedbackEnabled(true);
 				DisplayMapsActivity.this.btnRight.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
 				DisplayMapsActivity.this.btnRight.setVisibility(View.INVISIBLE);
@@ -479,7 +488,8 @@ public class DisplayMapsActivity extends ModifiedViewActivityImpl {
 				DisplayMapsActivity.this.mTextViewBottomLeft.setVisibility(View.VISIBLE);
 				DisplayMapsActivity.this.mTextViewBottomRight.setVisibility(View.INVISIBLE);
 
-				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory() + DIRECTORY + FILENAME + endFloor + endID + PNG);
+				mWebView.loadUrl(FILE_PREFIX + Environment.getExternalStorageDirectory()
+						+ DisplayMapsActivity.this.getString(R.string.workingDirectory) + FILENAME + endFloor + endID + PNG);
 			}
 		}
 

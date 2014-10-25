@@ -35,6 +35,7 @@ import de.damianbuecker.fhkroutenplaner.databaseaccess.Roomtype;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class NavigationActivity.
  */
@@ -104,6 +105,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	/** The Constant HISTORY_ITEM_NAME_PREFIX. */
 	private static final String HISTORY_ITEM_NAME_PREFIX = "Navigation ";
 
+	/** The Constant SET_DEFAULT_START. */
 	private static final String SET_DEFAULT_START = "SetDefaultStart";
 
 	/** The end id. */
@@ -131,16 +133,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 			alertDialogBuilder.setTitle(ALERT_DIALOG_TITLE);
-			alertDialogBuilder.setMessage(ALERT_DIALOG_MESSAGE).setCancelable(false);
-
-			// <<< For testing purposes only
-			alertDialogBuilder.setNeutralButton(SET_DEFAULT_START, new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					NavigationActivity.this.mTextView.setText("1");
-				}
-			});
+			alertDialogBuilder.setMessage(ALERT_DIALOG_MESSAGE).setCancelable(false);		
 
 			alertDialogBuilder.setNegativeButton(R.string.back, new DialogInterface.OnClickListener() {
 
@@ -199,7 +192,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	}
 
 	/**
-	 * Sets the roomtype spinner.
+	 * Sets the roomtype spinner when user comes from HistoryItemDetailActivity.
 	 */
 	@SuppressWarnings("rawtypes")
 	public void setRoomtypeSpinner() {
@@ -240,7 +233,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	}
 
 	/**
-	 * Sets the spinner.
+	 * Sets the spinner Room when the user comes from HistoryItemDetailActivity 
 	 */
 	@SuppressWarnings("rawtypes")
 	public void setSpinner() {
@@ -274,19 +267,19 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	}
 
 	/**
-	 * Start.
+	 * Fill TextView with Description 
+	 * and Floor information when Tag was scanned
 	 * 
-	 * @param s
-	 *            the s
-	 * @throws SQLException
-	 *             the SQL exception
+	 *          
+	 * 
+	 *            
 	 */
 	private void start(String s) throws SQLException {
 		this.tagList = this.databaseHelper.getTagById(s);
 
 		if ((tagList.get(0) != null) && ((tagList.get(0).getFloor() != null))) {
-			this.mTextViewFloor.setText(tagList.get(0).getFloor().toString());
-			this.mTextViewDescription.setText(tagList.get(0).getDescription());
+			this.mTextViewDescription.setText(tagList.get(0).getFloor().toString());
+			this.mTextViewFloor.setText(tagList.get(0).getDescription());
 		}
 	}
 
@@ -314,10 +307,10 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	}
 
 	/**
-	 * Adds the room spinner.
+	 * Adds the room spinner with the roomtype id from roomtype spinner.
 	 * 
 	 * @param roomtypeID
-	 *            the roomtype id
+	 *            roomtype id which was chosen by roomtype spinner
 	 */
 
 	@SuppressWarnings("unchecked")
@@ -461,7 +454,7 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 		 * onNewIntent will be called. For more information have a look at the
 		 * documentation.
 		 * 
-		 * In our case this method gets called, when the user attaches a Tag to
+		 * This method gets called, when the user attaches a Tag to
 		 * the device.
 		 */
 		this.mNfcController = new NfcController(this.mTextView);
@@ -469,10 +462,11 @@ public class NavigationActivity extends ModifiedViewActivityImpl implements OnIt
 	}
 
 	/**
-	 * On click_ go.
+	 * This method starts the DisplaymapsActivity with all needed parameters 
+	 * to start a navigation calculation
 	 * 
-	 * @param v
-	 *            the v
+	 * Writes a new HistoryItem to database
+	 *            
 	 */
 	public void onClick_GO(View v) {
 

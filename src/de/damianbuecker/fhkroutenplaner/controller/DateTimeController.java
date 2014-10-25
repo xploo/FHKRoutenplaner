@@ -7,6 +7,7 @@ import hirondelle.date4j.DateTime;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class DateTimeController.
  */
@@ -19,29 +20,29 @@ public class DateTimeController extends Controller {
 	 * Instantiates a new date time controller.
 	 * 
 	 * @param context
-	 *            the context
+	 *             context
 	 */
 	public DateTimeController(Context context) {
 		super(context);
 	}
 
 	/**
-	 * From date.
+	 * Converts a Date into a long variable
 	 * 
 	 * @param dateTime
-	 *            the date time
-	 * @return the long
+	 *             date time
+	 * @return long variable
 	 */
 	public static long fromDate(DateTime dateTime) {
 		return dateTime.getMilliseconds(TimeZone.getDefault());
 	}
 
 	/**
-	 * To date.
+	 * Converts a long variable into a Date
 	 * 
 	 * @param milliseconds
-	 *            the milliseconds
-	 * @return the date time
+	 *            milliseconds 
+	 * @return date time
 	 */
 	public static DateTime toDate(long milliseconds) {
 		return DateTime.forInstant(milliseconds, TimeZone.getDefault());
@@ -50,14 +51,14 @@ public class DateTimeController extends Controller {
 	/**
 	 * Gets the time.
 	 * 
-	 * @return the time
+	 * @return time in milliseconds
 	 */
 	public static long getTime() {
 		return System.currentTimeMillis();
 	}
 
 	/**
-	 * Gets the runtime.
+	 * Gets the runtime for a specific start and end time
 	 * 
 	 * @param startTime
 	 *            the start time

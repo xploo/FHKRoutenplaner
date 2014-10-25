@@ -11,6 +11,7 @@ import com.google.gson.stream.JsonWriter;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class HistoryItem.
  */

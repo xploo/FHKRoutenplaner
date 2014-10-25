@@ -1,5 +1,6 @@
 package de.damianbuecker.fhkroutenplaner.model;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Edge.
  */

@@ -2,6 +2,7 @@ package de.damianbuecker.fhkroutenplaner.model;
 
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Graph.
  */

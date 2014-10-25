@@ -35,6 +35,8 @@
     <string name="no">Nein</string>
     <string name="back">Zurück</string>
     <string name="route_running">routeRunning</string>
+    <string name="workingDirectory">/FMS/</string>
+    <string name="imageFilename">TestIMG-</string>
 
     <!-- Navigation Drawer Menu Items -->
     <string-array name="nav_drawer_items">

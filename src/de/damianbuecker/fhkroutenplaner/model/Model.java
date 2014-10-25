@@ -2,9 +2,6 @@ package de.damianbuecker.fhkroutenplaner.model;
 
 import java.sql.SQLException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import android.content.Context;
 import android.util.Log;
 
@@ -14,6 +11,7 @@ import com.j256.ormlite.dao.Dao;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.interfaces.LogInterface;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Model.
  */

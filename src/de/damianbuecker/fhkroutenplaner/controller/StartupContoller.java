@@ -1,5 +1,6 @@
 package de.damianbuecker.fhkroutenplaner.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +13,12 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
+import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
 
+import de.damianbuecker.fhkroutenplaner.activity.R;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Docent;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Edges;
@@ -23,6 +27,7 @@ import de.damianbuecker.fhkroutenplaner.databaseaccess.Room;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Roomtype;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class StartupContoller.
  */
@@ -31,6 +36,7 @@ public class StartupContoller extends Controller {
 	/** The conn manager. */
 	private ConnectivityManager connManager;
 
+	/** The database helper. */
 	private DatabaseHelper databaseHelper;
 
 	/** The m wifi. */
@@ -63,14 +69,19 @@ public class StartupContoller extends Controller {
 	/** The Constant TAG_SUCCESS. */
 	private static final String TAG_SUCCESS = "success";
 
+	/** The edges dao. */
 	private Dao<Edges, Integer> edgesDao;
 
+	/** The tag dao. */
 	private Dao<Tag, Integer> tagDao;
 
+	/** The room dao. */
 	private Dao<Room, Integer> roomDao;
 
+	/** The docent dao. */
 	private Dao<Docent, Integer> docentDao;
 
+	/** The roomtype dao. */
 	private Dao<Roomtype, Integer> roomtypeDao;
 
 	/** The Constant TAG_DOCENTID. */
@@ -133,12 +144,23 @@ public class StartupContoller extends Controller {
 	/** The Constant EDGES_TXT. */
 	private static final String EDGES_TXT = "/sdcard/FMS/edges.txt";
 
+	/** The external database version. */
 	private Integer externalDatabaseVersion;
 
+	/**
+	 * Gets the external database version.
+	 *
+	 * @return the external database version
+	 */
 	public Integer getExternalDatabaseVersion() {
 		return externalDatabaseVersion;
 	}
 
+	/**
+	 * Sets the external database version.
+	 *
+	 * @param externalDatabaseVersion the new external database version
+	 */
 	public void setExternalDatabaseVersion(Integer externalDatabaseVersion) {
 		this.externalDatabaseVersion = externalDatabaseVersion;
 	}
@@ -170,7 +192,7 @@ public class StartupContoller extends Controller {
 	/**
 	 * Gets the external database.
 	 * 
-	 * @return the external database
+	 * @return  external database
 	 */
 	public void getExternalDatabase() {
 
@@ -304,9 +326,9 @@ public class StartupContoller extends Controller {
 	}
 
 	/**
-	 * Gets the database version.
+	 * Gets the external database version.
 	 * 
-	 * @return the database version
+	 * @return  database version
 	 */
 	public void getDatabaseVersion() {
 		params = new ArrayList<NameValuePair>();
@@ -352,5 +374,35 @@ public class StartupContoller extends Controller {
 		}
 		return -1;
 
+	}
+	
+	/**
+	 * Delete old images.
+	 *
+	 * @return true, if successful
+	 */
+	public boolean deleteOldImages() {
+		
+		StringBuffer path = new StringBuffer();
+		boolean success = true;
+		
+		path.append(Environment.getExternalStorageDirectory()).append(this.getContext().getString(R.string.workingDirectory));
+		this.logMessage("INFO", path.toString());
+		
+		File directory = new File(path.toString());
+		File[] files = directory.listFiles();
+		
+		for(File file : files) {
+			if(!success) {
+				return success;
+			} else {
+				if(file.getName().contains(this.getContext().getString(R.string.imageFilename))) {
+					this.logMessage("INFO", file.getName());
+					success = file.delete();
+				}
+			}
+		}
+		
+		return success;
 	}
 }

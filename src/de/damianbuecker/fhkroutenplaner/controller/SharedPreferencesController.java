@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class SharedPreferencesController.
  */

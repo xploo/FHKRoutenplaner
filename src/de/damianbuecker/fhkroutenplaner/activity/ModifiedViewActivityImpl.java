@@ -5,6 +5,7 @@ import android.util.Log;
 import roboguice.activity.RoboActivity;
 import de.damianbuecker.fhkroutenplaner.interfaces.LogInterface;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ModifiedViewActivityImpl.
  */
@@ -30,9 +31,6 @@ public class ModifiedViewActivityImpl extends RoboActivity implements LogInterfa
 
 	/** The Constant INTENT_DISPLAY_MAPS_ACTIVITY. */
 	protected static final String INTENT_DISPLAY_MAPS_ACTIVITY = "android.intents.DisplayMapsActivity";
-	
-	/** The Constant DIRECTORY. */
-	protected static final String DIRECTORY = "/FMS/";
 	
 	/** The Constant FILE_PREFIX. */
 	protected static final String FILE_PREFIX = "file:///";

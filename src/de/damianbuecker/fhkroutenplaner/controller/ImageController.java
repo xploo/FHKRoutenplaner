@@ -30,19 +30,11 @@ import de.damianbuecker.fhkroutenplaner.activity.R;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.Tag;
 import de.damianbuecker.fhkroutenplaner.model.Vertex;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ImageController.
  */
 public class ImageController extends Controller {
-
-	/** The Constant WIDTH_OPTIONS. */
-	private static final String WIDTH_OPTIONS = "Width Options: ";
-
-	/** The Constant HEIGHT_OPTIONS. */
-	private static final String HEIGHT_OPTIONS = "Height Options: ";
-
-	/** The Constant ROOT_DIR. */
-	private static final String ROOT_DIR = "/FMS/";
 
 	/** The Constant PNG. */
 	private static final String PNG = ".png";
@@ -74,23 +66,46 @@ public class ImageController extends Controller {
 	/** The end floor. */
 	private Integer endFloor;
 	
+	/** The start_ id. */
 	private Integer start_ID;
+	
+	/**
+	 * Gets the start_ id.
+	 *
+	 * @return the start_ id
+	 */
 	public Integer getStart_ID() {
 		return start_ID;
 	}
 
+	/**
+	 * Sets the start_ id.
+	 *
+	 * @param start_ID the new start_ id
+	 */
 	public void setStart_ID(Integer start_ID) {
 		this.start_ID = start_ID;
 	}
 
+	/**
+	 * Gets the end_ id.
+	 *
+	 * @return the end_ id
+	 */
 	public Integer getEnd_ID() {
 		return end_ID;
 	}
 
+	/**
+	 * Sets the end_ id.
+	 *
+	 * @param end_ID the new end_ id
+	 */
 	public void setEnd_ID(Integer end_ID) {
 		this.end_ID = end_ID;
 	}
 
+	/** The end_ id. */
 	private Integer end_ID;              
 
 	/**
@@ -107,8 +122,8 @@ public class ImageController extends Controller {
 	 * Gets the end floor.
 	 * 
 	 * @param endID
-	 *            the end id
-	 * @return the end floor
+	 *             end id of destination node
+	 * @return the floor of the destination node
 	 */	
 	public Integer getEndFloor(Integer endID) {
 
@@ -125,16 +140,16 @@ public class ImageController extends Controller {
 	}
 
 	/**
-	 * Test algorithm.
+	 * Initiates the drawing of the navigation
 	 * 
 	 * @param startFloor
-	 *            the start floor
+	 *             start floor
 	 * @param startID
-	 *            the start id
+	 *             id of the start node
 	 * @param endID
-	 *            the end id
+	 *             id of the destination node
 	 * @param endFloor
-	 *            the end floor
+	 *             end floor
 	 */
 	public void testAlgorithm(Integer startFloor, Integer startID, Integer endID, Integer endFloor) {		
 
@@ -163,12 +178,14 @@ public class ImageController extends Controller {
 	
 
 	/**
-	 * Save final image.
+	 * this methode draws the route of the navigation onto a Bitmap
+	 * and saves the resulting picture to SDcard
+	 * 
 	 * 
 	 * @param list
-	 *            the list
+	 *             list of nodes which represent the path
 	 * @param ID
-	 *            the id
+	 *             id of the start or destination node
 	 */
 	private void saveFinalImage(LinkedList<Vertex> list, Integer ID) {
 
@@ -293,12 +310,12 @@ public class ImageController extends Controller {
 			} catch (SQLException e) {
 				this.logMessage("ERROR", e.getMessage());
 			}
-			File folder = new File(Environment.getExternalStorageDirectory() + ROOT_DIR);
+			File folder = new File(Environment.getExternalStorageDirectory() + this.getContext().getString(R.string.workingDirectory));
 			if (!folder.exists())
 				folder.mkdirs();
 
 			try {
-				File outputFile = new File(Environment.getExternalStorageDirectory() + ROOT_DIR + PREFIXFILENAME + etage.hashCode() + ID
+				File outputFile = new File(Environment.getExternalStorageDirectory() + this.getContext().getString(R.string.workingDirectory) + PREFIXFILENAME + etage.hashCode() + ID
 						+ PNG);
 				FileOutputStream fos = new FileOutputStream(outputFile);
 				bitmapOut.compress(CompressFormat.PNG, 100, fos);
@@ -316,14 +333,15 @@ public class ImageController extends Controller {
 	}
 
 	/**
-	 * Vertex liste aufteilen.
+	 * Splits the list of nodes into two separated list.
+	 * 
 	 * 
 	 * @param list
-	 *            the list
+	 *            list with calculated nodes
 	 * @param startFloor
-	 *            the start floor
+	 *             start floor
 	 * @param endFloor
-	 *            the end floor
+	 *             end floor
 	 */
 	@SuppressLint("UseSparseArrays")
 	private void splitVertexList(LinkedList<Vertex> list, Integer startFloor, Integer endFloor) {
@@ -349,11 +367,11 @@ public class ImageController extends Controller {
 	}
 
 	/**
-	 * Gets the resource for etage.
+	 * Gets the resource for Floor.
 	 * 
 	 * @param etage
-	 *            the etage
-	 * @return the resource for etage
+	 *            Floor
+	 * @return the resource id of the image 
 	 */
 	private Integer getResourceForEtage(Integer etage) {
 		if (etage == 1) {

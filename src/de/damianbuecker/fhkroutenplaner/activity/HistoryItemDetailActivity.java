@@ -15,6 +15,7 @@ import de.damianbuecker.fhkroutenplaner.controller.DateTimeController;
 import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class HistoryItemDetailActivity.
  */
@@ -72,10 +73,13 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 	@InjectView(R.id.btnSaveName)
 	private Button mButtonSaveName;
 
+	/** The m date time controller. */
 	private DateTimeController mDateTimeController;
 	
+	/** The m database helper. */
 	private DatabaseHelper mDatabaseHelper;
 	
+	/** The m integer history id. */
 	private Integer mIntegerHistoryId; 
 	
 	/*
@@ -111,8 +115,22 @@ public class HistoryItemDetailActivity extends ModifiedViewActivityImpl {
 	}
 	
 
+	/**
+	 * The listener interface for receiving button events.
+	 * The class that is interested in processing a button
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addButtonListener<code> method. When
+	 * the button event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see ButtonEvent
+	 */
 	private class ButtonListener implements View.OnClickListener {
 
+		/* (non-Javadoc)
+		 * @see android.view.View.OnClickListener#onClick(android.view.View)
+		 */
 		@Override
 		public void onClick(View v) {
 			if(v.getId() == R.id.startNavigationButton) {

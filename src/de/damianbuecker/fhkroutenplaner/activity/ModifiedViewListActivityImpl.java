@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.util.Log;
 import de.damianbuecker.fhkroutenplaner.interfaces.LogInterface;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ModifiedViewListActivityImpl.
  */

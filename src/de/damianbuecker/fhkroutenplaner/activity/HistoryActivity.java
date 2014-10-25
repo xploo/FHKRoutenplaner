@@ -1,7 +1,10 @@
 package de.damianbuecker.fhkroutenplaner.activity;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +23,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.damianbuecker.fhkroutenplaner.databaseaccess.DatabaseHelper;
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class HistoryActivity.
  */
@@ -38,6 +43,14 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 	
 	/** The Constant INTENT_EXTRA_SELECTED_ITEM. */
 	private static final String INTENT_EXTRA_SELECTED_ITEM = "selectedItem";
+	
+	/** The database helper. */
+	private DatabaseHelper databaseHelper;
+	
+	/** The m array adapter. */
+	HistoryItemArrayAdapter mArrayAdapter;
+	
+
 
 	/*
 	 * (non-Javadoc)
@@ -57,10 +70,13 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 					h = h.fromJson(s);
 					historyItemsList.add(h);
 				}
+				if (this.databaseHelper == null) {
+					this.databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+				}
 
-				HistoryItemArrayAdapter mArrayAdapter = new HistoryItemArrayAdapter(this, R.layout.rowlayout, historyItemsList);
+				this.mArrayAdapter = new HistoryItemArrayAdapter(this, R.layout.rowlayout, historyItemsList);
 				setListAdapter(mArrayAdapter);
-
+				
 				this.getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 
 					@Override
@@ -77,6 +93,25 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 				});
 			}
 		}
+	}
+	
+	/**
+	 * Delete item from list.
+	 * Delete a item from SQLite Database
+	 * @param position position in arrayAdapter
+	 */
+	protected void deleteItemFromList(int position) {
+		if(this.mArrayAdapter != null) {
+			HistoryItem mHistoryItem = this.mArrayAdapter.getItem(position);
+			this.mArrayAdapter.remove(this.mArrayAdapter.getItem(position));
+			try {
+				HistoryActivity.this.databaseHelper.deleteHistoryItemById(mHistoryItem.getId());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	/** The m action mode callback. */
@@ -103,8 +138,8 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 			switch (item.getItemId()) {
-			case R.id.menuitem1_show:
-				show();
+			case R.id.menuitem1_show:				
+				HistoryActivity.this.deleteItemFromList(selectedItem);
 				mode.finish();
 				return true;
 
@@ -112,14 +147,8 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 				return false;
 			}
 		}
-	};
-
-	/**
-	 * Show.
-	 */
-	private void show() {
-		Toast.makeText(HistoryActivity.this, String.valueOf(selectedItem), Toast.LENGTH_LONG).show();
-	}
+	};	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -147,9 +176,9 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 		/**
 		 * Instantiates a new history item array adapter.
 		 *
-		 * @param context the context
+		 * @param context  context
 		 * @param resource the resource
-		 * @param items the items
+		 * @param items HistoryItem-objects
 		 */
 		public HistoryItemArrayAdapter(Context context, int resource, List<HistoryItem> items) {
 			super(context, resource, items);
@@ -172,8 +201,9 @@ public class HistoryActivity extends ModifiedViewListActivityImpl {
 			} else {
 				linearLayout = (LinearLayout) convertView;
 			}
-			TextView text = (TextView) linearLayout.findViewById(R.id.label);			
+			TextView text = (TextView) linearLayout.findViewById(R.id.label);
 			text.setText(historyItem.getName());
+
 
 			return linearLayout;
 		}

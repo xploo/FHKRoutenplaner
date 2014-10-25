@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.widget.TextView;
 import de.damianbuecker.fhkroutenplaner.activity.DisplayMapsActivity;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class NFCController.
  */
@@ -46,7 +47,7 @@ public class NfcController extends Controller {
 	 * Instantiates a new NFC controller.
 	 * 
 	 * @param tv
-	 *            the tv
+	 *            hidden textView
 	 */
 	public NfcController(TextView tv) {
 		super(tv.getContext());
@@ -64,13 +65,14 @@ public class NfcController extends Controller {
 	}
 
 	/**
-	 * Handle intent.
+	 * this method handles the incoming intent
+	 * after a Tag was scanned
 	 * 
 	 * @param intent
-	 *            the intent
+	 *            intent
 	 * @param context
 	 *            the context
-	 * @return the boolean
+	 * @return result if operation was successful 
 	 */
 	public Boolean handleIntent(Intent intent, Context context) {
 
@@ -91,7 +93,7 @@ public class NfcController extends Controller {
 				this.logMessage("ERROR", "Wrong mime type: " + type);
 			}
 		} else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
-			
+
 			Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 			String[] techList = tag.getTechList();
 			String searchedTech = Ndef.class.getName();
@@ -111,7 +113,9 @@ public class NfcController extends Controller {
 	}
 
 	/**
-	 * Setup foreground dispatch.
+	 * The foreground dispatch system  
+	 * allows an activity to intercept an intent and
+	 * claim priority over other activities that handle the same intent.
 	 * 
 	 * @param activity
 	 *            the activity
@@ -125,7 +129,7 @@ public class NfcController extends Controller {
 		final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
 
 		IntentFilter[] filters = new IntentFilter[1];
-		String[][] techList = new String[][] {};		
+		String[][] techList = new String[][] {};
 		filters[0] = new IntentFilter();
 		filters[0].addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
 		filters[0].addCategory(Intent.CATEGORY_DEFAULT);
@@ -160,16 +164,7 @@ public class NfcController extends Controller {
 	}
 
 	/**
-	 * Receive result.
-	 * 
-	 * @param result
-	 *            the result
-	 */
-	public void receiveResult(String result) {
-	}
-
-	/**
-	 * The Class NdefReaderTask.
+	 * This class get the payload from an scanned ndef formated Tag
 	 */
 	private class NdefReaderTask extends AsyncTask<Tag, Void, String> {
 
@@ -201,12 +196,12 @@ public class NfcController extends Controller {
 		 * Instantiates a new ndef reader task.
 		 * 
 		 * @param context
-		 *            the context
+		 *            context
 		 */
 		public NdefReaderTask(Context context) {
 			this.mContext = context;
 			this.mSharedPreferencesController = new SharedPreferencesController(this.mContext);
-			this.textViewReference = null;		
+			this.textViewReference = null;
 
 			running = this.mSharedPreferencesController.getBoolean(SHARED_PREFERENCE_ROUTE_RUNNING);
 		}
@@ -222,7 +217,7 @@ public class NfcController extends Controller {
 			Tag tag = params[0];
 
 			Ndef ndef = Ndef.get(tag);
-			if (ndef == null) {				
+			if (ndef == null) {
 				return null;
 			}
 
@@ -242,38 +237,22 @@ public class NfcController extends Controller {
 		}
 
 		/**
-		 * Read text.
+		 * gets the content from an NDEF-record
 		 * 
 		 * @param record
-		 *            the record
-		 * @return the string
+		 *            NDEF-record
+		 * @return  content of the scanned Tag
 		 * @throws UnsupportedEncodingException
 		 *             the unsupported encoding exception
 		 */
 		private String readText(NdefRecord record) throws UnsupportedEncodingException {
-			/*
-			 * See NFC forum specification for "Text Record Type Definition" at
-			 * 3.2.1
-			 * 
-			 * http://www.nfc-forum.org/specs/
-			 * 
-			 * bit_7 defines encoding bit_6 reserved for future use, must be 0
-			 * bit_5..0 length of IANA language code
-			 */
 
 			byte[] payload = record.getPayload();
 
-			// Get the Text Encoding
 			String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
 
-			// Get the Language Code
 			int languageCodeLength = payload[0] & 0063;
 
-			// String languageCode = new String(payload, 1, languageCodeLength,
-			// "US-ASCII");
-			// e.g. "en"
-
-			// Get the Text
 			return new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
 		}
 
@@ -284,9 +263,9 @@ public class NfcController extends Controller {
 		 */
 		@Override
 		protected void onPostExecute(String result) {
-			
-			if(running == false){
-				NfcController.this.logMessage("RUNNING ","False");
+
+			if (running == false) {
+				NfcController.this.logMessage("RUNNING ", "False");
 			}
 
 			if (running == true) {
@@ -294,15 +273,15 @@ public class NfcController extends Controller {
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				i.putExtra(INTENT_EXTRA_START_ID, result);
 				mContext.startActivity(i);
-				NfcController.this.logMessage("INFO",result);
+				NfcController.this.logMessage("INFO", result);
 
 			} else if (this.textViewReference != null && result != null) {
 				final TextView tv = this.textViewReference.get();
-				NfcController.this.logMessage("INFO",result);
+				NfcController.this.logMessage("INFO", result);
 				if (tv != null) {
 					tv.setText(result);
 				}
-			}			
+			}
 		}
 	}
 }

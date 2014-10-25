@@ -19,6 +19,7 @@ import com.j256.ormlite.table.TableUtils;
 
 import de.damianbuecker.fhkroutenplaner.model.HistoryItem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class DatabaseHelper.
  */
@@ -54,6 +55,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	/** The tag location all. */
 	private Dao<Tag, Integer> tagLocationAll;
 
+	/** The room all. */
 	private Dao<Room, Integer> roomAll;
 
 	/** The edges all. */
@@ -82,6 +84,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	/** The Tagresult. */
 	private List<Tag> Tagresult = null;
 
+	/** The room result. */
 	private List<Room> roomResult = null;
 
 	/** The edges result. */
@@ -157,6 +160,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 	}
 
+	/**
+	 * Delete tag.
+	 */
 	public void deleteTag() {
 		try {
 
@@ -169,6 +175,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 	}
 
+	/**
+	 * Delete room.
+	 */
 	public void deleteRoom() {
 		try {
 			Dao<Room, Integer> roomDao = getRoomDataDao();
@@ -181,6 +190,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	}
 
+	/**
+	 * Delete roomtype.
+	 */
 	public void deleteRoomtype() {
 		try {
 			Dao<Roomtype, Integer> roomtypeDao = getRoomtypeDataDao();
@@ -193,6 +205,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	}
 
+	/**
+	 * Delete docent.
+	 */
 	public void deleteDocent() {
 		try {
 			Dao<Docent, Integer> docentDao = getDocentDataDao();
@@ -204,6 +219,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 	}
 
+	/**
+	 * Delete edges.
+	 */
 	public void deleteEdges() {
 		try {
 			Dao<Edges, Integer> edgesDao = getEdgesDataDao();
@@ -216,6 +234,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	}
 
+	/**
+	 * Delete complete database.
+	 */
 	public void deleteCompleteDatabase() {
 		deleteEdges();
 		deleteTag();
@@ -313,6 +334,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return this.historyItemDataDao;
 	}
 
+	/**
+	 * Delete tag dao.
+	 *
+	 * @throws SQLException the SQL exception
+	 */
 	public void deleteTagDao() throws SQLException {
 		if (this.tagDataDao == null) {
 			tagDataDao = getDao(Tag.class);
@@ -323,7 +349,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	/**
 	 * Gets the roomtype spinner.
 	 * 
-	 * @return the roomtype spinner
+	 * @return all roomtype data 
 	 * @throws SQLException
 	 *             the SQL exception
 	 */
@@ -345,10 +371,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 * Gets the room spinner.
 	 * 
 	 * @param roomid
-	 *            the roomid
+	 *            Chosen roomtypeID 
 	 * @param startID
-	 *            the start id
-	 * @return the room spinner
+	 *             the id of the starting node
+	 * @return all room data
 	 * @throws SQLException
 	 *             the SQL exception
 	 */
@@ -359,12 +385,18 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 
 		List<Tag> startTagList = this.getTagById(startID);
-		Integer bufferRoomIdFromStartTag = startTagList.get(0).getRoom_ID();
+		Integer bufferRoomIdFromStartTag = startTagList.get(0).getRoom_ID();		
 
-		this.spinnerRoomList = null;
 		this.spinnerRoomList = new ArrayList<Integer>();
 		this.queryBuilder = roomSpinner.queryBuilder();
-		this.queryBuilder.where().eq(Room.ROOMTYPE_ID, roomid).and().not().like(Tag.ROOM_ID, bufferRoomIdFromStartTag);
+		if(bufferRoomIdFromStartTag == null){
+			
+			this.queryBuilder.where().eq(Room.ROOMTYPE_ID, roomid);
+			
+		}else{
+			this.queryBuilder.where().eq(Room.ROOMTYPE_ID, roomid).and().not().like(Tag.ROOM_ID, bufferRoomIdFromStartTag);
+		}
+		
 		PreparedQuery<Room> preparedQuery = queryBuilder.prepare();
 		List<Room> RoomList = roomSpinner.query(preparedQuery);
 		for (Room v : RoomList) {
@@ -382,8 +414,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 * Gets the tag by id.
 	 * 
 	 * @param ID
-	 *            the id
-	 * @return the tag by id
+	 *            id of the tag object
+	 * @return tagobject
 	 * @throws SQLException
 	 *             the SQL exception
 	 */
@@ -402,6 +434,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	}
 
+	/**
+	 * Gets the room by id.
+	 *
+	 * @param ID id of the object
+	 * @return Roomobject
+	 * @throws SQLException the SQL exception
+	 */
 	public List<Room> getRoomById(String ID) throws SQLException {
 
 		if (this.roomAll == null) {
@@ -417,6 +456,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return roomResult;
 	}
 
+	/**
+	 * Gets the roomtype by id.
+	 *
+	 * @param ID id of the object
+	 * @return Roomtypeobject 
+	 * @throws SQLException the SQL exception
+	 */
 	public List<Roomtype> getRoomtypeById(String ID) throws SQLException {
 		Dao<Roomtype, Integer> roomTypeAll = this.getRoomtypeDataDao();
 
@@ -430,6 +476,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return roomTypeResult;
 	}
 
+	/**
+	 * Update history items name.
+	 *
+	 * @param ID id of the Object which will be updated
+	 * @param newName the new name
+	 */
 	public void updateHistoryItemName(Integer ID, String newName) {
 
 		try {
@@ -447,9 +499,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * Gets the history items.
+	 * Gets all the history items.
 	 * 
-	 * @return the history items
+	 * @return  history items
 	 */
 	public List<HistoryItem> getHistoryItems() {
 
@@ -464,5 +516,26 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 
 		return result;
+	}
+	
+	/**
+	 * Deletes an  history item by given id.
+	 *
+	 * @param id id of the Object which will be deleted
+	 * @throws SQLException the SQL exception
+	 */
+	public void deleteHistoryItemById(Integer id) throws SQLException{
+		
+		Dao<HistoryItem, Integer> historyItemAll = this.getHistoryItemDataDao();
+
+		QueryBuilder<HistoryItem, Integer> queryBuilderRoomType = null;
+
+		queryBuilderRoomType = historyItemAll.queryBuilder();
+		queryBuilderRoomType.where().eq(HistoryItem.ID, id);
+		PreparedQuery<HistoryItem> preparedQueryRoomType = queryBuilderRoomType.prepare();
+		List<HistoryItem> historyItemResult = historyItemAll.query(preparedQueryRoomType);
+		historyItemAll.delete(historyItemResult);		
+		
+		
 	}
 }
